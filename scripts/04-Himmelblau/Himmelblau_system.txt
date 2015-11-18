@@ -1,0 +1,4 @@
+y0=(p0^2+p1-11)^2+(p0+p1^2-7)^2
+y1=0
+p_init=-1,0
+data=./scripts/04-Himmelblau/Himmelblau_data.csv

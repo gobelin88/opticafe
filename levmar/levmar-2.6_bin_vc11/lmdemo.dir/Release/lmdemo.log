@@ -1,0 +1,16 @@
+﻿Build started 09/02/2015 14:37:42.
+     1>Project "C:\Users\huguel\Documents\00-Me\00-SVN\trunk\Etudes\Localisation_Magnetique_v5\XX_Dependances\levmar-2.6_bin_vc11\lmdemo.vcxproj" on node 2 (Build target(s)).
+     1>CustomBuild:
+         Building Custom Rule C:/Users/huguel/Documents/00-Me/00-SVN/trunk/Etudes/Localisation_Magnetique_v5/XX_Dependances/levmar-2.6/CMakeLists.txt
+         CMake does not need to re-run because C:\Users\huguel\Documents\00-Me\00-SVN\trunk\Etudes\Localisation_Magnetique_v5\XX_Dependances\levmar-2.6_bin_vc11\CMakeFiles\generate.stamp is up-to-date.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Users\huguel\Documents\00-Me\00-SVN\trunk\Etudes\Localisation_Magnetique_v5\XX_Dependances\levmar-2.6" /nologo /W3 /WX- /O2 /Ob2 /Oy- /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /D _MBCS /Gm- /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"lmdemo.dir\Release\\" /Fd"lmdemo.dir\Release\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt "C:\Users\huguel\Documents\00-Me\00-SVN\trunk\Etudes\Localisation_Magnetique_v5\XX_Dependances\levmar-2.6\lmdemo.c"
+         lmdemo.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\huguel\Documents\00-Me\00-SVN\trunk\Etudes\Localisation_Magnetique_v5\XX_Dependances\levmar-2.6_bin_vc11\Release\lmdemo.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:/Users/huguel/Documents/00-Me/00-SVN/trunk/Etudes/Localisation_Magnetique_v5/XX_Dependances/levmar-2.6_bin_vc11" /LIBPATH:"C:/Users/huguel/Documents/00-Me/00-SVN/trunk/Etudes/Localisation_Magnetique_v5/XX_Dependances/levmar-2.6_bin_vc11/Release" /LIBPATH:/usr/lib /LIBPATH:/usr/lib/Release kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib Release\levmar.lib lapack.lib blas.lib f2c.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/huguel/Documents/00-Me/00-SVN/trunk/Etudes/Localisation_Magnetique_v5/XX_Dependances/levmar-2.6_bin_vc11/Release/lmdemo.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/huguel/Documents/00-Me/00-SVN/trunk/Etudes/Localisation_Magnetique_v5/XX_Dependances/levmar-2.6_bin_vc11/Release/lmdemo.lib" /MACHINE:X86 /SAFESEH  /machine:X86 lmdemo.dir\Release\lmdemo.obj
+     1>LINK : fatal error LNK1181: cannot open input file 'lapack.lib'
+     1>Done Building Project "C:\Users\huguel\Documents\00-Me\00-SVN\trunk\Etudes\Localisation_Magnetique_v5\XX_Dependances\levmar-2.6_bin_vc11\lmdemo.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.37

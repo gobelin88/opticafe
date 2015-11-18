@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\lm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\Axb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\lmlec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\lmbc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\lmblec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\lmbleic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\levmar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\misc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\huguel\Documents\sync\Encours\Localisation Magnetique\XXXX_Dependances\levmar-2.6\compiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\levmar-2.6\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A2E4C755-60D9-4E95-879A-237F67716780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6E889508-6E57-48C7-8692-0AC23E17344F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>
