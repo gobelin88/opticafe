@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->action_levmar,SIGNAL(triggered()),this,SLOT(slot_run_script()));
+    connect(ui->actionMinimize,SIGNAL(triggered()),this,SLOT(slot_run_script()));
     connect(ui->actionSave,SIGNAL(triggered()),this,SLOT(slot_direct_save_script()));
     connect(ui->actionSaveUnder,SIGNAL(triggered()),this,SLOT(slot_save_script()));
     connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(slot_load_script()));
@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionQuit,SIGNAL(triggered(bool)),this,SLOT(close()));
 
     connect(ui->pb_calculate,SIGNAL(clicked()),this,SLOT(slot_2D_f()));
+    connect(ui->pbSaveImage,SIGNAL(clicked()),this,SLOT(slot_save_image()));
 
     textChanged=false;
     current_filename="./scripts/default.txt";
@@ -29,6 +30,34 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         ui->cb_scale_color_mode->addItem(ScaleColorMode_str[i]);
     }
+
+    algo_group=new QActionGroup(NULL);
+    QMenu * menu=new QMenu;
+    for(int i=0;i<NBSolveMode;i++)
+    {
+        QAction * new_action=new QAction(QString(SolveMode_str[i]),this);
+        new_action->setCheckable(true);
+        menu->addAction(new_action);
+        algo_group->addAction(new_action);
+    }
+    ui->actionAlgorithms->setMenu(menu);
+
+    QList<QAction*> list=algo_group->actions();
+    list[0]->setChecked(true);
+
+    labelImage=new QLabel();
+
+    ui->scrollArea->setWidget(labelImage);
+}
+
+SolveMode MainWindow::getAlgo()
+{
+    QList<QAction*> list=algo_group->actions();
+    for(int i=0;i<list.size();i++)
+    {
+        if(list[i]->isChecked())return (SolveMode)i;
+    }
+    return (SolveMode)0;
 }
 
 void MainWindow::slot_text_changed()
@@ -47,6 +76,7 @@ void MainWindow::slot_run_script()
 
     sys->show();
 
+    sys->setSolveMode(getAlgo());
     sys->solve();
     sys->eval();
     sys->plot();
@@ -114,6 +144,8 @@ void MainWindow::slot_2D_f()
     QString system_str=ui->te_script->toPlainText();
     System * sys=new System(&parser,system_str);
 
+    sys->setSolveMode(getAlgo());
+
     ui->progressBar->setRange(0,ui->sb_Width->value()-1);
     sys->setProgressBar(ui->progressBar);
 
@@ -127,10 +159,25 @@ void MainWindow::slot_2D_f()
                                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
 
-    ui->label->setPixmap(QPixmap::fromImage(img));
+    labelImage->setPixmap(QPixmap::fromImage(img));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::slot_save_image()
+{
+    QFileInfo info(current_filename);
+    QString where=info.path()+QString("/image_")+QString(QString(SolveMode_str[getAlgo()]));
+
+    QString filename=QFileDialog::getSaveFileName(this,"Save Script",where,"(*.png)");
+
+    if(!filename.isEmpty())
+    {
+        QImage image(labelImage->pixmap()->toImage());
+
+        image.save(filename);
+    }
 }

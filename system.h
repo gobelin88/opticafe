@@ -4,20 +4,20 @@
 #include <QStringList>
 #include <QFile>
 #include <iostream>
-#include <levmar.h>
-#include <plot/qcustomplot.h>
+#include <qcustomplot.h>
 #include <QTabWidget>
+#include "lmfunctor.h"
 
-#include "dialog_conv_space.h"
-
-typedef std::vector<double> vectord;
+#include <Eigen/Dense>
+#include <unsupported/Eigen/NonLinearOptimization>
+#include "newtonsolver.h"
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
 struct SystemData
 {
-   std::vector< vectord > x,y;
+   std::vector< VectorXd > x,y;
 };
 
 static float color_tab[40][3]={
@@ -89,8 +89,23 @@ enum ScaleColorMode
     MODE_PERIODIC
 };
 
-class System:public QTabWidget
+#define NBSolveMode 3
+static char * SolveMode_str[NBSolveMode]={
+    "LEVMAR",
+    "DOGLEG",
+    "NEWTON"
+};
+
+enum SolveMode
 {
+    MODE_LEVMAR,
+    MODE_DOGLEG,
+    MODE_NEWTON
+};
+
+class System:  public QTabWidget
+{
+    Q_OBJECT
 public:
     System(Parser * parser,int nb_p,int nb_x,int nb_y);
     System(Parser * parser,QString script);
@@ -99,15 +114,18 @@ public:
     void load_p_init(QString script);
     void load_data(QString filename);
     void solve();
+    void solve_Levmar();
+    void solve_Dogleg();
+    void solve_Newton();
 
     std::vector< std::vector<int> > solve_2D_p0p1(double p0_min, double p0_max,
                                                   double p1_min, double p1_max,
                                                   int width, int height, ColorMode mode);
 
-    vectord get_y(vectord p);
+    VectorXd get_y(VectorXd p);
 
     void eval();
-    vectord eval(vectord x,vectord p);
+    VectorXd eval(VectorXd x,VectorXd p);
 
 
 
@@ -122,27 +140,66 @@ public:
         this->progress_bar=bar;
     }
 
+    const SystemData & getSystemData(){return data;}
+    const SystemData & getSystemModel(){return model;}
+    VectorXd serialize(std::vector<VectorXd> v);
+
+    VectorXd p0,p_hat,cov_hat,cor_hat;
+
+    void setSolveMode(SolveMode mode){this->solve_mode=mode;}
+    SolveMode getSolveMode(){return solve_mode;}
+
 private:
-    static void levmar_func(double *p, double *hx, int m, int n, void *adata);
+    //static void levmar_func(double *p, double *hx, int m, int n, void *adata);
 
     int getNB(char c,QString script);
-    vectord serialize(std::vector<vectord> v);
-    QVector<double> extract(std::vector<vectord> v, int id);
+    QVector<double> extract(std::vector<VectorXd> v, int id);
     QByteArray getCharName(char var,int var_id);
 
     double getRMS(int id);
 
     int nb_p,nb_x,nb_y;
     std::vector<QByteArray> eq_list;
-    vectord p0,p_hat,cov_hat,cor_hat;
     Parser * ptr_parser;
 
     SystemData data,model;
+    VectorXd y_serialized;
     std::vector<QCustomPlot*> plots;
-    double info[LM_INFO_SZ];
 
-    unsigned int it;
+    unsigned int it,it_performed;
 
     QProgressBar * progress_bar;
+
+    SolveMode solve_mode;
 };
+
+class SystemFunctor:public LMFunctor<double>
+{
+public:
+    SystemFunctor(System * system_ptr){setSystem(system_ptr);}
+
+    inline void setSystem(System * system_ptr)
+    {
+        this->sys=system_ptr;
+        this->y_serialized=sys->serialize(sys->getSystemData().y);
+
+        m_values=y_serialized.rows();
+        m_inputs=sys->p0.rows();
+    }
+
+    int operator()(const Eigen::VectorXd &p, Eigen::VectorXd &fvec)const
+    {
+        sys->p_hat=p;
+
+        fvec=sys->get_y(p)-this->y_serialized;
+
+        return 0;
+    }
+
+private:
+    System * sys;
+    VectorXd y_serialized;
+};
+
+
 #endif

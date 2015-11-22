@@ -1,7 +1,7 @@
 ﻿#include "system.h"
 
 
-System::System(Parser * parser,int nb_p,int nb_x,int nb_y):QTabWidget()
+System::System(Parser * parser,int nb_p,int nb_x,int nb_y)
 {
     this->ptr_parser=parser;
     this->nb_p=nb_p;
@@ -11,6 +11,7 @@ System::System(Parser * parser,int nb_p,int nb_x,int nb_y):QTabWidget()
     p0.resize(nb_p);
 
     it=500;
+    it_performed=0;
     progress_bar=NULL;
 }
 
@@ -126,7 +127,7 @@ void System::load_data(QString filename)
 
             if(line.size()==nb_y+nb_x)
             {
-                vectord yp(nb_y),xp(nb_x);
+                VectorXd yp(nb_y),xp(nb_x);
                 for(int i=0;i<nb_x;i++)
                 {
                     xp[i]=line[i].toDouble();
@@ -168,12 +169,12 @@ std::vector< std::vector<int> > System::solve_2D_p0p1(double p0_min,double p0_ma
             p0[1]=(j*(p1_max-p1_min))/height+p1_min;
 
             it=100;
-            solve();
+            solve();       
 
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
 
             if(MODE_ARG==mode)map2D[i][j]=atan2(p_hat[0],p_hat[1]);
-            else if(MODE_IT==mode)map2D[i][j]=(int)info[5];
+            else if(MODE_IT==mode)map2D[i][j]=(int)it_performed;
         }
 
         progress_bar->setValue(i);
@@ -183,37 +184,103 @@ std::vector< std::vector<int> > System::solve_2D_p0p1(double p0_min,double p0_ma
     return map2D;
 }
 
+
 void System::solve()
 {
-    vectord y_vec=serialize(data.y);
-
-    cov_hat.resize(p0.size()*p0.size());
-
-    double opts[LM_OPTS_SZ]={0,LM_STOP_THRESH,LM_STOP_THRESH,LM_STOP_THRESH,-LM_DIFF_DELTA};
-
-    dlevmar_dif(levmar_func,p0.data(),y_vec.data(),p0.size(),y_vec.size(),it,opts,info,NULL,cov_hat.data(),this);
-
-    cor_hat.resize(cov_hat.size());
-    for(unsigned int i=0;i<p0.size();i++)
+    if(solve_mode==MODE_LEVMAR)solve_Levmar();
+    else if(solve_mode==MODE_DOGLEG)solve_Dogleg();
+    else if(solve_mode==MODE_NEWTON)solve_Newton();
+    else
     {
-        for(unsigned int j=0;j<p0.size();j++)
+        solve_Levmar();
+    }
+}
+
+void System::solve_Levmar()
+{
+    cov_hat.resize(p0.rows()*p0.rows());
+
+    y_serialized=serialize(data.y);
+
+    SystemFunctor functor(this);
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
+    Eigen::LevenbergMarquardt< Eigen::NumericalDiff<SystemFunctor>> lm(numdiff);
+    lm.parameters.maxfev=100;
+    lm.parameters.factor=1e6;
+    lm.minimize(p0);
+    it_performed=lm.iter;
+
+    cor_hat.resize(cov_hat.rows());
+    for(unsigned int i=0;i<p0.rows();i++)
+    {
+        for(unsigned int j=0;j<p0.rows();j++)
         {
-            cor_hat[i*p0.size()+j]=std::abs(cov_hat[i*p0.size()+j]/sqrt(std::abs(cov_hat[i*p0.size()+i]*cov_hat[j*p0.size()+j])));
+            cor_hat[i*p0.rows()+j]=std::abs(cov_hat[i*p0.rows()+j]/sqrt(std::abs(cov_hat[i*p0.rows()+i]*cov_hat[j*p0.rows()+j])));
         }
     }
 }
 
-vectord System::get_y(vectord p)
+void System::solve_Dogleg()
 {
-    vectord err(data.y.size()*nb_y,0.0);
+    cov_hat.resize(p0.rows()*p0.rows());
+
+    y_serialized=serialize(data.y);
+
+    SystemFunctor functor(this);
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
+    Eigen::HybridNonLinearSolver< Eigen::NumericalDiff<SystemFunctor>> lm(numdiff);
+    lm.parameters.maxfev=100;
+    lm.parameters.factor=1e6;
+    lm.hybrd1(p0);
+    it_performed=lm.iter;
+
+    cor_hat.resize(cov_hat.rows());
+    for(unsigned int i=0;i<p0.rows();i++)
+    {
+        for(unsigned int j=0;j<p0.rows();j++)
+        {
+            cor_hat[i*p0.rows()+j]=std::abs(cov_hat[i*p0.rows()+j]/sqrt(std::abs(cov_hat[i*p0.rows()+i]*cov_hat[j*p0.rows()+j])));
+        }
+    }
+}
+
+void System::solve_Newton()
+{
+    cov_hat.resize(p0.rows()*p0.rows());
+
+    y_serialized=serialize(data.y);
+
+    SystemFunctor functor(this);
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
+    NewtonSolver< Eigen::NumericalDiff<SystemFunctor>> solver(numdiff);
+
+    solver.parameters.maxfev=100;
+    solver.minimize(p0);
+    it_performed=solver.iter;
+
+    cor_hat.resize(cov_hat.rows());
+    for(unsigned int i=0;i<p0.rows();i++)
+    {
+        for(unsigned int j=0;j<p0.rows();j++)
+        {
+            cor_hat[i*p0.rows()+j]=std::abs(cov_hat[i*p0.rows()+j]/sqrt(std::abs(cov_hat[i*p0.rows()+i]*cov_hat[j*p0.rows()+j])));
+        }
+    }
+}
+
+
+VectorXd System::get_y(VectorXd p)
+{
+    VectorXd err(data.y.size()*nb_y);
+    err.setZero();
 
     for(unsigned int i=0;i<data.x.size();i++)
     {
-        vectord yi=eval(data.x[i],p);
+        VectorXd yi=eval(data.x[i],p);
 
-        for(unsigned int j=0;j<yi.size();j++)
+        for(unsigned int j=0;j<yi.rows();j++)
         {
-            err[i*yi.size()+j]=yi[j];
+            err[i*yi.rows()+j]=yi[j];
         }
     }
 
@@ -227,18 +294,19 @@ void System::eval()
 
     for(unsigned int i=0;i<data.x.size();i++)
     {
-        vectord yi=eval(data.x[i],p_hat);
+        VectorXd yi=eval(data.x[i],p_hat);
 
         model.x.push_back(data.x[i]);
         model.y.push_back(yi);
     }
 }
 
-vectord System::eval(vectord x,vectord p)
+VectorXd System::eval(VectorXd x,VectorXd p)
 {
-    vectord y(nb_y,0);
+    VectorXd y(nb_y);
+    y.setZero();
 
-    if(x.size()==nb_x && p.size()==nb_p)
+    if(x.rows()==nb_x && p.rows()==nb_p)
     {
 
         ptr_parser->getVarList().clear();
@@ -267,25 +335,25 @@ vectord System::eval(vectord x,vectord p)
     return y;
 }
 
-void System::levmar_func(double *p, double *hx, int m, int n, void *adata)
+/*void System::levmar_func(double *p, double *hx, int m, int n, void *adata)
 {
     System * sys=(System*)adata;
 
-    sys->p_hat=vectord(p,p+sys->nb_p);
+    sys->p_hat=VectorXd(p,p+sys->nb_p);
 
-    vectord y_vec=sys->get_y(sys->p_hat);
+    VectorXd y_vec=sys->get_y(sys->p_hat);
 
     memcpy(hx,y_vec.data(),y_vec.size()*sizeof(double));
-}
+}*/
 
-vectord System::serialize(std::vector<vectord> v)
+VectorXd System::serialize(std::vector<VectorXd> v)
 {
-    vectord v_serilized(v[0].size()*v.size());
+    VectorXd v_serilized(v[0].rows()*v.size());
     for(unsigned int i=0;i<v.size();i++)
     {
-        for(unsigned int j=0;j<v[0].size();j++)
+        for(unsigned int j=0;j<v[0].rows();j++)
         {
-            v_serilized[i*v[0].size()+j]=v[i][j];
+            v_serilized[i*v[0].rows()+j]=v[i][j];
         }
     }
     return v_serilized;
@@ -308,7 +376,7 @@ void System::clearPlots()
     plots.clear();
 }
 
-QVector<double> System::extract(std::vector<vectord> v,int id)
+QVector<double> System::extract(std::vector<VectorXd> v,int id)
 {
     QVector<double> v_out(v.size());
     for(int i=0;i<v.size();i++)
@@ -368,36 +436,33 @@ void System::plot()
 
     QTextEdit * widget_results=new QTextEdit(this);
     QString p_str,cov_str,cor_str,levmar_str;
-    for(int i=0;i<p_hat.size();i++)
+    for(int i=0;i<p_hat.rows();i++)
     {
         p_str+=QString("p[%1]=%2\n").arg(i).arg(p_hat[i]);
     }
 
     cov_str=QString("Cov(p,p)=\n");
-    for(int i=0;i<p_hat.size();i++)
+    for(int i=0;i<p_hat.rows();i++)
     {
-        for(int j=0;j<p_hat.size();j++)
+        for(int j=0;j<p_hat.rows();j++)
         {
-            cov_str+=QString("%1  ").arg(cov_hat[i*p_hat.size()+j],8,'f',3,' ');
+            cov_str+=QString("%1  ").arg(cov_hat[i*p_hat.rows()+j],8,'f',3,' ');
         }
         cov_str+=QString("\n");
     }
 
     cor_str=QString("Cor(p,p)=\n");
-    for(int i=0;i<p_hat.size();i++)
+    for(int i=0;i<p_hat.rows();i++)
     {
-        for(int j=0;j<p_hat.size();j++)
+        for(int j=0;j<p_hat.rows();j++)
         {
-            cor_str+=QString("%1  ").arg(cor_hat[i*p_hat.size()+j],8,'f',3,' ');
+            cor_str+=QString("%1  ").arg(cor_hat[i*p_hat.rows()+j],8,'f',3,' ');
         }
         cor_str+=QString("\n");
     }
 
     levmar_str=QString("Levenberg-Marquardt=\n");
-    levmar_str+=QString("   -->||e||_2 at initial p= %1\n").arg(info[0]);
-    levmar_str+=QString("   -->||e||_2= %1\n").arg(info[1]);
-    levmar_str+=QString("   -->iterations= %1\n").arg(info[5]);
-    levmar_str+=QString("   -->reason for terminating= %1\n").arg(info[6]);
+    levmar_str+=QString("   -->iterations= %1\n").arg(it_performed);
 
     levmar_str+=QString("1 - stopped by small gradient J^T e\n");
     levmar_str+=QString("2 - stopped by small Dp\n");

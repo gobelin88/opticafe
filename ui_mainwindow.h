@@ -18,12 +18,12 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
@@ -44,6 +44,8 @@ public:
     QAction *action2D_f_x0_x1;
     QAction *action3D_f_x0_x1_x2;
     QAction *actionQuit;
+    QAction *actionMinimize;
+    QAction *actionAlgorithms;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QTabWidget *tabSystem;
@@ -72,10 +74,12 @@ public:
     QSpacerItem *verticalSpacer;
     QWidget *tab_5;
     QVBoxLayout *verticalLayout_5;
-    QLabel *label;
+    QVBoxLayout *verticalLayout_6;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
+    QPushButton *pbSaveImage;
     QMenuBar *menuBar;
     QMenu *menuOpen;
-    QMenu *menuMinimize;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -97,6 +101,10 @@ public:
         action3D_f_x0_x1_x2->setObjectName(QStringLiteral("action3D_f_x0_x1_x2"));
         actionQuit = new QAction(MainWindow);
         actionQuit->setObjectName(QStringLiteral("actionQuit"));
+        actionMinimize = new QAction(MainWindow);
+        actionMinimize->setObjectName(QStringLiteral("actionMinimize"));
+        actionAlgorithms = new QAction(MainWindow);
+        actionAlgorithms->setObjectName(QStringLiteral("actionAlgorithms"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -194,14 +202,14 @@ public:
 
         sb_Height = new QSpinBox(tab_3);
         sb_Height->setObjectName(QStringLiteral("sb_Height"));
-        sb_Height->setMaximum(1024);
+        sb_Height->setMaximum(4096);
         sb_Height->setValue(512);
 
         gridLayout->addWidget(sb_Height, 1, 2, 1, 1);
 
         sb_Width = new QSpinBox(tab_3);
         sb_Width->setObjectName(QStringLiteral("sb_Width"));
-        sb_Width->setMaximum(1024);
+        sb_Width->setMaximum(4096);
         sb_Width->setValue(512);
 
         gridLayout->addWidget(sb_Width, 0, 2, 1, 1);
@@ -236,10 +244,26 @@ public:
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        label = new QLabel(tab_5);
-        label->setObjectName(QStringLiteral("label"));
+        verticalLayout_6 = new QVBoxLayout();
+        verticalLayout_6->setSpacing(6);
+        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
+        scrollArea = new QScrollArea(tab_5);
+        scrollArea->setObjectName(QStringLiteral("scrollArea"));
+        scrollArea->setWidgetResizable(true);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 344, 308));
+        scrollArea->setWidget(scrollAreaWidgetContents);
 
-        verticalLayout_5->addWidget(label);
+        verticalLayout_6->addWidget(scrollArea);
+
+        pbSaveImage = new QPushButton(tab_5);
+        pbSaveImage->setObjectName(QStringLiteral("pbSaveImage"));
+
+        verticalLayout_6->addWidget(pbSaveImage);
+
+
+        verticalLayout_5->addLayout(verticalLayout_6);
 
         tabSetting->addTab(tab_5, QString());
 
@@ -255,8 +279,6 @@ public:
         menuBar->setGeometry(QRect(0, 0, 434, 21));
         menuOpen = new QMenu(menuBar);
         menuOpen->setObjectName(QStringLiteral("menuOpen"));
-        menuMinimize = new QMenu(menuOpen);
-        menuMinimize->setObjectName(QStringLiteral("menuMinimize"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -267,10 +289,10 @@ public:
         menuOpen->addAction(actionSave);
         menuOpen->addAction(actionSaveUnder);
         menuOpen->addSeparator();
-        menuOpen->addAction(menuMinimize->menuAction());
+        menuOpen->addAction(actionAlgorithms);
+        menuOpen->addAction(actionMinimize);
         menuOpen->addSeparator();
         menuOpen->addAction(actionQuit);
-        menuMinimize->addAction(action_levmar);
 
         retranslateUi(MainWindow);
 
@@ -296,6 +318,8 @@ public:
         action3D_f_x0_x1_x2->setText(QApplication::translate("MainWindow", "3D f(x0,x1,x2)", 0));
         actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0));
         actionQuit->setShortcut(QApplication::translate("MainWindow", "Ctrl+W", 0));
+        actionMinimize->setText(QApplication::translate("MainWindow", "Minimize", 0));
+        actionAlgorithms->setText(QApplication::translate("MainWindow", "Algorithms", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab), QApplication::translate("MainWindow", "System", 0));
         sb_p1_max->setPrefix(QApplication::translate("MainWindow", "p1_max=", 0));
         sb_p0_min->setPrefix(QApplication::translate("MainWindow", "p0_min=", 0));
@@ -305,11 +329,10 @@ public:
         pb_save_conv_setting->setText(QApplication::translate("MainWindow", "Save", 0));
         pb_load_conv_setting->setText(QApplication::translate("MainWindow", "Load", 0));
         tabSetting->setTabText(tabSetting->indexOf(tab_3), QApplication::translate("MainWindow", "Settings", 0));
-        label->setText(QString());
+        pbSaveImage->setText(QApplication::translate("MainWindow", "Save Image", 0));
         tabSetting->setTabText(tabSetting->indexOf(tab_5), QApplication::translate("MainWindow", "2D", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab_2), QApplication::translate("MainWindow", "Convergence Analysis", 0));
         menuOpen->setTitle(QApplication::translate("MainWindow", "Menu", 0));
-        menuMinimize->setTitle(QApplication::translate("MainWindow", "Minimize", 0));
     } // retranslateUi
 
 };

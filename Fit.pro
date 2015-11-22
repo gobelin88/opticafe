@@ -12,20 +12,19 @@ TARGET = Fit
 TEMPLATE = app
 CONFIG += c++11
 
-INCLUDEPATH += ./levmar
-LIBS += .\lapack\lib\VC11\blas.lib
-LIBS += .\lapack\lib\VC11\f2c.lib
-LIBS += .\lapack\lib\VC11\lapack.lib
-LIBS += .\levmar\levmar-2.6_bin_vc11\Release\levmar.lib
+INCLUDEPATH += C:\Users\gobelin\Documents\GitHub\dependences\eigen311
+
 
 SOURCES += main.cpp\
         mainwindow.cpp\
         system.cpp\
         parser\parser.cpp \
-            parser\error.cpp \
-            parser\functions.cpp \
-            parser\variablelist.cpp \
-            plot\qcustomplot.cpp
+        parser\error.cpp \
+        parser\functions.cpp \
+        parser\variablelist.cpp \
+        qcustomplot.cpp \
+    newtonsolver.cpp
+
 
 HEADERS  += mainwindow.h \
             system.h\
@@ -34,5 +33,8 @@ HEADERS  += mainwindow.h \
             parser\error.h \
             parser\functions.h \
             parser\variablelist.h \
-            plot\qcustomplot.h
+            lmfunctor.h \
+            qcustomplot.h \
+    newtonsolver.h
+
 FORMS    += mainwindow.ui
