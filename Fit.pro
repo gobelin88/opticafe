@@ -12,7 +12,7 @@ TARGET = Fit
 TEMPLATE = app
 CONFIG += c++11
 
-INCLUDEPATH += C:\Users\gobelin\Documents\GitHub\dependences\eigen311
+INCLUDEPATH += .\eigen327
 
 
 SOURCES += main.cpp\

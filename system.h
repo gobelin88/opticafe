@@ -91,9 +91,9 @@ enum ScaleColorMode
 
 #define NBSolveMode 3
 static char * SolveMode_str[NBSolveMode]={
-    "LEVMAR",
-    "DOGLEG",
-    "NEWTON"
+    "Levenberg-Marquardt",
+    "Dogleg",
+    "Gauss-Newton"
 };
 
 enum SolveMode

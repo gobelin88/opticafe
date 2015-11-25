@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.2
+** Created by: Qt User Interface Compiler version 5.4.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -78,6 +78,9 @@ public:
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QPushButton *pbSaveImage;
+    QWidget *tab_4;
+    QVBoxLayout *verticalLayout_7;
+    QTabWidget *tabParameters;
     QMenuBar *menuBar;
     QMenu *menuOpen;
     QStatusBar *statusBar;
@@ -252,7 +255,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 344, 308));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 98, 28));
         scrollArea->setWidget(scrollAreaWidgetContents);
 
         verticalLayout_6->addWidget(scrollArea);
@@ -270,6 +273,18 @@ public:
         verticalLayout_3->addWidget(tabSetting);
 
         tabSystem->addTab(tab_2, QString());
+        tab_4 = new QWidget();
+        tab_4->setObjectName(QStringLiteral("tab_4"));
+        verticalLayout_7 = new QVBoxLayout(tab_4);
+        verticalLayout_7->setSpacing(6);
+        verticalLayout_7->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
+        tabParameters = new QTabWidget(tab_4);
+        tabParameters->setObjectName(QStringLiteral("tabParameters"));
+
+        verticalLayout_7->addWidget(tabParameters);
+
+        tabSystem->addTab(tab_4, QString());
 
         verticalLayout->addWidget(tabSystem);
 
@@ -296,8 +311,9 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabSystem->setCurrentIndex(1);
+        tabSystem->setCurrentIndex(2);
         tabSetting->setCurrentIndex(0);
+        tabParameters->setCurrentIndex(-1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -332,6 +348,7 @@ public:
         pbSaveImage->setText(QApplication::translate("MainWindow", "Save Image", 0));
         tabSetting->setTabText(tabSetting->indexOf(tab_5), QApplication::translate("MainWindow", "2D", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab_2), QApplication::translate("MainWindow", "Convergence Analysis", 0));
+        tabSystem->setTabText(tabSystem->indexOf(tab_4), QApplication::translate("MainWindow", "Parameters", 0));
         menuOpen->setTitle(QApplication::translate("MainWindow", "Menu", 0));
     } // retranslateUi
 

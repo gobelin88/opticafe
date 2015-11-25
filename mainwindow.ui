@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabSystem">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -218,8 +218,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>344</width>
-                   <height>308</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                 </widget>
@@ -236,6 +236,20 @@
             </item>
            </layout>
           </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Parameters</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="QTabWidget" name="tabParameters">
+          <property name="currentIndex">
+           <number>-1</number>
+          </property>
          </widget>
         </item>
        </layout>

@@ -252,9 +252,9 @@ void System::solve_Newton()
 
     SystemFunctor functor(this);
     Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
-    NewtonSolver< Eigen::NumericalDiff<SystemFunctor>> solver(numdiff);
+    NewtonSolver< Eigen::NumericalDiff<SystemFunctor> > solver(numdiff);
 
-    solver.parameters.maxfev=100;
+    solver.parameters.maxfev=300;
     solver.minimize(p0);
     it_performed=solver.iter;
 

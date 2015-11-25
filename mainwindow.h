@@ -36,6 +36,9 @@ public slots:
 
     void slot_2D_f();
 
+    void slot_load_conv_seting();
+    void slot_save_conv_seting();
+
 private:
     SolveMode getAlgo();
     Ui::MainWindow *ui;

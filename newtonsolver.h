@@ -17,11 +17,11 @@ public:
 
     struct Parameters {
         Parameters()
-            : factor(100.0)
-            , maxfev(400)
-            , ftol(Eigen::internal::sqrt(Eigen::NumTraits<double>::epsilon()))
-            , ptol(Eigen::internal::sqrt(Eigen::NumTraits<double>::epsilon()))
-            , gtol(0.0)
+            : factor(1.0)
+            , maxfev(100)
+            , ftol(std::sqrt(Eigen::NumTraits<double>::epsilon()))
+            , ptol(std::sqrt(Eigen::NumTraits<double>::epsilon()))
+            , gtol(1e-10)
             , epsfcn(0.0) {}
         double factor;
         unsigned int maxfev;   // maximum number of function evaluation
@@ -47,13 +47,15 @@ public:
     {
         functor.df(p,J);
         functor(p, fvec);
-        //dp=J.colPivHouseholderQr().solve(-fvec);
-        dp=-J.inverse()*fvec;
+        //dp=-J.inverse()*fvec;//1
+        dp=parameters.factor*J.colPivHouseholderQr().solve(-fvec);//2
+        //MatrixXd jjt=(J.transpose()*J).inverse();dp=-jjt*J.transpose()*fvec;//3
+
         iter+=1;
 
         p+=dp;
 
-        return( (dp.norm()<1e-3) );
+        return( (dp.norm()<parameters.gtol) || (iter>parameters.maxfev) || (fvec.norm()<parameters.epsfcn) );
     }
 
     void minimizeInit(VectorXd  &p)

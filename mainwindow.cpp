@@ -17,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pb_calculate,SIGNAL(clicked()),this,SLOT(slot_2D_f()));
     connect(ui->pbSaveImage,SIGNAL(clicked()),this,SLOT(slot_save_image()));
 
+    connect(ui->pb_save_conv_setting,SIGNAL(clicked()),this,SLOT(slot_save_conv_seting()));
+    connect(ui->pb_load_conv_setting,SIGNAL(clicked()),this,SLOT(slot_load_conv_seting()));
+
     textChanged=false;
     current_filename="./scripts/default.txt";
 
@@ -39,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
         new_action->setCheckable(true);
         menu->addAction(new_action);
         algo_group->addAction(new_action);
+
+        ui->tabParameters->addTab(new QWidget(),QString(SolveMode_str[i]));
     }
     ui->actionAlgorithms->setMenu(menu);
 
@@ -48,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
     labelImage=new QLabel();
 
     ui->scrollArea->setWidget(labelImage);
+
+
 }
 
 SolveMode MainWindow::getAlgo()
@@ -179,5 +186,25 @@ void MainWindow::slot_save_image()
         QImage image(labelImage->pixmap()->toImage());
 
         image.save(filename);
+    }
+}
+
+void MainWindow::slot_load_conv_seting()
+{
+    QString filename=QFileDialog::getSaveFileName(this,"Save Convergence Setting","","(*.txt)");
+
+    if(!filename.isEmpty())
+    {
+
+    }
+}
+
+void MainWindow::slot_save_conv_seting()
+{
+    QString filename=QFileDialog::getOpenFileName(this,"Open Convergence Setting","","(*.txt)");
+
+    if(!filename.isEmpty())
+    {
+
     }
 }
