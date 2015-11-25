@@ -38,6 +38,7 @@ public:
         bool stop_crit=false;
         do
         {
+
             stop_crit = minimizeOneStep(p);
         }
         while (!stop_crit);
@@ -45,6 +46,7 @@ public:
 
     bool minimizeOneStep(VectorXd & p)
     {
+        p_list.push_back(p);
         functor.df(p,J);
         functor(p, fvec);
         //dp=-J.inverse()*fvec;//1
@@ -54,12 +56,12 @@ public:
         iter+=1;
 
         p+=dp;
-
         return( (dp.norm()<parameters.gtol) || (iter>parameters.maxfev) || (fvec.norm()<parameters.epsfcn) );
     }
 
     void minimizeInit(VectorXd  &p)
     {
+        p_list.clear();
         iter=0;
         J.resize(functor.values(),functor.inputs());
         fvec.resize(functor.values());
@@ -78,6 +80,8 @@ private:
     MatrixXd J;
     VectorXd dp;
     VectorXd fvec;   
+
+    std::vector<VectorXd> p_list;
 };
 
 #endif // NEWTONSOLVER_H
