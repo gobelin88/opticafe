@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[11];
-    char stringdata[174];
+    QByteArrayData data[14];
+    char stringdata[187];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,16 +37,19 @@ QT_MOC_LITERAL(4, 45, 16), // "slot_save_script"
 QT_MOC_LITERAL(5, 62, 23), // "slot_direct_save_script"
 QT_MOC_LITERAL(6, 86, 17), // "slot_text_changed"
 QT_MOC_LITERAL(7, 104, 15), // "slot_save_image"
-QT_MOC_LITERAL(8, 120, 9), // "slot_2D_f"
-QT_MOC_LITERAL(9, 130, 21), // "slot_load_conv_seting"
-QT_MOC_LITERAL(10, 152, 21) // "slot_save_conv_seting"
+QT_MOC_LITERAL(8, 120, 4), // "pick"
+QT_MOC_LITERAL(9, 125, 2), // "p0"
+QT_MOC_LITERAL(10, 128, 2), // "p1"
+QT_MOC_LITERAL(11, 131, 9), // "slot_2D_f"
+QT_MOC_LITERAL(12, 141, 22), // "slot_load_conv_setting"
+QT_MOC_LITERAL(13, 164, 22) // "slot_save_conv_setting"
 
     },
     "MainWindow\0slot_run_script\0\0"
     "slot_load_script\0slot_save_script\0"
     "slot_direct_save_script\0slot_text_changed\0"
-    "slot_save_image\0slot_2D_f\0"
-    "slot_load_conv_seting\0slot_save_conv_seting"
+    "slot_save_image\0pick\0p0\0p1\0slot_2D_f\0"
+    "slot_load_conv_setting\0slot_save_conv_setting"
 };
 #undef QT_MOC_LITERAL
 
@@ -56,7 +59,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -64,15 +67,16 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   59,    2, 0x0a /* Public */,
-       3,    0,   60,    2, 0x0a /* Public */,
-       4,    0,   61,    2, 0x0a /* Public */,
-       5,    0,   62,    2, 0x0a /* Public */,
-       6,    0,   63,    2, 0x0a /* Public */,
-       7,    0,   64,    2, 0x0a /* Public */,
-       8,    0,   65,    2, 0x0a /* Public */,
-       9,    0,   66,    2, 0x0a /* Public */,
-      10,    0,   67,    2, 0x0a /* Public */,
+       1,    0,   64,    2, 0x0a /* Public */,
+       3,    0,   65,    2, 0x0a /* Public */,
+       4,    0,   66,    2, 0x0a /* Public */,
+       5,    0,   67,    2, 0x0a /* Public */,
+       6,    0,   68,    2, 0x0a /* Public */,
+       7,    0,   69,    2, 0x0a /* Public */,
+       8,    2,   70,    2, 0x0a /* Public */,
+      11,    0,   75,    2, 0x0a /* Public */,
+      12,    0,   76,    2, 0x0a /* Public */,
+      13,    0,   77,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -81,6 +85,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Double, QMetaType::Double,    9,   10,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -99,13 +104,13 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->slot_direct_save_script(); break;
         case 4: _t->slot_text_changed(); break;
         case 5: _t->slot_save_image(); break;
-        case 6: _t->slot_2D_f(); break;
-        case 7: _t->slot_load_conv_seting(); break;
-        case 8: _t->slot_save_conv_seting(); break;
+        case 6: _t->pick((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 7: _t->slot_2D_f(); break;
+        case 8: _t->slot_load_conv_setting(); break;
+        case 9: _t->slot_save_conv_setting(); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObject MainWindow::staticMetaObject = {
@@ -133,13 +138,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 10)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }

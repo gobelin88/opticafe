@@ -23,7 +23,7 @@ SOURCES += main.cpp\
         parser\functions.cpp \
         parser\variablelist.cpp \
         qcustomplot.cpp \
-    newtonsolver.cpp
+    image_viewer.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -35,6 +35,9 @@ HEADERS  += mainwindow.h \
             parser\variablelist.h \
             lmfunctor.h \
             qcustomplot.h \
-    newtonsolver.h
+    newtonsolver.h \
+    parameters.h \
+    image_viewer.h \
+    box.h
 
 FORMS    += mainwindow.ui

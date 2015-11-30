@@ -12,7 +12,8 @@
 #include <iostream>
 #include "parser/parser.h"
 #include "system.h"
-
+#include "parameters.h"
+#include "image_viewer.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,11 +34,11 @@ public slots:
     void slot_direct_save_script();
     void slot_text_changed();
     void slot_save_image();
-
+    void pick(double p0,double p1);
     void slot_2D_f();
 
-    void slot_load_conv_seting();
-    void slot_save_conv_seting();
+    void slot_load_conv_setting();
+    void slot_save_conv_setting();
 
 private:
     SolveMode getAlgo();
@@ -49,7 +50,9 @@ private:
 
     QActionGroup * algo_group;
 
-    QLabel * labelImage;
+    ImageViewer * viewerImage;
+
+    System * sys;
 };
 
 #endif // MAINWINDOW_H

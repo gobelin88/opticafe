@@ -1,4 +1,6 @@
-﻿#include <Eigen/Dense>
+﻿#include <vector>
+
+#include <Eigen/Dense>
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
@@ -38,7 +40,6 @@ public:
         bool stop_crit=false;
         do
         {
-
             stop_crit = minimizeOneStep(p);
         }
         while (!stop_crit);
@@ -47,23 +48,23 @@ public:
     bool minimizeOneStep(VectorXd & p)
     {
         p_list.push_back(p);
-        functor.df(p,J);
+        functor.df(p,fjac);
         functor(p, fvec);
         //dp=-J.inverse()*fvec;//1
-        dp=parameters.factor*J.colPivHouseholderQr().solve(-fvec);//2
+        dp=parameters.factor*fjac.colPivHouseholderQr().solve(-fvec);//2
         //MatrixXd jjt=(J.transpose()*J).inverse();dp=-jjt*J.transpose()*fvec;//3
 
         iter+=1;
 
         p+=dp;
-        return( (dp.norm()<parameters.gtol) || (iter>parameters.maxfev) || (fvec.norm()<parameters.epsfcn) );
+        return( (dp.norm()<parameters.gtol) || (iter>parameters.maxfev) || (fvec.norm()<parameters.ftol) );
     }
 
     void minimizeInit(VectorXd  &p)
     {
         p_list.clear();
         iter=0;
-        J.resize(functor.values(),functor.inputs());
+        fjac.resize(functor.values(),functor.inputs());
         fvec.resize(functor.values());
     }
 
@@ -72,16 +73,18 @@ public:
     unsigned int njev;
     unsigned int iter;
     double fnorm, gnorm;
+    MatrixXd fjac;
+
+    std::vector<VectorXd> p_list;
 
 private:
 
     FunctorType & functor;
 
-    MatrixXd J;
     VectorXd dp;
-    VectorXd fvec;   
+    VectorXd fvec;
 
-    std::vector<VectorXd> p_list;
+
 };
 
 #endif // NEWTONSOLVER_H

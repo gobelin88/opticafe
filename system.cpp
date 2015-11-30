@@ -1,26 +1,34 @@
 ﻿#include "system.h"
 
+void System::init(Parser * parser)
+{
+    this->ptr_parser=parser;
+    eq_list.clear();
+    progress_bar=NULL;
+    progress_bar=NULL;
+    results.reset();
+}
+
+System::System(Parser * parser)
+{
+    init(parser);
+}
 
 System::System(Parser * parser,int nb_p,int nb_x,int nb_y)
 {
-    this->ptr_parser=parser;
+    init(parser);
+
     this->nb_p=nb_p;
     this->nb_x=nb_x;
     this->nb_y=nb_y;
     eq_list.resize(nb_y);
     p0.resize(nb_p);
-
-    it=500;
-    it_performed=0;
-    progress_bar=NULL;
 }
 
 System::System(Parser * parser,QString script)
 {
-    this->ptr_parser=parser;
-    eq_list.clear();
+    init(parser);
     load_system(script);
-    progress_bar=NULL;
 }
 
 int System::getNB(char c,QString script)
@@ -36,7 +44,7 @@ int System::getNB(char c,QString script)
     return cpt;
 }
 
-void System::load_system(QString script)
+bool System::load_system(QString script)
 {
     eq_list.clear();
 
@@ -51,9 +59,9 @@ void System::load_system(QString script)
     for(int i=0;i<nb_p;i++){ptr_parser->getVarList().add(getCharName('p',i),0.0);}
     for(int i=0;i<nb_x;i++){ptr_parser->getVarList().add(getCharName('x',i),0.0);}
 
-    std::cout<<"nb_x="<<nb_x<<std::endl;
-    std::cout<<"nb_y="<<nb_y<<std::endl;
-    std::cout<<"nb_p="<<nb_p<<std::endl;
+//    std::cout<<"nb_x="<<nb_x<<std::endl;
+//    std::cout<<"nb_y="<<nb_y<<std::endl;
+//    std::cout<<"nb_p="<<nb_p<<std::endl;
 
     QStringList lines=script.split('\n',QString::SkipEmptyParts);
 
@@ -84,15 +92,17 @@ void System::load_system(QString script)
             }
             else
             {
-                std::cout<<"Erreur : Equation incohérente"<<std::endl;
+                QMessageBox::critical(this,"Syntax Error",QString("Line %1").arg(i));
+                return false;
             }
         }
     }
     else
     {
-        std::cout<<"Erreur : Le nombre d'équations est incohérent avec le nombre de sorties"<<std::endl;
+        QMessageBox::critical(this,"Structure Error",QString("The number of equation does'nt match the number of outputs"));
+        return false;
     }
-
+    return true;
 }
 
 void System::load_p_init(QString script)
@@ -115,6 +125,9 @@ void System::load_p_init(QString script)
 
 void System::load_data(QString filename)
 {
+    data.x.clear();
+    data.y.clear();
+
     QFile file(filename);
 
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -155,26 +168,33 @@ void System::load_data(QString filename)
     }
 }
 
-std::vector< std::vector<int> > System::solve_2D_p0p1(double p0_min,double p0_max,
-                                                      double p1_min,double p1_max,
-                                                      int width,int height,ColorMode mode)
+void System::set_p_init(double _p0,double _p1)
 {
-    std::vector<std::vector<int>> map2D(width,std::vector<int>(height,0.0));
+    p0[0]=_p0;
+    p0[1]=_p1;
+}
 
-    for(int i=0;i<width;i++)
+void System::set_p_init(VectorXd p_init)
+{
+    p0=p_init;
+}
+
+std::vector< std::vector<int> > System::solve_2D_p0p1(Box box, ColorMode mode)
+{
+    std::vector<std::vector<int>> map2D(box.p0_res,std::vector<int>(box.p1_res,0.0));
+
+    for(int i=0;i<box.p0_res;i++)
     {
-        for(int j=0;j<height;j++)
+        for(int j=0;j<box.p1_res;j++)
         {
-            p0[0]=(i*(p0_max-p0_min))/width+p0_min;
-            p0[1]=(j*(p1_max-p1_min))/height+p1_min;
+            p0[0]=box.getP0(i);
+            p0[1]=box.getP1(j);
 
-            it=100;
             solve();       
 
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
-
-            if(MODE_ARG==mode)map2D[i][j]=atan2(p_hat[0],p_hat[1]);
-            else if(MODE_IT==mode)map2D[i][j]=(int)it_performed;
+            if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1])*1000;
+            else if(MODE_IT==mode)map2D[i][j]=(int)results.it_performed;
         }
 
         progress_bar->setValue(i);
@@ -187,87 +207,82 @@ std::vector< std::vector<int> > System::solve_2D_p0p1(double p0_min,double p0_ma
 
 void System::solve()
 {
+    results.reset();
+
+    QElapsedTimer timer;
+    timer.start();
+
     if(solve_mode==MODE_LEVMAR)solve_Levmar();
     else if(solve_mode==MODE_DOGLEG)solve_Dogleg();
-    else if(solve_mode==MODE_NEWTON)solve_Newton();
+    else if(solve_mode==MODE_GAUSS_NEWTON)solve_Gauss_Newton();
     else
     {
         solve_Levmar();
     }
+
+    results.time_elapsed=timer.elapsed();
+    results.computeCor();
 }
 
 void System::solve_Levmar()
 {
-    cov_hat.resize(p0.rows()*p0.rows());
-
     y_serialized=serialize(data.y);
 
     SystemFunctor functor(this);
-    Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
-    Eigen::LevenbergMarquardt< Eigen::NumericalDiff<SystemFunctor>> lm(numdiff);
-    lm.parameters.maxfev=100;
-    lm.parameters.factor=1e6;
-    lm.minimize(p0);
-    it_performed=lm.iter;
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor,handler.sb_delta->value()) ;
+    Eigen::LevenbergMarquardt< Eigen::NumericalDiff<SystemFunctor>> solver(numdiff);
+    solver.parameters.maxfev=handler.sb_it_max->value();
+    solver.parameters.gtol=handler.sb_dp_min->value();
+    solver.parameters.ftol=handler.sb_df_min->value();
+    solver.parameters.factor=handler.sb_levmar_lambda->value();
+    results.p_hat=p0;
+    solver.minimize(results.p_hat);
 
-    cor_hat.resize(cov_hat.rows());
-    for(unsigned int i=0;i<p0.rows();i++)
-    {
-        for(unsigned int j=0;j<p0.rows();j++)
-        {
-            cor_hat[i*p0.rows()+j]=std::abs(cov_hat[i*p0.rows()+j]/sqrt(std::abs(cov_hat[i*p0.rows()+i]*cov_hat[j*p0.rows()+j])));
-        }
-    }
+    //Results
+    results.it_performed=solver.iter;
+    results.err_final=solver.fnorm;
+    results.cov_hat=(solver.fjac.transpose()*solver.fjac).inverse();
 }
 
 void System::solve_Dogleg()
 {
-    cov_hat.resize(p0.rows()*p0.rows());
-
     y_serialized=serialize(data.y);
 
     SystemFunctor functor(this);
-    Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
-    Eigen::HybridNonLinearSolver< Eigen::NumericalDiff<SystemFunctor>> lm(numdiff);
-    lm.parameters.maxfev=100;
-    lm.parameters.factor=1e6;
-    lm.hybrd1(p0);
-    it_performed=lm.iter;
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor,handler.sb_delta->value()) ;
+    Eigen::HybridNonLinearSolver< Eigen::NumericalDiff<SystemFunctor>> solver(numdiff);
+    solver.parameters.maxfev=handler.sb_it_max->value();
+    solver.parameters.xtol=handler.sb_dp_min->value();
+    solver.parameters.factor=handler.sb_dogleg_lambda->value();
+    results.p_hat=p0;
+    solver.solve(results.p_hat);
 
-    cor_hat.resize(cov_hat.rows());
-    for(unsigned int i=0;i<p0.rows();i++)
-    {
-        for(unsigned int j=0;j<p0.rows();j++)
-        {
-            cor_hat[i*p0.rows()+j]=std::abs(cov_hat[i*p0.rows()+j]/sqrt(std::abs(cov_hat[i*p0.rows()+i]*cov_hat[j*p0.rows()+j])));
-        }
-    }
+    //Results
+    results.it_performed=solver.iter;
+    results.err_final=solver.fnorm;
+    results.cov_hat=(solver.fjac.transpose()*solver.fjac).inverse();
 }
 
-void System::solve_Newton()
+void System::solve_Gauss_Newton()
 {
-    cov_hat.resize(p0.rows()*p0.rows());
-
     y_serialized=serialize(data.y);
 
     SystemFunctor functor(this);
     Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
     NewtonSolver< Eigen::NumericalDiff<SystemFunctor> > solver(numdiff);
+    solver.parameters.maxfev=handler.sb_it_max->value();
+    solver.parameters.gtol=handler.sb_dp_min->value();
+    solver.parameters.ftol=handler.sb_df_min->value();
+    solver.parameters.factor=handler.sb_newton_lambda->value();
+    results.p_hat=p0;
+    solver.minimize(results.p_hat);
 
-    solver.parameters.maxfev=100;
-    solver.minimize(p0);
-    it_performed=solver.iter;
-
-    cor_hat.resize(cov_hat.rows());
-    for(unsigned int i=0;i<p0.rows();i++)
-    {
-        for(unsigned int j=0;j<p0.rows();j++)
-        {
-            cor_hat[i*p0.rows()+j]=std::abs(cov_hat[i*p0.rows()+j]/sqrt(std::abs(cov_hat[i*p0.rows()+i]*cov_hat[j*p0.rows()+j])));
-        }
-    }
+    //Results
+    results.p_list=solver.p_list;
+    results.it_performed=solver.iter;
+    results.err_final=solver.fnorm;
+    results.cov_hat=(solver.fjac.transpose()*solver.fjac).inverse();
 }
-
 
 VectorXd System::get_y(VectorXd p)
 {
@@ -294,7 +309,7 @@ void System::eval()
 
     for(unsigned int i=0;i<data.x.size();i++)
     {
-        VectorXd yi=eval(data.x[i],p_hat);
+        VectorXd yi=eval(data.x[i],results.p_hat);
 
         model.x.push_back(data.x[i]);
         model.y.push_back(yi);
@@ -367,15 +382,6 @@ QByteArray System::getCharName(char var,int var_id)
     return v;
 }
 
-void System::clearPlots()
-{
-    for(unsigned int i=0;i<plots.size();i++)
-    {
-        delete plots[i];
-    }
-    plots.clear();
-}
-
 QVector<double> System::extract(std::vector<VectorXd> v,int id)
 {
     QVector<double> v_out(v.size());
@@ -428,49 +434,53 @@ QImage System::toImage(const std::vector< std::vector<int> > & data, ScaleColorM
     return image;
 }
 
+void System::clearPlots()
+{
+    for(unsigned int i=0;i<plots.size();i++)
+    {
+        delete plots[i];
+    }
+    plots.clear();
+}
+
 void System::plot()
 {
-    this->setWindowTitle("System Results");
+
+    this->setWindowTitle(QString("System Results for %1 minimisation").arg(SolveMode_str[(int)solve_mode]));
 
     clearPlots();
 
     QTextEdit * widget_results=new QTextEdit(this);
     QString p_str,cov_str,cor_str,levmar_str;
-    for(int i=0;i<p_hat.rows();i++)
+    for(int i=0;i<results.p_hat.rows();i++)
     {
-        p_str+=QString("p[%1]=%2\n").arg(i).arg(p_hat[i]);
+        p_str+=QString("p[%1]=%2\n").arg(i).arg(results.p_hat[i]);
     }
 
     cov_str=QString("Cov(p,p)=\n");
-    for(int i=0;i<p_hat.rows();i++)
+    for(int i=0;i<results.p_hat.rows();i++)
     {
-        for(int j=0;j<p_hat.rows();j++)
+        for(int j=0;j<results.p_hat.rows();j++)
         {
-            cov_str+=QString("%1  ").arg(cov_hat[i*p_hat.rows()+j],8,'f',3,' ');
+            cov_str+=QString("%1  ").arg(results.cov_hat(i,j),8,'f',3,' ');
         }
         cov_str+=QString("\n");
     }
 
     cor_str=QString("Cor(p,p)=\n");
-    for(int i=0;i<p_hat.rows();i++)
+    for(int i=0;i<results.p_hat.rows();i++)
     {
-        for(int j=0;j<p_hat.rows();j++)
+        for(int j=0;j<results.p_hat.rows();j++)
         {
-            cor_str+=QString("%1  ").arg(cor_hat[i*p_hat.rows()+j],8,'f',3,' ');
+            cor_str+=QString("%1  ").arg(results.cor_hat(i,j),8,'f',3,' ');
         }
         cor_str+=QString("\n");
     }
 
-    levmar_str=QString("Levenberg-Marquardt=\n");
-    levmar_str+=QString("   -->iterations= %1\n").arg(it_performed);
-
-    levmar_str+=QString("1 - stopped by small gradient J^T e\n");
-    levmar_str+=QString("2 - stopped by small Dp\n");
-    levmar_str+=QString("3 - stopped by itmax\n");
-    levmar_str+=QString("4 - singular matrix. Restart from current p with increased \mu\n");
-    levmar_str+=QString("5 - no further error reduction is possible. Restart with increased mu\n");
-    levmar_str+=QString("6 - stopped by small ||e||_2\n");
-    levmar_str+=QString("7 - stopped by invalid (i.e. NaN or Inf) func values; a user error\n");
+    levmar_str=QString("Algorithme=\n");
+    levmar_str+=QString("   -->Iterations= %1\n").arg(results.it_performed);
+    levmar_str+=QString("   -->Residu= %1\n").arg(results.err_final);
+    levmar_str+=QString("   -->Time spent = %1\n").arg(results.time_elapsed);
 
     widget_results->append(p_str);
     widget_results->append(cor_str);
@@ -478,6 +488,7 @@ void System::plot()
     widget_results->append(levmar_str);
 
     addTab(widget_results,"Results");
+    plots.push_back(widget_results);
 
     for(int j=0;j<nb_x;j++)
     {
@@ -513,11 +524,11 @@ void System::plot()
             new_plot->legend->setFont(QFont("Helvetica", 9));
 
             addTab(new_plot,QString("y%1 = f(x%2)").arg(i).arg(j));
+            plots.push_back(new_plot);
         }
     }
 
     QCustomPlot * new_plot_all=new QCustomPlot(this);
-
     for(int j=0;j<nb_x;j++)
     {
         for(int i=0;i<nb_y;i++)
@@ -539,6 +550,7 @@ void System::plot()
     }
 
     addTab(new_plot_all,QString("All Fit"));
+    plots.push_back(new_plot_all);
 }
 
 double System::getRMS(int id)
