@@ -2,6 +2,11 @@
 
 void System::init(Parser * parser)
 {
+    id_active=0;
+    id1=0;
+    id2=1;
+    handler=new ParamHandler;
+
     this->ptr_parser=parser;
     eq_list.clear();
     progress_bar=NULL;
@@ -170,8 +175,8 @@ void System::load_data(QString filename)
 
 void System::set_p_init(double _p0,double _p1)
 {
-    p0[0]=_p0;
-    p0[1]=_p1;
+    p0[id1]=_p0;
+    p0[id2]=_p1;
 }
 
 void System::set_p_init(VectorXd p_init)
@@ -179,26 +184,27 @@ void System::set_p_init(VectorXd p_init)
     p0=p_init;
 }
 
-std::vector< std::vector<int> > System::solve_2D_p0p1(Box box, ColorMode mode)
+std::vector< std::vector<double> > System::solve_2D_p0p1(Box box, ColorMode mode)
 {
-    std::vector<std::vector<int>> map2D(box.p0_res,std::vector<int>(box.p1_res,0.0));
+    std::cout<<"solve_2D_p0p1"<<std::endl;
+
+    std::vector<std::vector<double>> map2D(box.p0_res,std::vector<double>(box.p1_res,0.0));
 
     for(int i=0;i<box.p0_res;i++)
     {
         for(int j=0;j<box.p1_res;j++)
         {
-            p0[0]=box.getP0(i);
-            p0[1]=box.getP1(j);
+            p0[id1]=box.getP0(i);
+            p0[id2]=box.getP1(j);
 
             solve();       
 
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
-            if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1])*1000;
+            if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
             else if(MODE_IT==mode)map2D[i][j]=(int)results.it_performed;
         }
 
-        progress_bar->setValue(i);
-        progress_bar->repaint();
+        emit progress(i);
     }
 
     return map2D;
@@ -228,17 +234,19 @@ void System::solve_Levmar()
 {
     y_serialized=serialize(data.y);
 
-    SystemFunctor functor(this);
-    Eigen::NumericalDiff<SystemFunctor> numdiff (functor,handler.sb_delta->value()) ;
+    std::vector<VectorXd> p_list;
+    SystemFunctor functor(this,&p_list);
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor,handler->sb_delta->value()) ;
     Eigen::LevenbergMarquardt< Eigen::NumericalDiff<SystemFunctor>> solver(numdiff);
-    solver.parameters.maxfev=handler.sb_it_max->value();
-    solver.parameters.gtol=handler.sb_dp_min->value();
-    solver.parameters.ftol=handler.sb_df_min->value();
-    solver.parameters.factor=handler.sb_levmar_lambda->value();
+    solver.parameters.maxfev=handler->sb_it_max->value();
+    solver.parameters.gtol=handler->sb_dp_min->value();
+    solver.parameters.ftol=handler->sb_df_min->value();
+    solver.parameters.factor=handler->sb_levmar_lambda->value();
     results.p_hat=p0;
     solver.minimize(results.p_hat);
 
     //Results
+    results.p_list=*functor.p_list;
     results.it_performed=solver.iter;
     results.err_final=solver.fnorm;
     results.cov_hat=(solver.fjac.transpose()*solver.fjac).inverse();
@@ -248,16 +256,18 @@ void System::solve_Dogleg()
 {
     y_serialized=serialize(data.y);
 
-    SystemFunctor functor(this);
-    Eigen::NumericalDiff<SystemFunctor> numdiff (functor,handler.sb_delta->value()) ;
+    std::vector<VectorXd> p_list;
+    SystemFunctor functor(this,&p_list);
+    Eigen::NumericalDiff<SystemFunctor> numdiff (functor,handler->sb_delta->value()) ;
     Eigen::HybridNonLinearSolver< Eigen::NumericalDiff<SystemFunctor>> solver(numdiff);
-    solver.parameters.maxfev=handler.sb_it_max->value();
-    solver.parameters.xtol=handler.sb_dp_min->value();
-    solver.parameters.factor=handler.sb_dogleg_lambda->value();
+    solver.parameters.maxfev=handler->sb_it_max->value();
+    solver.parameters.xtol=handler->sb_dp_min->value();
+    solver.parameters.factor=handler->sb_dogleg_lambda->value();
     results.p_hat=p0;
     solver.solve(results.p_hat);
 
     //Results
+    results.p_list=*functor.p_list;
     results.it_performed=solver.iter;
     results.err_final=solver.fnorm;
     results.cov_hat=(solver.fjac.transpose()*solver.fjac).inverse();
@@ -267,18 +277,20 @@ void System::solve_Gauss_Newton()
 {
     y_serialized=serialize(data.y);
 
-    SystemFunctor functor(this);
+    std::vector<VectorXd> p_list;
+    SystemFunctor functor(this,&p_list);
     Eigen::NumericalDiff<SystemFunctor> numdiff (functor) ;
     NewtonSolver< Eigen::NumericalDiff<SystemFunctor> > solver(numdiff);
-    solver.parameters.maxfev=handler.sb_it_max->value();
-    solver.parameters.gtol=handler.sb_dp_min->value();
-    solver.parameters.ftol=handler.sb_df_min->value();
-    solver.parameters.factor=handler.sb_newton_lambda->value();
+    solver.parameters.maxfev=handler->sb_it_max->value();
+    solver.parameters.gtol=handler->sb_dp_min->value();
+    solver.parameters.ftol=handler->sb_df_min->value();
+    solver.parameters.factor=handler->sb_newton_lambda->value();
     results.p_hat=p0;
+
     solver.minimize(results.p_hat);
 
     //Results
-    results.p_list=solver.p_list;
+    results.p_list=*functor.p_list;
     results.it_performed=solver.iter;
     results.err_final=solver.fnorm;
     results.cov_hat=(solver.fjac.transpose()*solver.fjac).inverse();
@@ -392,7 +404,7 @@ QVector<double> System::extract(std::vector<VectorXd> v,int id)
     return v_out;
 }
 
-void System::searchMinMax(const std::vector< std::vector<int> > & data,int & min,int & max)
+void System::searchMinMax(const std::vector<std::vector<double> > &data, double &min, double &max)
 {
     min=data[0][0];
     max=data[0][0];
@@ -407,11 +419,11 @@ void System::searchMinMax(const std::vector< std::vector<int> > & data,int & min
     }
 }
 
-QImage System::toImage(const std::vector< std::vector<int> > & data, ScaleColorMode mode)
+QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode)
 {
     QImage image(QSize(data.size(),data[0].size()),QImage::Format_RGB32);
 
-    int min,max;
+    double min,max;
     searchMinMax(data,min,max);
 
     for(int i=0;i<image.width();i++)
@@ -436,6 +448,7 @@ QImage System::toImage(const std::vector< std::vector<int> > & data, ScaleColorM
 
 void System::clearPlots()
 {
+    id_active=this->currentIndex();
     for(unsigned int i=0;i<plots.size();i++)
     {
         delete plots[i];
@@ -551,6 +564,9 @@ void System::plot()
 
     addTab(new_plot_all,QString("All Fit"));
     plots.push_back(new_plot_all);
+
+
+    this->setCurrentIndex(id_active);
 }
 
 double System::getRMS(int id)

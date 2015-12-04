@@ -67,6 +67,8 @@ public:
     QDoubleSpinBox *sb_p1_min;
     QDoubleSpinBox *sb_p1_max;
     QSpinBox *sb_Height;
+    QComboBox *cb_param2;
+    QComboBox *cb_param1;
     QGroupBox *groupBox_2;
     QHBoxLayout *horizontalLayout_4;
     QHBoxLayout *horizontalLayout_3;
@@ -165,14 +167,14 @@ public:
         sb_p0_max->setMaximum(10000);
         sb_p0_max->setValue(2);
 
-        gridLayout_2->addWidget(sb_p0_max, 0, 1, 1, 1);
+        gridLayout_2->addWidget(sb_p0_max, 0, 2, 1, 1);
 
         sb_Width = new QSpinBox(groupBox);
         sb_Width->setObjectName(QStringLiteral("sb_Width"));
         sb_Width->setMaximum(4096);
         sb_Width->setValue(512);
 
-        gridLayout_2->addWidget(sb_Width, 0, 2, 1, 1);
+        gridLayout_2->addWidget(sb_Width, 0, 3, 1, 1);
 
         sb_p0_min = new QDoubleSpinBox(groupBox);
         sb_p0_min->setObjectName(QStringLiteral("sb_p0_min"));
@@ -181,7 +183,7 @@ public:
         sb_p0_min->setMaximum(10000);
         sb_p0_min->setValue(-2);
 
-        gridLayout_2->addWidget(sb_p0_min, 0, 0, 1, 1);
+        gridLayout_2->addWidget(sb_p0_min, 0, 1, 1, 1);
 
         sb_p1_min = new QDoubleSpinBox(groupBox);
         sb_p1_min->setObjectName(QStringLiteral("sb_p1_min"));
@@ -190,7 +192,7 @@ public:
         sb_p1_min->setMaximum(10000);
         sb_p1_min->setValue(-2);
 
-        gridLayout_2->addWidget(sb_p1_min, 1, 0, 1, 1);
+        gridLayout_2->addWidget(sb_p1_min, 1, 1, 1, 1);
 
         sb_p1_max = new QDoubleSpinBox(groupBox);
         sb_p1_max->setObjectName(QStringLiteral("sb_p1_max"));
@@ -199,14 +201,24 @@ public:
         sb_p1_max->setMaximum(10000);
         sb_p1_max->setValue(2);
 
-        gridLayout_2->addWidget(sb_p1_max, 1, 1, 1, 1);
+        gridLayout_2->addWidget(sb_p1_max, 1, 2, 1, 1);
 
         sb_Height = new QSpinBox(groupBox);
         sb_Height->setObjectName(QStringLiteral("sb_Height"));
         sb_Height->setMaximum(4096);
         sb_Height->setValue(512);
 
-        gridLayout_2->addWidget(sb_Height, 1, 2, 1, 1);
+        gridLayout_2->addWidget(sb_Height, 1, 3, 1, 1);
+
+        cb_param2 = new QComboBox(groupBox);
+        cb_param2->setObjectName(QStringLiteral("cb_param2"));
+
+        gridLayout_2->addWidget(cb_param2, 0, 0, 1, 1);
+
+        cb_param1 = new QComboBox(groupBox);
+        cb_param1->setObjectName(QStringLiteral("cb_param1"));
+
+        gridLayout_2->addWidget(cb_param1, 1, 0, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_2);
@@ -346,6 +358,7 @@ public:
 
         tabSystem->setCurrentIndex(1);
         tabSetting->setCurrentIndex(0);
+        cb_param1->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -375,6 +388,32 @@ public:
         sb_p0_min->setPrefix(QApplication::translate("MainWindow", "p0_min=", 0));
         sb_p1_min->setPrefix(QApplication::translate("MainWindow", "p1_min=", 0));
         sb_p1_max->setPrefix(QApplication::translate("MainWindow", "p1_max=", 0));
+        cb_param2->clear();
+        cb_param2->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "p0", 0)
+         << QApplication::translate("MainWindow", "p1", 0)
+         << QApplication::translate("MainWindow", "p2", 0)
+         << QApplication::translate("MainWindow", "p3", 0)
+         << QApplication::translate("MainWindow", "p4", 0)
+         << QApplication::translate("MainWindow", "p5", 0)
+         << QApplication::translate("MainWindow", "p6", 0)
+         << QApplication::translate("MainWindow", "p7", 0)
+         << QApplication::translate("MainWindow", "p8", 0)
+         << QApplication::translate("MainWindow", "p9", 0)
+        );
+        cb_param1->clear();
+        cb_param1->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "p0", 0)
+         << QApplication::translate("MainWindow", "p1", 0)
+         << QApplication::translate("MainWindow", "p2", 0)
+         << QApplication::translate("MainWindow", "p3", 0)
+         << QApplication::translate("MainWindow", "p4", 0)
+         << QApplication::translate("MainWindow", "p5", 0)
+         << QApplication::translate("MainWindow", "p6", 0)
+         << QApplication::translate("MainWindow", "p7", 0)
+         << QApplication::translate("MainWindow", "p8", 0)
+         << QApplication::translate("MainWindow", "p9", 0)
+        );
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Color rules", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Process", 0));
         pb_calculate->setText(QApplication::translate("MainWindow", "Calculate", 0));

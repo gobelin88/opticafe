@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_ImageViewer_t {
-    QByteArrayData data[5];
-    char stringdata[24];
+    QByteArrayData data[7];
+    char stringdata[39];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,10 +33,12 @@ QT_MOC_LITERAL(0, 0, 11), // "ImageViewer"
 QT_MOC_LITERAL(1, 12, 4), // "pick"
 QT_MOC_LITERAL(2, 17, 0), // ""
 QT_MOC_LITERAL(3, 18, 2), // "p0"
-QT_MOC_LITERAL(4, 21, 2) // "p1"
+QT_MOC_LITERAL(4, 21, 2), // "p1"
+QT_MOC_LITERAL(5, 24, 8), // "setImage"
+QT_MOC_LITERAL(6, 33, 5) // "image"
 
     },
-    "ImageViewer\0pick\0\0p0\0p1"
+    "ImageViewer\0pick\0\0p0\0p1\0setImage\0image"
 };
 #undef QT_MOC_LITERAL
 
@@ -46,7 +48,7 @@ static const uint qt_meta_data_ImageViewer[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -54,10 +56,16 @@ static const uint qt_meta_data_ImageViewer[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   19,    2, 0x06 /* Public */,
+       1,    2,   24,    2, 0x06 /* Public */,
+
+ // slots: name, argc, parameters, tag, flags
+       5,    1,   29,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Double, QMetaType::Double,    3,    4,
+
+ // slots: parameters
+    QMetaType::Void, QMetaType::QImage,    6,
 
        0        // eod
 };
@@ -68,6 +76,7 @@ void ImageViewer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         ImageViewer *_t = static_cast<ImageViewer *>(_o);
         switch (_id) {
         case 0: _t->pick((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 1: _t->setImage((*reinterpret_cast< QImage(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -107,13 +116,13 @@ int ImageViewer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 2)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }

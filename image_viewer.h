@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
+#include <iostream>
 
 #include <Eigen/Dense>
 using Eigen::VectorXd;
@@ -17,11 +18,6 @@ public:
     ImageViewer();
     ~ImageViewer();
 
-    void setImage(QImage image)
-    {
-        this->image=image;
-        this->resize(image.size());
-    }
     QImage getImage(){return this->image;}
 
     void setBox(Box box){this->box=box;}
@@ -31,6 +27,14 @@ public:
         this->path=path;
     }
 
+public slots:
+    void setImage(QImage image)
+    {
+        zoom=1.0;
+        this->image=image;
+        this->setFixedSize(image.size()*zoom);
+        update();
+    }
 
 signals:
     void pick(double p0,double p1);
@@ -38,10 +42,13 @@ signals:
 protected:
     void paintEvent(QPaintEvent * event);
     void mousePressEvent(QMouseEvent * event);
+    void wheelEvent(QWheelEvent * event);
 
     QImage image;
     Box box;
     std::vector<VectorXd> path;
+
+    double zoom;
 };
 
 #endif // IMAGE_VIEWER_H

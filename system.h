@@ -80,20 +80,15 @@ public:
 
     void set_p_init(double _p0,double _p1);
     void set_p_init(VectorXd p_init);
-    std::vector< std::vector<int> > solve_2D_p0p1(Box box, ColorMode mode);
+    std::vector< std::vector<double> > solve_2D_p0p1(Box box, ColorMode mode);
 
     VectorXd get_y(VectorXd p);
 
     void eval();
     VectorXd eval(VectorXd x,VectorXd p);
 
-    static QImage toImage(const std::vector< std::vector<int> > & data, ScaleColorMode mode);
-    static void searchMinMax(const std::vector< std::vector<int> > & data,int & min,int & max);
-
-    void setProgressBar(QProgressBar * bar)
-    {
-        this->progress_bar=bar;
-    }
+    static QImage toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode);
+    static void searchMinMax(const std::vector< std::vector<double> > & data,double & min,double & max);
 
     const SystemData & getSystemData(){return data;}
     const SystemData & getSystemModel(){return model;}
@@ -105,9 +100,37 @@ public:
     void setSolveMode(SolveMode mode){this->solve_mode=mode;}
     SolveMode getSolveMode(){return solve_mode;}
 
-    ParamHandler * getParamHandler(){return &handler;}
+    ParamHandler * getParamHandler(){return handler;}
 
     Results results;
+
+    bool selectId1(int id)
+    {
+        if(id<p0.rows())
+        {
+            id1=id;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool selectId2(int id)
+    {
+        if(id<p0.rows())
+        {
+            id2=id;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+signals:
+    void progress(int value);
 
 private:
     //Gui
@@ -126,14 +149,23 @@ private:
     VectorXd y_serialized;
 
     //Parser & Helper
-    ParamHandler handler;
+    ParamHandler * handler;
     Parser * ptr_parser;
+
+    int id_active;
+    int id1,id2;
 };
 
 class SystemFunctor:public LMFunctor<double>
 {
 public:
-    SystemFunctor(System * system_ptr){setSystem(system_ptr);}
+    SystemFunctor(System * system_ptr,std::vector<VectorXd> * p_list)
+    {
+        this->p_list=p_list;
+
+        setSystem(system_ptr);
+        p_list->clear();
+    }
 
     inline void setSystem(System * system_ptr)
     {
@@ -148,12 +180,16 @@ public:
     {
         fvec=sys->get_y(p)-this->y_serialized;
 
+        p_list->push_back(p);
+
         return 0;
     }
 
+    std::vector<VectorXd> * p_list;
+
 private:
     System * sys;
-    VectorXd y_serialized;
+    VectorXd y_serialized;    
 };
 
 

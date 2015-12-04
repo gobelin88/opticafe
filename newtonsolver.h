@@ -35,9 +35,9 @@ public:
 
     void minimize(VectorXd  & p)
     {
-        minimizeInit(p);
-
         bool stop_crit=false;
+
+        minimizeInit(p);
         do
         {
             stop_crit = minimizeOneStep(p);
@@ -47,12 +47,12 @@ public:
 
     bool minimizeOneStep(VectorXd & p)
     {
-        p_list.push_back(p);
         functor.df(p,fjac);
         functor(p, fvec);
         //dp=-J.inverse()*fvec;//1
         dp=parameters.factor*fjac.colPivHouseholderQr().solve(-fvec);//2
         //MatrixXd jjt=(J.transpose()*J).inverse();dp=-jjt*J.transpose()*fvec;//3
+
 
         iter+=1;
 
@@ -62,7 +62,6 @@ public:
 
     void minimizeInit(VectorXd  &p)
     {
-        p_list.clear();
         iter=0;
         fjac.resize(functor.values(),functor.inputs());
         fvec.resize(functor.values());
@@ -74,8 +73,6 @@ public:
     unsigned int iter;
     double fnorm, gnorm;
     MatrixXd fjac;
-
-    std::vector<VectorXd> p_list;
 
 private:
 

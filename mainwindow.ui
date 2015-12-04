@@ -56,7 +56,7 @@
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <layout class="QGridLayout" name="gridLayout_2">
-                 <item row="0" column="1">
+                 <item row="0" column="2">
                   <widget class="QDoubleSpinBox" name="sb_p0_max">
                    <property name="prefix">
                     <string>p0_max=</string>
@@ -75,7 +75,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="2">
+                 <item row="0" column="3">
                   <widget class="QSpinBox" name="sb_Width">
                    <property name="maximum">
                     <number>4096</number>
@@ -85,7 +85,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0">
+                 <item row="0" column="1">
                   <widget class="QDoubleSpinBox" name="sb_p0_min">
                    <property name="prefix">
                     <string>p0_min=</string>
@@ -104,7 +104,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
+                 <item row="1" column="1">
                   <widget class="QDoubleSpinBox" name="sb_p1_min">
                    <property name="prefix">
                     <string>p1_min=</string>
@@ -123,7 +123,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
+                 <item row="1" column="2">
                   <widget class="QDoubleSpinBox" name="sb_p1_max">
                    <property name="prefix">
                     <string>p1_max=</string>
@@ -142,7 +142,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
+                 <item row="1" column="3">
                   <widget class="QSpinBox" name="sb_Height">
                    <property name="maximum">
                     <number>4096</number>
@@ -150,6 +150,117 @@
                    <property name="value">
                     <number>512</number>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QComboBox" name="cb_param2">
+                   <item>
+                    <property name="text">
+                     <string>p0</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p1</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p2</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p3</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p4</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p5</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p6</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p7</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p8</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p9</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QComboBox" name="cb_param1">
+                   <property name="currentIndex">
+                    <number>1</number>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>p0</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p1</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p2</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p3</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p4</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p5</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p6</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p7</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p8</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>p9</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>

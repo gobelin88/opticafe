@@ -174,7 +174,7 @@ public:
       sb_it_max->setValue(100);
       sb_dp_min->setValue(1e-9);
       sb_df_min->setValue(1e-9);
-      sb_delta->setValue(1e-3);
+      sb_delta->setValue(1e-6);
     }
 
     QSpinBox * sb_it_max;

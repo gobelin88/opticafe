@@ -19,6 +19,71 @@ namespace Ui {
 class MainWindow;
 }
 
+class WorkerThread : public QThread
+{
+    Q_OBJECT
+public:
+
+    enum WhatToDo
+    {
+        IMAGE,
+        SOLVE
+    };
+
+    WorkerThread()
+    {
+        system_use.store(0);
+    }
+
+    void calcImage(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode)
+    {
+        this->sys=sys;
+        this->box=box;
+        this->color_mode=color_mode;
+        this->scale_color_mode=scale_color_mode;
+
+        what=IMAGE;
+        start();
+    }
+
+    void solveSystem(System * sys)
+    {
+        this->sys=sys;
+
+        what=SOLVE;
+        start();
+    }
+
+    void run()
+    {
+        system_use.store(1);
+        if(what==IMAGE)
+        {
+            emit sig_image(System::toImage(sys->solve_2D_p0p1(box,color_mode),scale_color_mode));
+        }
+        else if (what==SOLVE)
+        {
+            sys->solve();
+            emit sig_solve();
+        }
+        system_use.store(0);
+    }
+
+    QAtomicInt system_use;
+
+signals:
+    void sig_image(QImage image);
+    void sig_solve();
+
+private:
+    System * sys;
+    Box box;
+    ColorMode color_mode;
+    ScaleColorMode scale_color_mode;
+    WhatToDo what;
+};
+
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -40,6 +105,8 @@ public slots:
     void slot_load_conv_setting();
     void slot_save_conv_setting();
 
+    void slot_solve_over();
+
 private:
     SolveMode getAlgo();
     Ui::MainWindow *ui;
@@ -53,6 +120,8 @@ private:
     ImageViewer * viewerImage;
 
     System * sys;
+
+    WorkerThread worker;
 };
 
 #endif // MAINWINDOW_H

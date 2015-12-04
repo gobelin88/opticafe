@@ -51,6 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pb_load_conv_setting,SIGNAL(clicked()),this,SLOT(slot_load_conv_setting()));
 
     connect(viewerImage,SIGNAL(pick(double,double)),this,SLOT(pick(double,double)));
+    connect(&worker,SIGNAL(sig_image(QImage)),viewerImage,SLOT(setImage(QImage)));
+    connect(sys,SIGNAL(progress(int)),ui->progressBar,SLOT(setValue(int)));
+
+    connect(&worker,SIGNAL(sig_solve()),this,SLOT(slot_solve_over()));
 }
 
 SolveMode MainWindow::getAlgo()
@@ -74,15 +78,16 @@ void MainWindow::slot_text_changed()
 
 void MainWindow::slot_run_script()
 {
+    if(worker.system_use.load())return;
+
     QString system_str=ui->te_script->toPlainText();
 
     if(sys->load_system(system_str))
     {
         sys->show();
         sys->setSolveMode(getAlgo());
-        sys->solve();
-        sys->eval();
-        sys->plot();
+        worker.solveSystem(sys);
+
     }
 }
 
@@ -145,6 +150,8 @@ void MainWindow::slot_load_script()
 
 void MainWindow::slot_2D_f()
 {
+    if(worker.system_use.load())return;
+
     QString system_str=ui->te_script->toPlainText();
 
 
@@ -153,8 +160,12 @@ void MainWindow::slot_2D_f()
 
         sys->setSolveMode(getAlgo());
 
+        if(ui->cb_param1->currentIndex()==ui->cb_param2->currentIndex())return;
+        if(!sys->selectId1(ui->cb_param1->currentIndex()))return;
+        if(!sys->selectId2(ui->cb_param2->currentIndex()))return;
+
+
         ui->progressBar->setRange(0,ui->sb_Width->value()-1);
-        sys->setProgressBar(ui->progressBar);
 
         Box box(ui->sb_p0_min->value(),
                 ui->sb_p0_max->value(),
@@ -165,13 +176,13 @@ void MainWindow::slot_2D_f()
 
         viewerImage->setBox(box);
 
-        QImage img=System::toImage(sys->solve_2D_p0p1(box,
-                                   (ColorMode)ui->cb__color_mode->currentIndex()),
-                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
+//        QImage img=System::toImage(sys->solve_2D_p0p1(box,
+//                                   (ColorMode)ui->cb__color_mode->currentIndex()),
+//                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
+        worker.calcImage(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
+                          (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        viewerImage->setImage(img);
-        viewerImage->update();
     }
 }
 
@@ -215,11 +226,18 @@ void MainWindow::slot_save_conv_setting()
 
 void MainWindow::pick(double p0,double p1)
 {
-    std::cout<<"pick "<<p0<<" "<<p1<<std::endl;
-    //sys->set
+    if(worker.system_use.load())return;
 
     sys->set_p_init(p0,p1);
-    sys->solve();
+    worker.solveSystem(sys);
+}
+
+void MainWindow::slot_solve_over()
+{
+    sys->eval();
+    sys->plot();
+
+    //Path Image
     viewerImage->setPath(sys->results.p_list);
     viewerImage->update();
 }

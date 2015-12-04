@@ -18,9 +18,130 @@
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
+struct qt_meta_stringdata_WorkerThread_t {
+    QByteArrayData data[5];
+    char stringdata[40];
+};
+#define QT_MOC_LITERAL(idx, ofs, len) \
+    Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
+    qptrdiff(offsetof(qt_meta_stringdata_WorkerThread_t, stringdata) + ofs \
+        - idx * sizeof(QByteArrayData)) \
+    )
+static const qt_meta_stringdata_WorkerThread_t qt_meta_stringdata_WorkerThread = {
+    {
+QT_MOC_LITERAL(0, 0, 12), // "WorkerThread"
+QT_MOC_LITERAL(1, 13, 9), // "sig_image"
+QT_MOC_LITERAL(2, 23, 0), // ""
+QT_MOC_LITERAL(3, 24, 5), // "image"
+QT_MOC_LITERAL(4, 30, 9) // "sig_solve"
+
+    },
+    "WorkerThread\0sig_image\0\0image\0sig_solve"
+};
+#undef QT_MOC_LITERAL
+
+static const uint qt_meta_data_WorkerThread[] = {
+
+ // content:
+       7,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       2,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       2,       // signalCount
+
+ // signals: name, argc, parameters, tag, flags
+       1,    1,   24,    2, 0x06 /* Public */,
+       4,    0,   27,    2, 0x06 /* Public */,
+
+ // signals: parameters
+    QMetaType::Void, QMetaType::QImage,    3,
+    QMetaType::Void,
+
+       0        // eod
+};
+
+void WorkerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        WorkerThread *_t = static_cast<WorkerThread *>(_o);
+        switch (_id) {
+        case 0: _t->sig_image((*reinterpret_cast< QImage(*)>(_a[1]))); break;
+        case 1: _t->sig_solve(); break;
+        default: ;
+        }
+    } else if (_c == QMetaObject::IndexOfMethod) {
+        int *result = reinterpret_cast<int *>(_a[0]);
+        void **func = reinterpret_cast<void **>(_a[1]);
+        {
+            typedef void (WorkerThread::*_t)(QImage );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_image)) {
+                *result = 0;
+            }
+        }
+        {
+            typedef void (WorkerThread::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_solve)) {
+                *result = 1;
+            }
+        }
+    }
+}
+
+const QMetaObject WorkerThread::staticMetaObject = {
+    { &QThread::staticMetaObject, qt_meta_stringdata_WorkerThread.data,
+      qt_meta_data_WorkerThread,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+};
+
+
+const QMetaObject *WorkerThread::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *WorkerThread::qt_metacast(const char *_clname)
+{
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_WorkerThread.stringdata))
+        return static_cast<void*>(const_cast< WorkerThread*>(this));
+    return QThread::qt_metacast(_clname);
+}
+
+int WorkerThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QThread::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 2)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 2;
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 2)
+            *reinterpret_cast<int*>(_a[0]) = -1;
+        _id -= 2;
+    }
+    return _id;
+}
+
+// SIGNAL 0
+void WorkerThread::sig_image(QImage _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void WorkerThread::sig_solve()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
+}
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[14];
-    char stringdata[187];
+    QByteArrayData data[15];
+    char stringdata[203];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -42,14 +163,16 @@ QT_MOC_LITERAL(9, 125, 2), // "p0"
 QT_MOC_LITERAL(10, 128, 2), // "p1"
 QT_MOC_LITERAL(11, 131, 9), // "slot_2D_f"
 QT_MOC_LITERAL(12, 141, 22), // "slot_load_conv_setting"
-QT_MOC_LITERAL(13, 164, 22) // "slot_save_conv_setting"
+QT_MOC_LITERAL(13, 164, 22), // "slot_save_conv_setting"
+QT_MOC_LITERAL(14, 187, 15) // "slot_solve_over"
 
     },
     "MainWindow\0slot_run_script\0\0"
     "slot_load_script\0slot_save_script\0"
     "slot_direct_save_script\0slot_text_changed\0"
     "slot_save_image\0pick\0p0\0p1\0slot_2D_f\0"
-    "slot_load_conv_setting\0slot_save_conv_setting"
+    "slot_load_conv_setting\0slot_save_conv_setting\0"
+    "slot_solve_over"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,7 +182,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -67,16 +190,17 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   64,    2, 0x0a /* Public */,
-       3,    0,   65,    2, 0x0a /* Public */,
-       4,    0,   66,    2, 0x0a /* Public */,
-       5,    0,   67,    2, 0x0a /* Public */,
-       6,    0,   68,    2, 0x0a /* Public */,
-       7,    0,   69,    2, 0x0a /* Public */,
-       8,    2,   70,    2, 0x0a /* Public */,
-      11,    0,   75,    2, 0x0a /* Public */,
-      12,    0,   76,    2, 0x0a /* Public */,
-      13,    0,   77,    2, 0x0a /* Public */,
+       1,    0,   69,    2, 0x0a /* Public */,
+       3,    0,   70,    2, 0x0a /* Public */,
+       4,    0,   71,    2, 0x0a /* Public */,
+       5,    0,   72,    2, 0x0a /* Public */,
+       6,    0,   73,    2, 0x0a /* Public */,
+       7,    0,   74,    2, 0x0a /* Public */,
+       8,    2,   75,    2, 0x0a /* Public */,
+      11,    0,   80,    2, 0x0a /* Public */,
+      12,    0,   81,    2, 0x0a /* Public */,
+      13,    0,   82,    2, 0x0a /* Public */,
+      14,    0,   83,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -86,6 +210,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Double, QMetaType::Double,    9,   10,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -108,6 +233,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 7: _t->slot_2D_f(); break;
         case 8: _t->slot_load_conv_setting(); break;
         case 9: _t->slot_save_conv_setting(); break;
+        case 10: _t->slot_solve_over(); break;
         default: ;
         }
     }
@@ -138,13 +264,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 10)
+        if (_id < 11)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 10;
+        _id -= 11;
     }
     return _id;
 }
