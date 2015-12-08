@@ -25,8 +25,8 @@ struct Box
 
     double getP0(int i){return (i*(p0_max-p0_min))/p0_res+p0_min;}
     double getP1(int i){return (i*(p1_max-p1_min))/p1_res+p1_min;}
-    int fromP0(double i){return (int)((p0_res*(i-p0_min))/(p0_max-p0_min));}
-    int fromP1(double i){return (int)((p1_res*(i-p1_min))/(p1_max-p1_min));}
+    double fromP0(double i){return (double)((p0_res*(i-p0_min))/(p0_max-p0_min));}
+    double fromP1(double i){return (double)((p1_res*(i-p1_min))/(p1_max-p1_min));}
 
     double p0_min;
     double p0_max;

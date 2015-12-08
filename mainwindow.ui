@@ -32,7 +32,7 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Convergence Analysis</string>
+        <string>Analysis</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -45,13 +45,13 @@
           </property>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
-            <string>Settings</string>
+            <string>Convergence</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
              <widget class="QGroupBox" name="groupBox">
               <property name="title">
-               <string>Region and Resolution</string>
+               <string>2D Region and Resolution</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
@@ -154,6 +154,9 @@
                  </item>
                  <item row="0" column="0">
                   <widget class="QComboBox" name="cb_param2">
+                   <property name="currentIndex">
+                    <number>1</number>
+                   </property>
                    <item>
                     <property name="text">
                      <string>p0</string>
@@ -209,7 +212,7 @@
                  <item row="1" column="0">
                   <widget class="QComboBox" name="cb_param1">
                    <property name="currentIndex">
-                    <number>1</number>
+                    <number>0</number>
                    </property>
                    <item>
                     <property name="text">
@@ -290,7 +293,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_3">
               <property name="title">
-               <string>Process</string>
+               <string>Calculate the convergency plot of the current algorithm</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
                <item>
@@ -311,21 +314,48 @@
                  </item>
                 </layout>
                </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_4">
+              <property name="title">
+               <string>Evaluate the function</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
                <item>
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <item>
+                  <widget class="QProgressBar" name="progressBar_func">
+                   <property name="value">
+                    <number>0</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pb_calculate_func">
+                   <property name="text">
+                    <string>Calculate</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -364,8 +394,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>471</width>
+                   <height>484</height>
                   </rect>
                  </property>
                 </widget>

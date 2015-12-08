@@ -202,6 +202,40 @@ std::vector< std::vector<double> > System::solve_2D_p0p1(Box box, ColorMode mode
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
             if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
             else if(MODE_IT==mode)map2D[i][j]=(int)results.it_performed;
+            else
+            {
+                map2D[i][j]=0;
+            }
+        }
+
+        emit progress(i);
+    }
+
+    return map2D;
+}
+
+std::vector< std::vector<double> > System::eval_2D_p0p1(Box box, ColorMode mode)
+{
+    std::cout<<"solve_2D_p0p1"<<std::endl;
+
+    std::vector<std::vector<double>> map2D(box.p0_res,std::vector<double>(box.p1_res,0.0));
+
+    for(int i=0;i<box.p0_res;i++)
+    {
+        for(int j=0;j<box.p1_res;j++)
+        {
+            p0[id1]=box.getP0(i);
+            p0[id2]=box.getP1(j);
+
+            results.p_hat=eval(p0);
+
+            //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
+            if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
+            else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
+            else
+            {
+                map2D[i][j]=0;
+            }
         }
 
         emit progress(i);
@@ -345,6 +379,40 @@ VectorXd System::eval(VectorXd x,VectorXd p)
         for(int i=0;i<nb_x;i++)
         {
             ptr_parser->getVarList().set_value(getCharName('x',i),x[i]);
+            //std::cout<<"x["<<i<<"]="<<x[i]<<" "<<ptr_parser->parse(getCharName('x',i))<<" "<<ptr_parser->parse("x2")<<std::endl;
+        }
+
+        for(int i=0;i<nb_y;i++)
+        {
+            y[i]=ptr_parser->parse(eq_list[i].data());
+            //std::cout<<"y["<<i<<"]="<<y[i]<<" "<<eq_list[i].data()<<std::endl;
+        }
+    }
+    else
+    {
+        std::cout<<"Erreur"<<std::endl;
+    }
+
+    return y;
+}
+
+VectorXd System::eval(VectorXd p)
+{
+    VectorXd y(nb_y);
+    y.setZero();
+
+    if(p.rows()==nb_p)
+    {
+
+        ptr_parser->getVarList().clear();
+        for(int i=0;i<nb_p;i++)
+        {
+            ptr_parser->getVarList().set_value(getCharName('p',i),p[i]);
+            //std::cout<<"p["<<i<<"]="<<p[i]<<" "<<ptr_parser->parse(getCharName('p',i))<<std::endl;
+        }
+        for(int i=0;i<nb_x;i++)
+        {
+            ptr_parser->getVarList().set_value(getCharName('x',i),0.0);
             //std::cout<<"x["<<i<<"]="<<x[i]<<" "<<ptr_parser->parse(getCharName('x',i))<<" "<<ptr_parser->parse("x2")<<std::endl;
         }
 

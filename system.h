@@ -85,7 +85,9 @@ public:
     VectorXd get_y(VectorXd p);
 
     void eval();
+    VectorXd eval(VectorXd p); //x=0
     VectorXd eval(VectorXd x,VectorXd p);
+    std::vector< std::vector<double> > eval_2D_p0p1(Box box, ColorMode mode);
 
     static QImage toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode);
     static void searchMinMax(const std::vector< std::vector<double> > & data,double & min,double & max);

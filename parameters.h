@@ -53,16 +53,18 @@ static float color_tab[40][3]={
 };
 
 
-#define NBColorMode 2
+#define NBColorMode 3
 static char * ColorMode_str[NBColorMode]={
     "Iterations",
-    "Argument"
+    "Argument",
+    "Module"
 };
 
 enum ColorMode
 {
     MODE_IT,
-    MODE_ARG
+    MODE_ARG,
+    MODE_MODULE,
 };
 
 
@@ -174,7 +176,7 @@ public:
       sb_it_max->setValue(100);
       sb_dp_min->setValue(1e-9);
       sb_df_min->setValue(1e-9);
-      sb_delta->setValue(1e-6);
+      sb_delta->setValue(1e-8);
     }
 
     QSpinBox * sb_it_max;

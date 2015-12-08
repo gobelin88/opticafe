@@ -26,6 +26,7 @@ public:
 
     enum WhatToDo
     {
+        IMAGE_FUNC,
         IMAGE,
         SOLVE
     };
@@ -33,6 +34,17 @@ public:
     WorkerThread()
     {
         system_use.store(0);
+    }
+
+    void calcImageFunc(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode)
+    {
+        this->sys=sys;
+        this->box=box;
+        this->color_mode=color_mode;
+        this->scale_color_mode=scale_color_mode;
+
+        what=IMAGE_FUNC;
+        start();
     }
 
     void calcImage(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode)
@@ -57,7 +69,12 @@ public:
     void run()
     {
         system_use.store(1);
-        if(what==IMAGE)
+
+        if(what==IMAGE_FUNC)
+        {
+            emit sig_image(System::toImage(sys->eval_2D_p0p1(box,color_mode),scale_color_mode));
+        }
+        else if(what==IMAGE)
         {
             emit sig_image(System::toImage(sys->solve_2D_p0p1(box,color_mode),scale_color_mode));
         }
@@ -101,6 +118,7 @@ public slots:
     void slot_save_image();
     void pick(double p0,double p1);
     void slot_2D_f();
+    void slot_2D_f_func();
 
     void slot_load_conv_setting();
     void slot_save_conv_setting();

@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->te_script,SIGNAL(textChanged()),this,SLOT(slot_text_changed()));
     connect(ui->actionQuit,SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(ui->pb_calculate,SIGNAL(clicked()),this,SLOT(slot_2D_f()));
+    connect(ui->pb_calculate_func,SIGNAL(clicked()),this,SLOT(slot_2D_f_func()));
     connect(ui->pbSaveImage,SIGNAL(clicked()),this,SLOT(slot_save_image()));
     connect(ui->pb_save_conv_setting,SIGNAL(clicked()),this,SLOT(slot_save_conv_setting()));
     connect(ui->pb_load_conv_setting,SIGNAL(clicked()),this,SLOT(slot_load_conv_setting()));
@@ -157,13 +158,29 @@ void MainWindow::slot_2D_f()
 
     if(sys->load_system(system_str))
     {
-
         sys->setSolveMode(getAlgo());
 
-        if(ui->cb_param1->currentIndex()==ui->cb_param2->currentIndex())return;
-        if(!sys->selectId1(ui->cb_param1->currentIndex()))return;
-        if(!sys->selectId2(ui->cb_param2->currentIndex()))return;
-
+        if(ui->cb_param1->currentIndex()==ui->cb_param2->currentIndex())
+        {
+            QMessageBox::information(this,"Bad Id for parametres",QString("p%1 == p%2").arg(ui->cb_param1->currentIndex()).arg(ui->cb_param2->currentIndex()));
+            return;
+        }
+        if(ui->cb_param1->currentIndex()>ui->cb_param2->currentIndex())
+        {
+            int index=ui->cb_param1->currentIndex();
+            ui->cb_param1->setCurrentIndex(ui->cb_param2->currentIndex());
+            ui->cb_param2->setCurrentIndex(index);
+        }
+        if(!sys->selectId1(ui->cb_param1->currentIndex()))
+        {
+            QMessageBox::information(this,"Bad Id for parametre 1",QString("p%1 is not defined in the system").arg(ui->cb_param1->currentIndex()));
+            return;
+        }
+        if(!sys->selectId2(ui->cb_param2->currentIndex()))
+        {
+            QMessageBox::information(this,"Bad Id for parametre 2",QString("p%1 is not defined in the system").arg(ui->cb_param2->currentIndex()));
+            return;
+        }
 
         ui->progressBar->setRange(0,ui->sb_Width->value()-1);
 
@@ -181,6 +198,60 @@ void MainWindow::slot_2D_f()
 //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
         worker.calcImage(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
+                          (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
+
+    }
+}
+
+void MainWindow::slot_2D_f_func()
+{
+    if(worker.system_use.load())return;
+
+    QString system_str=ui->te_script->toPlainText();
+
+
+    if(sys->load_system(system_str))
+    {
+        sys->setSolveMode(getAlgo());
+
+        if(ui->cb_param1->currentIndex()==ui->cb_param2->currentIndex())
+        {
+            QMessageBox::information(this,"Bad Id for parametres",QString("p%1 == p%2").arg(ui->cb_param1->currentIndex()).arg(ui->cb_param2->currentIndex()));
+            return;
+        }
+        if(ui->cb_param1->currentIndex()>ui->cb_param2->currentIndex())
+        {
+            int index=ui->cb_param1->currentIndex();
+            ui->cb_param1->setCurrentIndex(ui->cb_param2->currentIndex());
+            ui->cb_param2->setCurrentIndex(index);
+        }
+        if(!sys->selectId1(ui->cb_param1->currentIndex()))
+        {
+            QMessageBox::information(this,"Bad Id for parametre 1",QString("p%1 is not defined in the system").arg(ui->cb_param1->currentIndex()));
+            return;
+        }
+        if(!sys->selectId2(ui->cb_param2->currentIndex()))
+        {
+            QMessageBox::information(this,"Bad Id for parametre 2",QString("p%1 is not defined in the system").arg(ui->cb_param2->currentIndex()));
+            return;
+        }
+
+        ui->progressBar->setRange(0,ui->sb_Width->value()-1);
+
+        Box box(ui->sb_p0_min->value(),
+                ui->sb_p0_max->value(),
+                ui->sb_p1_min->value(),
+                ui->sb_p1_max->value(),
+                ui->sb_Width->value(),
+                ui->sb_Height->value());
+
+        viewerImage->setBox(box);
+
+//        QImage img=System::toImage(sys->solve_2D_p0p1(box,
+//                                   (ColorMode)ui->cb__color_mode->currentIndex()),
+//                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
+
+        worker.calcImageFunc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
                           (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
     }
