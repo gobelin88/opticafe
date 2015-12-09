@@ -53,31 +53,36 @@ static float color_tab[40][3]={
 };
 
 
-#define NBColorMode 3
-static char * ColorMode_str[NBColorMode]={
-    "Iterations",
-    "Argument",
-    "Module"
+#define NBColorMode 4
+static char * ColorMode_str[NBColorMode]=
+{
+    "Argument - atan2(y0,y1)",
+    "Module - |y0+y1+...+yn|",
+    "Module logarithm - log(1+|y0+y1+...+yn|)",
+    "Algorithm iterations",
 };
 
 enum ColorMode
 {
-    MODE_IT,
     MODE_ARG,
     MODE_MODULE,
+    MODE_MODULE_LOG,
+    MODE_IT,
 };
 
 
-#define NBScaleColorMode 2
+#define NBScaleColorMode 3
 static char * ScaleColorMode_str[NBScaleColorMode]={
     "Blue Gradient",
-    "Periodic"
+    "Periodic",
+    "Rainbow"
 };
 
 enum ScaleColorMode
 {
     MODE_BLUE_GRADIENT,
-    MODE_PERIODIC
+    MODE_PERIODIC,
+    MODE_RAINBOW
 };
 
 #define NBSolveMode 3

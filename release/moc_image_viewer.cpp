@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_ImageViewer_t {
-    QByteArrayData data[7];
-    char stringdata[39];
+    QByteArrayData data[9];
+    char stringdata[71];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,10 +35,13 @@ QT_MOC_LITERAL(2, 17, 0), // ""
 QT_MOC_LITERAL(3, 18, 2), // "p0"
 QT_MOC_LITERAL(4, 21, 2), // "p1"
 QT_MOC_LITERAL(5, 24, 8), // "setImage"
-QT_MOC_LITERAL(6, 33, 5) // "image"
+QT_MOC_LITERAL(6, 33, 5), // "image"
+QT_MOC_LITERAL(7, 39, 15), // "slot_save_image"
+QT_MOC_LITERAL(8, 55, 15) // "slot_load_image"
 
     },
-    "ImageViewer\0pick\0\0p0\0p1\0setImage\0image"
+    "ImageViewer\0pick\0\0p0\0p1\0setImage\0image\0"
+    "slot_save_image\0slot_load_image"
 };
 #undef QT_MOC_LITERAL
 
@@ -48,7 +51,7 @@ static const uint qt_meta_data_ImageViewer[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -56,16 +59,20 @@ static const uint qt_meta_data_ImageViewer[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   24,    2, 0x06 /* Public */,
+       1,    2,   34,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    1,   29,    2, 0x0a /* Public */,
+       5,    1,   39,    2, 0x0a /* Public */,
+       7,    0,   42,    2, 0x0a /* Public */,
+       8,    0,   43,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Double, QMetaType::Double,    3,    4,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QImage,    6,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -77,6 +84,8 @@ void ImageViewer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         switch (_id) {
         case 0: _t->pick((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
         case 1: _t->setImage((*reinterpret_cast< QImage(*)>(_a[1]))); break;
+        case 2: _t->slot_save_image(); break;
+        case 3: _t->slot_load_image(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -116,13 +125,13 @@ int ImageViewer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 4)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 2;
+        _id -= 4;
     }
     return _id;
 }

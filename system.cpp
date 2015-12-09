@@ -59,6 +59,7 @@ bool System::load_system(QString script)
 
     eq_list.resize(nb_y);
     p0.resize(nb_p);
+    p0.setZero();
 
     ptr_parser->getVarList().clear();
     for(int i=0;i<nb_p;i++){ptr_parser->getVarList().add(getCharName('p',i),0.0);}
@@ -70,43 +71,41 @@ bool System::load_system(QString script)
 
     QStringList lines=script.split('\n',QString::SkipEmptyParts);
 
-    if((lines.size()-2)==nb_y)
+    load_null_data();//Si pas de data yn=0 xn=0
+
+    for(int i=0;i<lines.size();i++)
     {
-        for(int i=0;i<lines.size();i++)
+        QStringList args=lines[i].split('=');
+
+        if(args.size()==2 && !args[1].isEmpty())
         {
-            QStringList args=lines[i].split('=');
-
-            if(args.size()==2)
+            if(args[0].contains('y'))
             {
-                if(args[0].contains('y'))
-                {
-                    args[0].remove(0,1);
-                    int id=args[0].toInt();
-                    eq_list[id]=args[1].toLocal8Bit();
-                    std::cout<<args[1].toLocal8Bit().data()<<std::endl;
-                }
-                else if(args[0].contains("data"))
-                {
-                    load_data(args[1]);
-                }
-                else if(args[0].contains("p_init"))
-                {
-                    load_p_init(args[1]);
-                }
-
+                args[0].remove(0,1);
+                int id=args[0].toInt();
+                eq_list[id]=args[1].toLocal8Bit();
+            }
+            else if(args[0].contains("data"))
+            {
+                load_data(args[1]);
+            }
+            else if(args[0].contains("p_init"))
+            {
+                load_p_init(args[1]);
             }
             else
             {
-                QMessageBox::critical(this,"Syntax Error",QString("Line %1").arg(i));
+                QMessageBox::critical(this,"Syntax Error",QString("Syntax error line %1 : %2").arg(i).arg(lines[i]));
                 return false;
             }
         }
+        else
+        {
+            QMessageBox::critical(this,"Syntax Error",QString("Syntax error line %1 : %2").arg(i).arg(lines[i]));
+            return false;
+        }
     }
-    else
-    {
-        QMessageBox::critical(this,"Structure Error",QString("The number of equation does'nt match the number of outputs"));
-        return false;
-    }
+
     return true;
 }
 
@@ -126,6 +125,15 @@ void System::load_p_init(QString script)
         std::cout<<"Erreur :  La dimension de p_init est incohérente"<<std::endl;
     }
 
+}
+
+void System::load_null_data()
+{
+    data.x.clear();
+    data.y.clear();
+    VectorXd yp(nb_y),xp(nb_x);
+    data.x.push_back(xp);
+    data.y.push_back(yp);
 }
 
 void System::load_data(QString filename)
@@ -202,6 +210,8 @@ std::vector< std::vector<double> > System::solve_2D_p0p1(Box box, ColorMode mode
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
             if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
             else if(MODE_IT==mode)map2D[i][j]=(int)results.it_performed;
+            else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
+            else if(MODE_MODULE_LOG==mode)map2D[i][j]=20*log10(results.p_hat.norm());
             else
             {
                 map2D[i][j]=0;
@@ -232,6 +242,7 @@ std::vector< std::vector<double> > System::eval_2D_p0p1(Box box, ColorMode mode)
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
             if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
             else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
+            else if(MODE_MODULE_LOG==mode)map2D[i][j]=20*log10(1+results.p_hat.norm());
             else
             {
                 map2D[i][j]=0;
@@ -501,12 +512,21 @@ QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleCol
             if(mode==MODE_BLUE_GRADIENT)
             {
                 int value= (255.0*(data[i][j]-min))/(max-min);
-                image.setPixel(i,j,qRgb(value,std::min(255,2*value),std::min(255,3*value)));
+                image.setPixel(i,j,qRgb(value,
+                                        std::min(255,2*value),
+                                        std::min(255,3*value)));
             }
             else if(mode==MODE_PERIODIC)
             {
-                double value= (M_PI*(data[i][j]-min))/(max-min);
-                image.setPixel(i,j,qRgb(255*sin(value),255*sin(value+2*M_PI/3),255*sin(value+4*M_PI/3)));
+                double value= (2*M_PI*(data[i][j]-min))/(max-min);
+                image.setPixel(i,j,qRgb(127*sin(value)          +128,
+                                        127*sin(value+2*M_PI/3) +128,
+                                        127*sin(value+4*M_PI/3) +128));
+            }
+            else if(mode==MODE_RAINBOW)
+            {
+                double value= 359*(data[i][j]-min)/(max-min);
+                image.setPixel(i,j,QColor::fromHsv(std::max<double>(0,std::min<double>(359,value)),255,128).rgb());
             }
         }
     }

@@ -24,8 +24,6 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -76,24 +74,15 @@ public:
     QComboBox *cb_scale_color_mode;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_7;
-    QHBoxLayout *horizontalLayout;
     QProgressBar *progressBar;
+    QHBoxLayout *horizontalLayout;
+    QPushButton *pb_calculate_func;
     QPushButton *pb_calculate;
     QGroupBox *groupBox_4;
-    QHBoxLayout *horizontalLayout_7;
-    QHBoxLayout *horizontalLayout_6;
-    QProgressBar *progressBar_func;
-    QPushButton *pb_calculate_func;
-    QSpacerItem *verticalSpacer;
+    QVBoxLayout *verticalLayout_5;
     QHBoxLayout *horizontalLayout_2;
     QPushButton *pb_save_conv_setting;
     QPushButton *pb_load_conv_setting;
-    QWidget *tab_5;
-    QVBoxLayout *verticalLayout_5;
-    QVBoxLayout *verticalLayout_6;
-    QScrollArea *scrollArea;
-    QWidget *scrollAreaWidgetContents;
-    QPushButton *pbSaveImage;
     QMenuBar *menuBar;
     QMenu *menuOpen;
     QStatusBar *statusBar;
@@ -102,7 +91,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(561, 644);
+        MainWindow->resize(488, 431);
         actionOpen = new QAction(MainWindow);
         actionOpen->setObjectName(QStringLiteral("actionOpen"));
         actionSave = new QAction(MainWindow);
@@ -262,14 +251,19 @@ public:
         verticalLayout_7->setSpacing(6);
         verticalLayout_7->setContentsMargins(11, 11, 11, 11);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         progressBar = new QProgressBar(groupBox_3);
         progressBar->setObjectName(QStringLiteral("progressBar"));
         progressBar->setValue(0);
 
-        horizontalLayout->addWidget(progressBar);
+        verticalLayout_7->addWidget(progressBar);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        pb_calculate_func = new QPushButton(groupBox_3);
+        pb_calculate_func->setObjectName(QStringLiteral("pb_calculate_func"));
+
+        horizontalLayout->addWidget(pb_calculate_func);
 
         pb_calculate = new QPushButton(groupBox_3);
         pb_calculate->setObjectName(QStringLiteral("pb_calculate"));
@@ -284,79 +278,30 @@ public:
 
         groupBox_4 = new QGroupBox(tab_3);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        horizontalLayout_7 = new QHBoxLayout(groupBox_4);
-        horizontalLayout_7->setSpacing(6);
-        horizontalLayout_7->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
-        horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setSpacing(6);
-        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
-        progressBar_func = new QProgressBar(groupBox_4);
-        progressBar_func->setObjectName(QStringLiteral("progressBar_func"));
-        progressBar_func->setValue(0);
-
-        horizontalLayout_6->addWidget(progressBar_func);
-
-        pb_calculate_func = new QPushButton(groupBox_4);
-        pb_calculate_func->setObjectName(QStringLiteral("pb_calculate_func"));
-
-        horizontalLayout_6->addWidget(pb_calculate_func);
-
-
-        horizontalLayout_7->addLayout(horizontalLayout_6);
-
-
-        verticalLayout_8->addWidget(groupBox_4);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_8->addItem(verticalSpacer);
-
+        verticalLayout_5 = new QVBoxLayout(groupBox_4);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        pb_save_conv_setting = new QPushButton(tab_3);
+        pb_save_conv_setting = new QPushButton(groupBox_4);
         pb_save_conv_setting->setObjectName(QStringLiteral("pb_save_conv_setting"));
 
         horizontalLayout_2->addWidget(pb_save_conv_setting);
 
-        pb_load_conv_setting = new QPushButton(tab_3);
+        pb_load_conv_setting = new QPushButton(groupBox_4);
         pb_load_conv_setting->setObjectName(QStringLiteral("pb_load_conv_setting"));
 
         horizontalLayout_2->addWidget(pb_load_conv_setting);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_2);
+        verticalLayout_5->addLayout(horizontalLayout_2);
+
+
+        verticalLayout_8->addWidget(groupBox_4);
 
         tabSetting->addTab(tab_3, QString());
-        tab_5 = new QWidget();
-        tab_5->setObjectName(QStringLiteral("tab_5"));
-        verticalLayout_5 = new QVBoxLayout(tab_5);
-        verticalLayout_5->setSpacing(6);
-        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        verticalLayout_6 = new QVBoxLayout();
-        verticalLayout_6->setSpacing(6);
-        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
-        scrollArea = new QScrollArea(tab_5);
-        scrollArea->setObjectName(QStringLiteral("scrollArea"));
-        scrollArea->setWidgetResizable(true);
-        scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 471, 484));
-        scrollArea->setWidget(scrollAreaWidgetContents);
-
-        verticalLayout_6->addWidget(scrollArea);
-
-        pbSaveImage = new QPushButton(tab_5);
-        pbSaveImage->setObjectName(QStringLiteral("pbSaveImage"));
-
-        verticalLayout_6->addWidget(pbSaveImage);
-
-
-        verticalLayout_5->addLayout(verticalLayout_6);
-
-        tabSetting->addTab(tab_5, QString());
 
         verticalLayout_3->addWidget(tabSetting);
 
@@ -367,7 +312,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 561, 21));
+        menuBar->setGeometry(QRect(0, 0, 488, 21));
         menuOpen = new QMenu(menuBar);
         menuOpen->setObjectName(QStringLiteral("menuOpen"));
         MainWindow->setMenuBar(menuBar);
@@ -415,7 +360,7 @@ public:
         actionMinimize->setShortcut(QApplication::translate("MainWindow", "Ctrl+M", 0));
         actionAlgorithms->setText(QApplication::translate("MainWindow", "Algorithms", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab), QApplication::translate("MainWindow", "System", 0));
-        groupBox->setTitle(QApplication::translate("MainWindow", "2D Region and Resolution", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Region and  Resolution", 0));
         sb_p0_max->setPrefix(QApplication::translate("MainWindow", "p0_max=", 0));
         sb_p0_min->setPrefix(QApplication::translate("MainWindow", "p0_min=", 0));
         sb_p1_min->setPrefix(QApplication::translate("MainWindow", "p1_min=", 0));
@@ -447,15 +392,13 @@ public:
          << QApplication::translate("MainWindow", "p9", 0)
         );
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Color rules", 0));
-        groupBox_3->setTitle(QApplication::translate("MainWindow", "Calculate the convergency plot of the current algorithm", 0));
-        pb_calculate->setText(QApplication::translate("MainWindow", "Calculate", 0));
-        groupBox_4->setTitle(QApplication::translate("MainWindow", "Evaluate the function", 0));
-        pb_calculate_func->setText(QApplication::translate("MainWindow", "Calculate", 0));
+        groupBox_3->setTitle(QApplication::translate("MainWindow", "Calculate", 0));
+        pb_calculate_func->setText(QApplication::translate("MainWindow", "Evaluate", 0));
+        pb_calculate->setText(QApplication::translate("MainWindow", "Analyse Convergence", 0));
+        groupBox_4->setTitle(QApplication::translate("MainWindow", "Save settings", 0));
         pb_save_conv_setting->setText(QApplication::translate("MainWindow", "Save", 0));
         pb_load_conv_setting->setText(QApplication::translate("MainWindow", "Load", 0));
-        tabSetting->setTabText(tabSetting->indexOf(tab_3), QApplication::translate("MainWindow", "Convergence", 0));
-        pbSaveImage->setText(QApplication::translate("MainWindow", "Save Image", 0));
-        tabSetting->setTabText(tabSetting->indexOf(tab_5), QApplication::translate("MainWindow", "2D", 0));
+        tabSetting->setTabText(tabSetting->indexOf(tab_3), QApplication::translate("MainWindow", "Convergence 2D", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab_2), QApplication::translate("MainWindow", "Analysis", 0));
         menuOpen->setTitle(QApplication::translate("MainWindow", "Menu", 0));
     } // retranslateUi

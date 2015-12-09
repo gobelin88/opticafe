@@ -4,7 +4,9 @@ ImageViewer::ImageViewer()
 {
     path.clear();
     zoom=1.0;
-    std::cout<<zoom<<std::endl;
+
+
+    createPopup();
 }
 
 ImageViewer::~ImageViewer()
@@ -12,6 +14,22 @@ ImageViewer::~ImageViewer()
 
 }
 
+void ImageViewer::createPopup()
+{
+    popup_menu=new QMenu(this);
+
+    actSave   = new QAction("Save",  this);
+    actLoad    = new QAction("Load",   this);
+
+    actSave->setShortcut(QKeySequence(tr("Ctrl+S")));
+    actLoad->setShortcut(QKeySequence(tr("Ctrl+L")));
+
+    popup_menu->addAction(actSave);
+    popup_menu->addAction(actLoad);
+
+    connect(actSave,SIGNAL(triggered()),this,SLOT(slot_save_image()));
+    connect(actLoad,SIGNAL(triggered()),this,SLOT(slot_load_image()));
+}
 
 void ImageViewer::paintEvent(QPaintEvent * event)
 {
@@ -22,6 +40,14 @@ void ImageViewer::paintEvent(QPaintEvent * event)
     painter.setPen(QPen(QColor(255,0,0)));
     if(path.size()>2)
     {
+        painter.drawText(zoom*box.fromP0(path[0][0]),
+                         zoom*box.fromP1(path[0][1]),
+                         QString("(%1,%2)").arg(path[0][0]).arg(path[0][1]));
+
+        painter.drawText(zoom*box.fromP0(path[path.size()-1][0]),
+                         zoom*box.fromP1(path[path.size()-1][1]),
+                         QString("(%1,%2)").arg(path[path.size()-1][0]).arg(path[path.size()-1][1]));
+
         for(int i=1;i<path.size();i++)
         {
             if(path[i-1].rows()>=2)
@@ -37,10 +63,17 @@ void ImageViewer::paintEvent(QPaintEvent * event)
 
 void ImageViewer::mousePressEvent(QMouseEvent * event)
 {
-    if(!image.isNull())
+    if(event->button() == Qt::LeftButton)
     {
-        emit pick(box.getP0(event->x()/zoom),
-                  box.getP1(event->y()/zoom));
+        if(!image.isNull())
+        {
+            emit pick(box.getP0(event->x()/zoom),
+                      box.getP1(event->y()/zoom));
+        }
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+        popup_menu->exec(mapToGlobal(event->pos()));
     }
 }
 
@@ -58,4 +91,37 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
     this->setFixedSize(image.size()*zoom);
     std::cout<<zoom<<std::endl;
     update();
+}
+
+void ImageViewer::slot_save_image()
+{
+    QFileInfo info(current_filename);
+    QString where=info.path();
+
+    QString filename=QFileDialog::getSaveFileName(this,"Save Image",where,"(*.png)");
+
+    if(!filename.isEmpty())
+    {
+        this->current_filename=filename;
+        if(!image.isNull())
+        {
+            image.save(filename);
+        }
+    }
+}
+
+void ImageViewer::slot_load_image()
+{
+    QFileInfo info(current_filename);
+    QString where=info.path();
+
+    QString filename=QFileDialog::getOpenFileName(this,"Load Image",where,"(*.png)");
+
+    if(!filename.isEmpty())
+    {
+        if(!image.isNull())
+        {
+            image.load(filename);
+        }
+    }
 }

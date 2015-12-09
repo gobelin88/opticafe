@@ -1,4 +1,0 @@
-y0=(p0^2-1)+(p1^2-2)
-y1=(p1^2-1)+(p0^2-2)
-p_init=0,0
-data=./scripts/02-Newton/Newton_data.csv

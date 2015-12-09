@@ -69,6 +69,8 @@ public:
 
     bool load_system(QString script);
     void load_p_init(QString script);
+
+    void load_null_data();
     void load_data(QString filename);
     void solve();
     void solve_Levmar();

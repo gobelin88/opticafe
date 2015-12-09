@@ -1,4 +1,2 @@
 y0=p0^3-3*p0*p1^2-1
 y1=3*p0^2*p1-p1^3
-p_init=0,0
-data=./scripts/02-Newton/Newton_data.csv

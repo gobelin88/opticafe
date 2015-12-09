@@ -141,7 +141,7 @@ void WorkerThread::sig_solve()
 }
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[16];
-    char stringdata[218];
+    char stringdata[211];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -157,22 +157,22 @@ QT_MOC_LITERAL(3, 28, 16), // "slot_load_script"
 QT_MOC_LITERAL(4, 45, 16), // "slot_save_script"
 QT_MOC_LITERAL(5, 62, 23), // "slot_direct_save_script"
 QT_MOC_LITERAL(6, 86, 17), // "slot_text_changed"
-QT_MOC_LITERAL(7, 104, 15), // "slot_save_image"
-QT_MOC_LITERAL(8, 120, 4), // "pick"
-QT_MOC_LITERAL(9, 125, 2), // "p0"
-QT_MOC_LITERAL(10, 128, 2), // "p1"
-QT_MOC_LITERAL(11, 131, 9), // "slot_2D_f"
-QT_MOC_LITERAL(12, 141, 14), // "slot_2D_f_func"
-QT_MOC_LITERAL(13, 156, 22), // "slot_load_conv_setting"
-QT_MOC_LITERAL(14, 179, 22), // "slot_save_conv_setting"
-QT_MOC_LITERAL(15, 202, 15) // "slot_solve_over"
+QT_MOC_LITERAL(7, 104, 4), // "pick"
+QT_MOC_LITERAL(8, 109, 2), // "p0"
+QT_MOC_LITERAL(9, 112, 2), // "p1"
+QT_MOC_LITERAL(10, 115, 9), // "slot_2D_f"
+QT_MOC_LITERAL(11, 125, 14), // "slot_2D_f_func"
+QT_MOC_LITERAL(12, 140, 22), // "slot_load_conv_setting"
+QT_MOC_LITERAL(13, 163, 8), // "filename"
+QT_MOC_LITERAL(14, 172, 22), // "slot_save_conv_setting"
+QT_MOC_LITERAL(15, 195, 15) // "slot_solve_over"
 
     },
     "MainWindow\0slot_run_script\0\0"
     "slot_load_script\0slot_save_script\0"
     "slot_direct_save_script\0slot_text_changed\0"
-    "slot_save_image\0pick\0p0\0p1\0slot_2D_f\0"
-    "slot_2D_f_func\0slot_load_conv_setting\0"
+    "pick\0p0\0p1\0slot_2D_f\0slot_2D_f_func\0"
+    "slot_load_conv_setting\0filename\0"
     "slot_save_conv_setting\0slot_solve_over"
 };
 #undef QT_MOC_LITERAL
@@ -196,13 +196,13 @@ static const uint qt_meta_data_MainWindow[] = {
        4,    0,   76,    2, 0x0a /* Public */,
        5,    0,   77,    2, 0x0a /* Public */,
        6,    0,   78,    2, 0x0a /* Public */,
-       7,    0,   79,    2, 0x0a /* Public */,
-       8,    2,   80,    2, 0x0a /* Public */,
+       7,    2,   79,    2, 0x0a /* Public */,
+      10,    0,   84,    2, 0x0a /* Public */,
       11,    0,   85,    2, 0x0a /* Public */,
-      12,    0,   86,    2, 0x0a /* Public */,
-      13,    0,   87,    2, 0x0a /* Public */,
-      14,    0,   88,    2, 0x0a /* Public */,
-      15,    0,   89,    2, 0x0a /* Public */,
+      12,    1,   86,    2, 0x0a /* Public */,
+      12,    0,   89,    2, 0x0a /* Public */,
+      14,    0,   90,    2, 0x0a /* Public */,
+      15,    0,   91,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -210,10 +210,10 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Double, QMetaType::Double,    8,    9,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Double, QMetaType::Double,    9,   10,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   13,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -231,10 +231,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 2: _t->slot_save_script(); break;
         case 3: _t->slot_direct_save_script(); break;
         case 4: _t->slot_text_changed(); break;
-        case 5: _t->slot_save_image(); break;
-        case 6: _t->pick((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
-        case 7: _t->slot_2D_f(); break;
-        case 8: _t->slot_2D_f_func(); break;
+        case 5: _t->pick((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 6: _t->slot_2D_f(); break;
+        case 7: _t->slot_2D_f_func(); break;
+        case 8: _t->slot_load_conv_setting((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 9: _t->slot_load_conv_setting(); break;
         case 10: _t->slot_save_conv_setting(); break;
         case 11: _t->slot_solve_over(); break;

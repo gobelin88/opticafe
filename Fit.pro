@@ -14,6 +14,7 @@ CONFIG += c++11
 
 INCLUDEPATH += .\eigen327
 
+RESOURCES = style.qrc
 
 SOURCES += main.cpp\
         mainwindow.cpp\

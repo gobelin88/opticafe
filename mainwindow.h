@@ -109,23 +109,26 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setStyle(QWidget * widget,QString filename);
+
 public slots:
     void slot_run_script();
     void slot_load_script();
     void slot_save_script();
     void slot_direct_save_script();
     void slot_text_changed();
-    void slot_save_image();
     void pick(double p0,double p1);
     void slot_2D_f();
     void slot_2D_f_func();
 
+    void slot_load_conv_setting(QString filename);
     void slot_load_conv_setting();
     void slot_save_conv_setting();
 
     void slot_solve_over();
 
 private:
+    void ignore(QTextStream & ts, char c);
     SolveMode getAlgo();
     Ui::MainWindow *ui;
     Parser parser;
@@ -140,6 +143,8 @@ private:
     System * sys;
 
     WorkerThread worker;
+
+    QScrollArea * scrollarea;
 };
 
 #endif // MAINWINDOW_H

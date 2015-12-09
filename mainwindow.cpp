@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     textChanged=false;
     current_filename="./scripts/default.txt";
 
+
     ui->setupUi(this);
 
 
@@ -33,7 +34,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Display
     viewerImage=new ImageViewer();
-    ui->scrollArea->setWidget(viewerImage);
+    scrollarea=new QScrollArea();
+    scrollarea->setWidget(viewerImage);
+    scrollarea->setWindowTitle("2D Convergence");
 
     //System
     sys=new System(&parser);
@@ -47,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionQuit,SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(ui->pb_calculate,SIGNAL(clicked()),this,SLOT(slot_2D_f()));
     connect(ui->pb_calculate_func,SIGNAL(clicked()),this,SLOT(slot_2D_f_func()));
-    connect(ui->pbSaveImage,SIGNAL(clicked()),this,SLOT(slot_save_image()));
     connect(ui->pb_save_conv_setting,SIGNAL(clicked()),this,SLOT(slot_save_conv_setting()));
     connect(ui->pb_load_conv_setting,SIGNAL(clicked()),this,SLOT(slot_load_conv_setting()));
 
@@ -56,6 +58,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(sys,SIGNAL(progress(int)),ui->progressBar,SLOT(setValue(int)));
 
     connect(&worker,SIGNAL(sig_solve()),this,SLOT(slot_solve_over()));
+
+    setStyle(this,"./style.qss");
+    setStyle(sys,"./style.qss");
+    setStyle(scrollarea,"./style.qss");
+}
+
+void MainWindow::setStyle(QWidget * widget,QString filename)
+{
+    QFile file(filename);
+    if(file.open(QIODevice::Text | QIODevice::ReadOnly))
+    {
+        widget->setStyleSheet(QString(file.readAll()));
+        file.close();
+    }
 }
 
 SolveMode MainWindow::getAlgo()
@@ -158,6 +174,7 @@ void MainWindow::slot_2D_f()
 
     if(sys->load_system(system_str))
     {
+        scrollarea->show();
         sys->setSolveMode(getAlgo());
 
         if(ui->cb_param1->currentIndex()==ui->cb_param2->currentIndex())
@@ -212,6 +229,7 @@ void MainWindow::slot_2D_f_func()
 
     if(sys->load_system(system_str))
     {
+        scrollarea->show();
         sys->setSolveMode(getAlgo());
 
         if(ui->cb_param1->currentIndex()==ui->cb_param2->currentIndex())
@@ -262,43 +280,86 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::slot_save_image()
-{
-    QFileInfo info(current_filename);
-    QString where=info.path()+QString("/image_")+QString(QString(SolveMode_str[getAlgo()]));
 
-    QString filename=QFileDialog::getSaveFileName(this,"Save Script",where,"(*.png)");
 
-    if(!filename.isEmpty())
-    {
-        viewerImage->getImage().save(filename);
-    }
-}
-
-void MainWindow::slot_load_conv_setting()
+void MainWindow::slot_save_conv_setting()
 {
     QString filename=QFileDialog::getSaveFileName(this,"Save Convergence Setting","","(*.txt)");
 
     if(!filename.isEmpty())
     {
+        QFile file(filename);
+
+        if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+        {
+            QTextStream ts(&file);
+
+            ts<<"Param1;"<<ui->cb_param1->currentIndex()<<"\n";
+            ts<<"Param2;"<<ui->cb_param2->currentIndex()<<"\n";
+            ts<<"Param1_min;"<<ui->sb_p0_min->value()<<"\n";
+            ts<<"Param2_min;"<<ui->sb_p1_min->value()<<"\n";
+            ts<<"Param1_max;"<<ui->sb_p0_max->value()<<"\n";
+            ts<<"Param2_max;"<<ui->sb_p1_max->value()<<"\n";
+            ts<<"Param1_res;"<<ui->sb_Height->value()<<"\n";
+            ts<<"Param2_res;"<<ui->sb_Width->value()<<"\n";
+            ts<<"color_rule;"<<ui->cb__color_mode->currentIndex()<<"\n";
+            ts<<"color_scale;"<<ui->cb_scale_color_mode->currentIndex()<<"\n";
+
+            file.close();
+        }
 
     }
 }
 
-void MainWindow::slot_save_conv_setting()
+void MainWindow::ignore(QTextStream & ts, char c)
 {
-    QString filename=QFileDialog::getOpenFileName(this,"Open Convergence Setting","","(*.txt)");
+    char car=0;
+    while( (car!=c) && !ts.atEnd() )
+    {
+        ts>>car;
+    }
+}
 
+void MainWindow::slot_load_conv_setting(QString filename)
+{
     if(!filename.isEmpty())
     {
+        QFile file(filename);
 
+        if(file.open(QIODevice::ReadOnly|QIODevice::Text))
+        {
+            QTextStream ts(&file);
+
+            double tmpd=0.0;
+            int tmp=0;
+
+            ignore(ts,';');ts>>tmp;ui->cb_param1->setCurrentIndex(tmp);
+            ignore(ts,';');ts>>tmp;ui->cb_param2->setCurrentIndex(tmp);
+            ignore(ts,';');ts>>tmpd;ui->sb_p0_min->setValue(tmpd);
+            ignore(ts,';');ts>>tmpd;ui->sb_p1_min->setValue(tmpd);
+            ignore(ts,';');ts>>tmpd;ui->sb_p0_max->setValue(tmpd);
+            ignore(ts,';');ts>>tmpd;ui->sb_p1_max->setValue(tmpd);
+            ignore(ts,';');ts>>tmp;ui->sb_Height->setValue(tmp);
+            ignore(ts,';');ts>>tmp;ui->sb_Width->setValue(tmp);
+            ignore(ts,';');ts>>tmp;ui->cb__color_mode->setCurrentIndex(tmp);
+            ignore(ts,';');ts>>tmp;ui->cb_scale_color_mode->setCurrentIndex(tmp);
+
+            file.close();
+        }
     }
+}
+
+void MainWindow::slot_load_conv_setting()
+{
+    QString filename=QFileDialog::getOpenFileName(this,"Open Convergence Setting","","(*.txt)");
+    slot_load_conv_setting(filename);
 }
 
 void MainWindow::pick(double p0,double p1)
 {
     if(worker.system_use.load())return;
 
+    sys->setSolveMode(getAlgo());
     sys->set_p_init(p0,p1);
     worker.solveSystem(sys);
 }

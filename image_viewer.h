@@ -5,6 +5,10 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <iostream>
+#include <QAction>
+#include <QMenu>
+#include <QFileInfo>
+#include <QFileDialog>
 
 #include <Eigen/Dense>
 using Eigen::VectorXd;
@@ -27,6 +31,8 @@ public:
         this->path=path;
     }
 
+    void createPopup();
+
 public slots:
     void setImage(QImage image)
     {
@@ -35,6 +41,9 @@ public slots:
         this->setFixedSize(image.size()*zoom);
         update();
     }
+
+    void slot_save_image();
+    void slot_load_image();
 
 signals:
     void pick(double p0,double p1);
@@ -49,6 +58,12 @@ protected:
     std::vector<VectorXd> path;
 
     double zoom;
+
+    QMenu * popup_menu;
+    QAction * actSave;
+    QAction * actLoad;
+
+    QString current_filename;
 };
 
 #endif // IMAGE_VIEWER_H
