@@ -1,0 +1,4 @@
+y0=27+(100-27)/(1+(10^x0/p0))
+y1=27+(100-27)/(1+(10^x0/p1))
+p_init=1,1
+data=./scripts/01-Sigmoides/Sigmoids_Data.csv

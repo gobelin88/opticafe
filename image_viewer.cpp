@@ -79,7 +79,6 @@ void ImageViewer::mousePressEvent(QMouseEvent * event)
 
 void ImageViewer::wheelEvent(QWheelEvent *event)
 {
-    std::cout<<zoom<<std::endl;
     if(event->delta()>0)
     {
         zoom*=1.1;
@@ -89,7 +88,6 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
         zoom/=1.1;
     }
     this->setFixedSize(image.size()*zoom);
-    std::cout<<zoom<<std::endl;
     update();
 }
 

@@ -215,7 +215,8 @@ void MainWindow::slot_2D_f()
 //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
         worker.calcImage(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                          (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
+                          (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
+                         ui->sb_gamma->value());
 
     }
 }
@@ -270,7 +271,8 @@ void MainWindow::slot_2D_f_func()
 //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
         worker.calcImageFunc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                          (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
+                          (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
+                             ui->sb_gamma->value());
 
     }
 }
@@ -366,7 +368,7 @@ void MainWindow::pick(double p0,double p1)
 
 void MainWindow::slot_solve_over()
 {
-    sys->eval();
+    sys->eval(sys->results.p_hat);
     sys->plot();
 
     //Path Image

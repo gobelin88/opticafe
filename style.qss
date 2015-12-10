@@ -120,7 +120,7 @@ QMenu::item
 QMenu::item:selected
 {
 	background: transparent;
-    color: #b1ffb1;
+    color: #b1b1ff;
 }
 
 QWidget:disabled
@@ -165,7 +165,7 @@ QGroupBox {
 }
 
 QGroupBox::title {
-	color: #b1ffb1;
+        color: #b1b1ff;
     subcontrol-origin: margin;
     subcontrol-position: top center;
     padding-left: 10px;
@@ -647,7 +647,7 @@ QTabBar::close-button:pressed {
 
 /* TOP - BOTTOM TABS */
 QTabBar::tab:top {
-    color: #b1ffb1;
+    color: #b1b1ff;
     border: 1px solid #595959;
     background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1,
       stop:1 #302F2F, stop:0 #5A5959);

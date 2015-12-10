@@ -36,23 +36,25 @@ public:
         system_use.store(0);
     }
 
-    void calcImageFunc(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode)
+    void calcImageFunc(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode,double gamma)
     {
         this->sys=sys;
         this->box=box;
         this->color_mode=color_mode;
         this->scale_color_mode=scale_color_mode;
+        this->gamma=gamma;
 
         what=IMAGE_FUNC;
         start();
     }
 
-    void calcImage(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode)
+    void calcImage(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode,double gamma)
     {
         this->sys=sys;
         this->box=box;
         this->color_mode=color_mode;
         this->scale_color_mode=scale_color_mode;
+        this->gamma=gamma;
 
         what=IMAGE;
         start();
@@ -72,11 +74,11 @@ public:
 
         if(what==IMAGE_FUNC)
         {
-            emit sig_image(System::toImage(sys->eval_2D_p0p1(box,color_mode),scale_color_mode));
+            emit sig_image(System::toImage(sys->eval_2D_p0p1(box,color_mode),scale_color_mode,gamma));
         }
         else if(what==IMAGE)
         {
-            emit sig_image(System::toImage(sys->solve_2D_p0p1(box,color_mode),scale_color_mode));
+            emit sig_image(System::toImage(sys->solve_2D_p0p1(box,color_mode),scale_color_mode,gamma));
         }
         else if (what==SOLVE)
         {
@@ -98,6 +100,7 @@ private:
     ColorMode color_mode;
     ScaleColorMode scale_color_mode;
     WhatToDo what;
+    double gamma;
 };
 
 

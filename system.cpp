@@ -211,7 +211,6 @@ std::vector< std::vector<double> > System::solve_2D_p0p1(Box box, ColorMode mode
             if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
             else if(MODE_IT==mode)map2D[i][j]=(int)results.it_performed;
             else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
-            else if(MODE_MODULE_LOG==mode)map2D[i][j]=20*log10(results.p_hat.norm());
             else
             {
                 map2D[i][j]=0;
@@ -237,12 +236,11 @@ std::vector< std::vector<double> > System::eval_2D_p0p1(Box box, ColorMode mode)
             p0[id1]=box.getP0(i);
             p0[id2]=box.getP1(j);
 
-            results.p_hat=eval(p0);
+            results.p_hat=evalErr(p0);
 
             //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
             if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
             else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
-            else if(MODE_MODULE_LOG==mode)map2D[i][j]=20*log10(1+results.p_hat.norm());
             else
             {
                 map2D[i][j]=0;
@@ -343,8 +341,8 @@ void System::solve_Gauss_Newton()
 
 VectorXd System::get_y(VectorXd p)
 {
-    VectorXd err(data.y.size()*nb_y);
-    err.setZero();
+    VectorXd Yij(data.y.size()*nb_y);
+    Yij.setZero();
 
     for(unsigned int i=0;i<data.x.size();i++)
     {
@@ -352,25 +350,43 @@ VectorXd System::get_y(VectorXd p)
 
         for(unsigned int j=0;j<yi.rows();j++)
         {
-            err[i*yi.rows()+j]=yi[j];
+            Yij[i*yi.rows()+j]=yi[j];
         }
     }
 
-    return err;
+    return Yij;
 }
 
-void System::eval()
+VectorXd System::eval(VectorXd p)
 {
     model.x.clear();
     model.y.clear();
 
     for(unsigned int i=0;i<data.x.size();i++)
     {
-        VectorXd yi=eval(data.x[i],results.p_hat);
+        VectorXd yi=eval(data.x[i],p);
 
         model.x.push_back(data.x[i]);
         model.y.push_back(yi);
     }
+
+    return serialize(model.y);
+}
+
+VectorXd System::evalErr(VectorXd p)
+{
+    model.x.clear();
+    model.y.clear();
+
+    for(unsigned int i=0;i<data.x.size();i++)
+    {
+        VectorXd yi=eval(data.x[i],p);
+
+        model.x.push_back(data.x[i]);
+        model.y.push_back(yi);
+    }
+
+    return serialize(model.y)-serialize(data.y);
 }
 
 VectorXd System::eval(VectorXd x,VectorXd p)
@@ -407,7 +423,7 @@ VectorXd System::eval(VectorXd x,VectorXd p)
     return y;
 }
 
-VectorXd System::eval(VectorXd p)
+VectorXd System::eval_atX0(VectorXd p)
 {
     VectorXd y(nb_y);
     y.setZero();
@@ -498,7 +514,7 @@ void System::searchMinMax(const std::vector<std::vector<double> > &data, double 
     }
 }
 
-QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode)
+QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode,double gamma)
 {
     QImage image(QSize(data.size(),data[0].size()),QImage::Format_RGB32);
 
@@ -511,22 +527,22 @@ QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleCol
         {
             if(mode==MODE_BLUE_GRADIENT)
             {
-                int value= (255.0*(data[i][j]-min))/(max-min);
-                image.setPixel(i,j,qRgb(value,
-                                        std::min(255,2*value),
-                                        std::min(255,3*value)));
+                double value= std::pow((data[i][j]-min)/(max-min),gamma);
+                image.setPixel(i,j,qRgb(255.0*value,
+                                        255.0*std::pow(value,0.9),
+                                        255.0*std::pow(value,0.2)));
             }
             else if(mode==MODE_PERIODIC)
             {
-                double value= (2*M_PI*(data[i][j]-min))/(max-min);
-                image.setPixel(i,j,qRgb(127*sin(value)          +128,
-                                        127*sin(value+2*M_PI/3) +128,
-                                        127*sin(value+4*M_PI/3) +128));
+                double value= std::pow((data[i][j]-min)/(max-min),gamma);
+                image.setPixel(i,j,qRgb(127*sin(2*M_PI*value)          +128,
+                                        127*sin(2*M_PI*value+2*M_PI/3) +128,
+                                        127*sin(2*M_PI*value+4*M_PI/3) +128));
             }
             else if(mode==MODE_RAINBOW)
             {
-                double value= 359*(data[i][j]-min)/(max-min);
-                image.setPixel(i,j,QColor::fromHsv(std::max<double>(0,std::min<double>(359,value)),255,128).rgb());
+                double value= std::pow((data[i][j]-min)/(max-min),gamma);
+                image.setPixel(i,j,QColor::fromHsv(std::max<double>(0,std::min<double>(359,359*value)),255,128).rgb());
             }
         }
     }

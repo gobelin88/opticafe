@@ -72,6 +72,7 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QComboBox *cb__color_mode;
     QComboBox *cb_scale_color_mode;
+    QDoubleSpinBox *sb_gamma;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_7;
     QProgressBar *progressBar;
@@ -239,6 +240,14 @@ public:
 
         horizontalLayout_3->addWidget(cb_scale_color_mode);
 
+        sb_gamma = new QDoubleSpinBox(groupBox_2);
+        sb_gamma->setObjectName(QStringLiteral("sb_gamma"));
+        sb_gamma->setMaximum(1);
+        sb_gamma->setSingleStep(0.1);
+        sb_gamma->setValue(1);
+
+        horizontalLayout_3->addWidget(sb_gamma);
+
 
         horizontalLayout_4->addLayout(horizontalLayout_3);
 
@@ -392,6 +401,7 @@ public:
          << QApplication::translate("MainWindow", "p9", 0)
         );
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Color rules", 0));
+        sb_gamma->setPrefix(QApplication::translate("MainWindow", "gamma=", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Calculate", 0));
         pb_calculate_func->setText(QApplication::translate("MainWindow", "Evaluate", 0));
         pb_calculate->setText(QApplication::translate("MainWindow", "Analyse Convergence", 0));

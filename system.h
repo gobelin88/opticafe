@@ -86,12 +86,13 @@ public:
 
     VectorXd get_y(VectorXd p);
 
-    void eval();
-    VectorXd eval(VectorXd p); //x=0
-    VectorXd eval(VectorXd x,VectorXd p);
+    VectorXd eval(VectorXd p);      //pour chaque x a p
+    VectorXd evalErr(VectorXd p);   //pour chaque x a p
+    VectorXd eval_atX0(VectorXd p); //pour x=0 a p
+    VectorXd eval(VectorXd x,VectorXd p); //pour x
     std::vector< std::vector<double> > eval_2D_p0p1(Box box, ColorMode mode);
 
-    static QImage toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode);
+    static QImage toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode, double gamma);
     static void searchMinMax(const std::vector< std::vector<double> > & data,double & min,double & max);
 
     const SystemData & getSystemData(){return data;}
