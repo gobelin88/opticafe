@@ -150,6 +150,7 @@ public:
 
         vlayout->addWidget(gb_commons_params);
         vlayout->addWidget(gb_specifics_params);
+        vlayout->addStretch(400);
 
         reset();
 

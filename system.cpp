@@ -87,11 +87,11 @@ bool System::load_system(QString script)
             }
             else if(args[0].contains("data"))
             {
-                load_data(args[1]);
+                if(!load_data(args[1]))return false;
             }
             else if(args[0].contains("p_init"))
             {
-                load_p_init(args[1]);
+                if(!load_p_init(args[1]))return false;
             }
             else
             {
@@ -109,7 +109,7 @@ bool System::load_system(QString script)
     return true;
 }
 
-void System::load_p_init(QString script)
+bool System::load_p_init(QString script)
 {
     QStringList p_init_str=script.split(",",QString::SkipEmptyParts);
 
@@ -122,9 +122,10 @@ void System::load_p_init(QString script)
     }
     else
     {
-        std::cout<<"Erreur :  La dimension de p_init est incohérente"<<std::endl;
+        QMessageBox::critical(this,"Error",QString("Wrong dimension for p_init %1 : expected %2").arg(p_init_str.size()).arg(nb_p));
+        return false;
     }
-
+    return true;
 }
 
 void System::load_null_data()
@@ -136,7 +137,7 @@ void System::load_null_data()
     data.y.push_back(yp);
 }
 
-void System::load_data(QString filename)
+bool System::load_data(QString filename)
 {
     data.x.clear();
     data.y.clear();
@@ -167,18 +168,18 @@ void System::load_data(QString filename)
             }
             else
             {
-                std::cout<<"Erreur : La dimension des lignes ne correspond pas au systeme"<<line.size()<<" "<<nb_x+nb_y<<std::endl;
+                QMessageBox::critical(this,"Error",QString("Wrong colums numbers in data file  %1 : expected %2").arg(line.size()).arg(nb_x+nb_y));
+                return false;
             }
         }
-
-        std::cout<<"data x="<<data.x.size()<<" y="<<data.y.size()<<std::endl;
-
         file.close();
     }
     else
     {
-        std::cout<<"Erreur : Impossible d'ouvrir le fichier "<<filename.toLocal8Bit().data()<<std::endl;
+        QMessageBox::critical(this,"Error",QString("Failed to open data file: %1 ").arg(filename.toLocal8Bit().data()));
+        return false;
     }
+    return true;
 }
 
 void System::set_p_init(double _p0,double _p1)
@@ -520,6 +521,9 @@ QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleCol
 
     double min,max;
     searchMinMax(data,min,max);
+
+    std::cout<<"min="<<min<<std::endl;
+    std::cout<<"max="<<max<<std::endl;
 
     for(int i=0;i<image.width();i++)
     {

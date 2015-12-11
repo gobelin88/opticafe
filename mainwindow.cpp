@@ -57,11 +57,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&worker,SIGNAL(sig_image(QImage)),viewerImage,SLOT(setImage(QImage)));
     connect(sys,SIGNAL(progress(int)),ui->progressBar,SLOT(setValue(int)));
 
+    connect(ui->a_tiles,SIGNAL(triggered()),ui->mdiArea,SLOT(tileSubWindows()));
+
     connect(&worker,SIGNAL(sig_solve()),this,SLOT(slot_solve_over()));
 
     setStyle(this,"./style.qss");
     setStyle(sys,"./style.qss");
     setStyle(scrollarea,"./style.qss");
+
+
+    ui->mdiArea->addSubWindow(sys,Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
+    ui->mdiArea->addSubWindow(scrollarea,Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
+    ui->mdiArea->addSubWindow(ui->tabSystem,Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
+    ui->tabSystem->showMaximized();
 }
 
 void MainWindow::setStyle(QWidget * widget,QString filename)
@@ -182,12 +190,12 @@ void MainWindow::slot_2D_f()
             QMessageBox::information(this,"Bad Id for parametres",QString("p%1 == p%2").arg(ui->cb_param1->currentIndex()).arg(ui->cb_param2->currentIndex()));
             return;
         }
-        if(ui->cb_param1->currentIndex()>ui->cb_param2->currentIndex())
-        {
-            int index=ui->cb_param1->currentIndex();
-            ui->cb_param1->setCurrentIndex(ui->cb_param2->currentIndex());
-            ui->cb_param2->setCurrentIndex(index);
-        }
+//        if(ui->cb_param1->currentIndex()>ui->cb_param2->currentIndex())
+//        {
+//            int index=ui->cb_param1->currentIndex();
+//            ui->cb_param1->setCurrentIndex(ui->cb_param2->currentIndex());
+//            ui->cb_param2->setCurrentIndex(index);
+//        }
         if(!sys->selectId1(ui->cb_param1->currentIndex()))
         {
             QMessageBox::information(this,"Bad Id for parametre 1",QString("p%1 is not defined in the system").arg(ui->cb_param1->currentIndex()));
@@ -238,12 +246,12 @@ void MainWindow::slot_2D_f_func()
             QMessageBox::information(this,"Bad Id for parametres",QString("p%1 == p%2").arg(ui->cb_param1->currentIndex()).arg(ui->cb_param2->currentIndex()));
             return;
         }
-        if(ui->cb_param1->currentIndex()>ui->cb_param2->currentIndex())
-        {
-            int index=ui->cb_param1->currentIndex();
-            ui->cb_param1->setCurrentIndex(ui->cb_param2->currentIndex());
-            ui->cb_param2->setCurrentIndex(index);
-        }
+//        if(ui->cb_param1->currentIndex()>ui->cb_param2->currentIndex())
+//        {
+//            int index=ui->cb_param1->currentIndex();
+//            ui->cb_param1->setCurrentIndex(ui->cb_param2->currentIndex());
+//            ui->cb_param2->setCurrentIndex(index);
+//        }
         if(!sys->selectId1(ui->cb_param1->currentIndex()))
         {
             QMessageBox::information(this,"Bad Id for parametre 1",QString("p%1 is not defined in the system").arg(ui->cb_param1->currentIndex()));
@@ -361,6 +369,10 @@ void MainWindow::pick(double p0,double p1)
 {
     if(worker.system_use.load())return;
 
+    std::cout<<p0<<" "<<p1<<std::endl;
+    sys->selectId1(ui->cb_param1->currentIndex());
+    sys->selectId2(ui->cb_param2->currentIndex());
+
     sys->setSolveMode(getAlgo());
     sys->set_p_init(p0,p1);
     worker.solveSystem(sys);
@@ -372,6 +384,6 @@ void MainWindow::slot_solve_over()
     sys->plot();
 
     //Path Image
-    viewerImage->setPath(sys->results.p_list);
+    viewerImage->setPath(sys->results.p_list,ui->cb_param1->currentIndex(),ui->cb_param2->currentIndex());
     viewerImage->update();
 }

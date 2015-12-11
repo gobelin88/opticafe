@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}Deeling with Opticafe}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Introduction}{2}{subsection.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}With external measures}{2}{subsubsection.1.1.1}
+\contentsline {subsubsection}{\numberline {1.1.2}Without external measures}{2}{subsubsection.1.1.2}
+\contentsline {subsection}{\numberline {1.2}Step 1: Define a system of equations}{2}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Step 2: Loading measures}{3}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Step 3: Minimise the system of equations}{3}{subsection.1.4}
+\contentsline {section}{\numberline {2}Simples Exemples}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Linear regression}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Polynomial regression}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Multiple regression}{3}{subsection.2.3}
+\contentsline {section}{\numberline {3}Advanced Exemples}{3}{section.3}
+\contentsline {subsection}{\numberline {3.1}Rosenbrock function}{3}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Newton optimisation}{3}{subsection.3.2}

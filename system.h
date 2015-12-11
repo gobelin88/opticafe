@@ -68,10 +68,10 @@ public:
     System(Parser * parser,QString script);
 
     bool load_system(QString script);
-    void load_p_init(QString script);
+    bool load_p_init(QString script);
 
     void load_null_data();
-    void load_data(QString filename);
+    bool load_data(QString filename);
     void solve();
     void solve_Levmar();
     void solve_Dogleg();

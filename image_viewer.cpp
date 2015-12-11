@@ -5,6 +5,8 @@ ImageViewer::ImageViewer()
     path.clear();
     zoom=1.0;
 
+    id1=0;
+    id2=0;
 
     createPopup();
 }
@@ -40,22 +42,22 @@ void ImageViewer::paintEvent(QPaintEvent * event)
     painter.setPen(QPen(QColor(255,0,0)));
     if(path.size()>2)
     {
-        painter.drawText(zoom*box.fromP0(path[0][0]),
-                         zoom*box.fromP1(path[0][1]),
-                         QString("(%1,%2)").arg(path[0][0]).arg(path[0][1]));
+        painter.drawText(zoom*box.fromP0(path[0][id1]),
+                         zoom*box.fromP1(path[0][id2]),
+                         QString("(%1,%2)").arg(path[0][id1]).arg(path[0][id2]));
 
-        painter.drawText(zoom*box.fromP0(path[path.size()-1][0]),
-                         zoom*box.fromP1(path[path.size()-1][1]),
-                         QString("(%1,%2)").arg(path[path.size()-1][0]).arg(path[path.size()-1][1]));
+        painter.drawText(zoom*box.fromP0(path[path.size()-1][id1]),
+                         zoom*box.fromP1(path[path.size()-1][id2]),
+                         QString("(%1,%2)").arg(path[path.size()-1][id1]).arg(path[path.size()-1][id2]));
 
         for(int i=1;i<path.size();i++)
         {
             if(path[i-1].rows()>=2)
             {
-                painter.drawLine(zoom*box.fromP0(path[i-1][0]),
-                        zoom*box.fromP1(path[i-1][1]),
-                        zoom*box.fromP0(path[i][0]),
-                        zoom*box.fromP1(path[i][1]));
+                painter.drawLine(zoom*box.fromP0(path[i-1][id1]),
+                        zoom*box.fromP1(path[i-1][id2]),
+                        zoom*box.fromP0(path[i][id1]),
+                        zoom*box.fromP1(path[i][id2]));
             }
         }
     }

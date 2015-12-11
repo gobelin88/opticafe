@@ -20,10 +20,12 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -45,6 +47,7 @@ public:
     QAction *actionQuit;
     QAction *actionMinimize;
     QAction *actionAlgorithms;
+    QAction *a_tiles;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QTabWidget *tabSystem;
@@ -65,8 +68,8 @@ public:
     QDoubleSpinBox *sb_p1_min;
     QDoubleSpinBox *sb_p1_max;
     QSpinBox *sb_Height;
-    QComboBox *cb_param2;
     QComboBox *cb_param1;
+    QComboBox *cb_param2;
     QGroupBox *groupBox_2;
     QHBoxLayout *horizontalLayout_4;
     QHBoxLayout *horizontalLayout_3;
@@ -84,15 +87,18 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QPushButton *pb_save_conv_setting;
     QPushButton *pb_load_conv_setting;
+    QSpacerItem *verticalSpacer;
+    QMdiArea *mdiArea;
     QMenuBar *menuBar;
     QMenu *menuOpen;
+    QMenu *menuWindows;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(488, 431);
+        MainWindow->resize(714, 739);
         actionOpen = new QAction(MainWindow);
         actionOpen->setObjectName(QStringLiteral("actionOpen"));
         actionSave = new QAction(MainWindow);
@@ -111,6 +117,8 @@ public:
         actionMinimize->setObjectName(QStringLiteral("actionMinimize"));
         actionAlgorithms = new QAction(MainWindow);
         actionAlgorithms->setObjectName(QStringLiteral("actionAlgorithms"));
+        a_tiles = new QAction(MainWindow);
+        a_tiles->setObjectName(QStringLiteral("a_tiles"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -119,6 +127,8 @@ public:
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         tabSystem = new QTabWidget(centralWidget);
         tabSystem->setObjectName(QStringLiteral("tabSystem"));
+        tabSystem->setMinimumSize(QSize(0, 0));
+        tabSystem->setMaximumSize(QSize(16777215, 16777215));
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         verticalLayout_2 = new QVBoxLayout(tab);
@@ -139,6 +149,8 @@ public:
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         tabSetting = new QTabWidget(tab_2);
         tabSetting->setObjectName(QStringLiteral("tabSetting"));
+        tabSetting->setMinimumSize(QSize(0, 0));
+        tabSetting->setMaximumSize(QSize(16777215, 16777215));
         tabSetting->setTabPosition(QTabWidget::West);
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
@@ -205,15 +217,15 @@ public:
 
         gridLayout_2->addWidget(sb_Height, 1, 3, 1, 1);
 
-        cb_param2 = new QComboBox(groupBox);
-        cb_param2->setObjectName(QStringLiteral("cb_param2"));
-
-        gridLayout_2->addWidget(cb_param2, 0, 0, 1, 1);
-
         cb_param1 = new QComboBox(groupBox);
         cb_param1->setObjectName(QStringLiteral("cb_param1"));
 
-        gridLayout_2->addWidget(cb_param1, 1, 0, 1, 1);
+        gridLayout_2->addWidget(cb_param1, 0, 0, 1, 1);
+
+        cb_param2 = new QComboBox(groupBox);
+        cb_param2->setObjectName(QStringLiteral("cb_param2"));
+
+        gridLayout_2->addWidget(cb_param2, 1, 0, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_2);
@@ -242,7 +254,7 @@ public:
 
         sb_gamma = new QDoubleSpinBox(groupBox_2);
         sb_gamma->setObjectName(QStringLiteral("sb_gamma"));
-        sb_gamma->setMaximum(1);
+        sb_gamma->setMaximum(10);
         sb_gamma->setSingleStep(0.1);
         sb_gamma->setValue(1);
 
@@ -310,6 +322,10 @@ public:
 
         verticalLayout_8->addWidget(groupBox_4);
 
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_8->addItem(verticalSpacer);
+
         tabSetting->addTab(tab_3, QString());
 
         verticalLayout_3->addWidget(tabSetting);
@@ -318,18 +334,26 @@ public:
 
         verticalLayout->addWidget(tabSystem);
 
+        mdiArea = new QMdiArea(centralWidget);
+        mdiArea->setObjectName(QStringLiteral("mdiArea"));
+
+        verticalLayout->addWidget(mdiArea);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 488, 21));
+        menuBar->setGeometry(QRect(0, 0, 714, 21));
         menuOpen = new QMenu(menuBar);
         menuOpen->setObjectName(QStringLiteral("menuOpen"));
+        menuWindows = new QMenu(menuBar);
+        menuWindows->setObjectName(QStringLiteral("menuWindows"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuOpen->menuAction());
+        menuBar->addAction(menuWindows->menuAction());
         menuOpen->addAction(actionOpen);
         menuOpen->addAction(actionSave);
         menuOpen->addAction(actionSaveUnder);
@@ -338,13 +362,14 @@ public:
         menuOpen->addAction(actionMinimize);
         menuOpen->addSeparator();
         menuOpen->addAction(actionQuit);
+        menuWindows->addAction(a_tiles);
 
         retranslateUi(MainWindow);
 
-        tabSystem->setCurrentIndex(1);
+        tabSystem->setCurrentIndex(0);
         tabSetting->setCurrentIndex(0);
-        cb_param2->setCurrentIndex(1);
         cb_param1->setCurrentIndex(0);
+        cb_param2->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -368,14 +393,15 @@ public:
         actionMinimize->setText(QApplication::translate("MainWindow", "Minimize", 0));
         actionMinimize->setShortcut(QApplication::translate("MainWindow", "Ctrl+M", 0));
         actionAlgorithms->setText(QApplication::translate("MainWindow", "Algorithms", 0));
+        a_tiles->setText(QApplication::translate("MainWindow", "Tiles", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab), QApplication::translate("MainWindow", "System", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "Region and  Resolution", 0));
         sb_p0_max->setPrefix(QApplication::translate("MainWindow", "p0_max=", 0));
         sb_p0_min->setPrefix(QApplication::translate("MainWindow", "p0_min=", 0));
         sb_p1_min->setPrefix(QApplication::translate("MainWindow", "p1_min=", 0));
         sb_p1_max->setPrefix(QApplication::translate("MainWindow", "p1_max=", 0));
-        cb_param2->clear();
-        cb_param2->insertItems(0, QStringList()
+        cb_param1->clear();
+        cb_param1->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "p0", 0)
          << QApplication::translate("MainWindow", "p1", 0)
          << QApplication::translate("MainWindow", "p2", 0)
@@ -387,8 +413,8 @@ public:
          << QApplication::translate("MainWindow", "p8", 0)
          << QApplication::translate("MainWindow", "p9", 0)
         );
-        cb_param1->clear();
-        cb_param1->insertItems(0, QStringList()
+        cb_param2->clear();
+        cb_param2->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "p0", 0)
          << QApplication::translate("MainWindow", "p1", 0)
          << QApplication::translate("MainWindow", "p2", 0)
@@ -411,6 +437,7 @@ public:
         tabSetting->setTabText(tabSetting->indexOf(tab_3), QApplication::translate("MainWindow", "Convergence 2D", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab_2), QApplication::translate("MainWindow", "Analysis", 0));
         menuOpen->setTitle(QApplication::translate("MainWindow", "Menu", 0));
+        menuWindows->setTitle(QApplication::translate("MainWindow", "Windows", 0));
     } // retranslateUi
 
 };

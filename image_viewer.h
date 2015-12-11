@@ -26,9 +26,11 @@ public:
 
     void setBox(Box box){this->box=box;}
 
-    void setPath(std::vector<VectorXd> path)
+    void setPath(std::vector<VectorXd> path,int id1,int id2)
     {
         this->path=path;
+        this->id1=id1;
+        this->id2=id2;
     }
 
     void createPopup();
@@ -64,6 +66,8 @@ protected:
     QAction * actLoad;
 
     QString current_filename;
+
+    int id1,id2;
 };
 
 #endif // IMAGE_VIEWER_H

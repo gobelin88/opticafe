@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>488</width>
-    <height>431</height>
+    <width>714</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,20 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTabWidget" name="tabSystem">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -37,6 +49,18 @@
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QTabWidget" name="tabSetting">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="tabPosition">
            <enum>QTabWidget::West</enum>
           </property>
@@ -153,9 +177,9 @@
                   </widget>
                  </item>
                  <item row="0" column="0">
-                  <widget class="QComboBox" name="cb_param2">
+                  <widget class="QComboBox" name="cb_param1">
                    <property name="currentIndex">
-                    <number>1</number>
+                    <number>0</number>
                    </property>
                    <item>
                     <property name="text">
@@ -210,9 +234,9 @@
                   </widget>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QComboBox" name="cb_param1">
+                  <widget class="QComboBox" name="cb_param2">
                    <property name="currentIndex">
-                    <number>0</number>
+                    <number>1</number>
                    </property>
                    <item>
                     <property name="text">
@@ -291,7 +315,7 @@
                     <string>gamma=</string>
                    </property>
                    <property name="maximum">
-                    <double>1.000000000000000</double>
+                    <double>10.000000000000000</double>
                    </property>
                    <property name="singleStep">
                     <double>0.100000000000000</double>
@@ -367,6 +391,19 @@
               </layout>
              </widget>
             </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </widget>
          </widget>
@@ -375,6 +412,9 @@
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QMdiArea" name="mdiArea"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -382,7 +422,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>488</width>
+     <width>714</width>
      <height>21</height>
     </rect>
    </property>
@@ -399,7 +439,14 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuWindows">
+    <property name="title">
+     <string>Windows</string>
+    </property>
+    <addaction name="a_tiles"/>
+   </widget>
    <addaction name="menuOpen"/>
+   <addaction name="menuWindows"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
@@ -463,6 +510,11 @@
   <action name="actionAlgorithms">
    <property name="text">
     <string>Algorithms</string>
+   </property>
+  </action>
+  <action name="a_tiles">
+   <property name="text">
+    <string>Tiles</string>
    </property>
   </action>
  </widget>
