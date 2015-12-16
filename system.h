@@ -13,19 +13,25 @@
 #include <unsupported/Eigen/NonLinearOptimization>
 #include "newtonsolver.h"
 #include "parameters.h"
-#include "parser/parser.h"
+#include "exprtk/exprtk.hpp"
 #include "box.h"
+
+using Eigen::Vector3d;
 
 struct SystemData
 {
-   std::vector< VectorXd > x,y;
+    std::vector< VectorXd > x,y;
 };
 
-struct Results
+class Results
 {
+public:
     Results()
     {
-       reset();
+        reset();
+        id1=-1;
+        id2=-1;
+        id3=-1;
     }
 
     int it_performed;
@@ -38,14 +44,14 @@ struct Results
     void computeCor()
     {
         cor_hat.resize(cov_hat.rows(),cov_hat.cols());
-        for(unsigned int i=0;i<cov_hat.rows();i++)
+        for(int i=0;i<cov_hat.rows();i++)
         {
-            for(unsigned int j=0;j<cov_hat.cols();j++)
+            for(int j=0;j<cov_hat.cols();j++)
             {
                 cor_hat(i,j)=std::abs(cov_hat(i,j)/sqrt(std::abs(cov_hat(i,i)*cov_hat(j,j))));
             }
         }
-    }   
+    }
 
     void reset()
     {
@@ -54,24 +60,26 @@ struct Results
         time_elapsed=0;
         cov_hat.setZero();
         cor_hat.setZero();
-        p_list.clear();
+        p_list.clear();        
     }
+
+    int id1,id2,id3;
 };
 
 class System:  public QTabWidget
 {
     Q_OBJECT
 public:
-    void init(Parser * parser);
-    System(Parser * parser);
-    System(Parser * parser,int nb_p,int nb_x,int nb_y);
-    System(Parser * parser,QString script);
+    void init();
+    System();
+    System(QString script);
 
+    bool compile();
     bool load_system(QString script);
     bool load_p_init(QString script);
-
     void load_null_data();
     bool load_data(QString filename);
+
     void solve();
     void solve_Levmar();
     void solve_Dogleg();
@@ -81,8 +89,13 @@ public:
     void plot();
 
     void set_p_init(double _p0,double _p1);
+    void set_p_init(double _p0, double _p1, double _p2);
     void set_p_init(VectorXd p_init);
+
+    double System::getColorModeValue(ColorMode mode);
+    std::vector<double> solve_1D_p0(Box box, ColorMode mode);
     std::vector< std::vector<double> > solve_2D_p0p1(Box box, ColorMode mode);
+    std::vector< std::vector< std::vector<double> > > solve_3D_p0p1p2(Box box, ColorMode mode);
 
     VectorXd get_y(VectorXd p);
 
@@ -90,14 +103,21 @@ public:
     VectorXd evalErr(VectorXd p);   //pour chaque x a p
     VectorXd eval_atX0(VectorXd p); //pour x=0 a p
     VectorXd eval(VectorXd x,VectorXd p); //pour x
-    std::vector< std::vector<double> > eval_2D_p0p1(Box box, ColorMode mode);
 
+    std::vector<double> eval_1D_p0(Box box, ColorMode mode);
+    std::vector< std::vector<double> > eval_2D_p0p1(Box box, ColorMode mode);
+    std::vector< std::vector< std::vector<double> > > eval_3D_p0p1p2(Box box, ColorMode mode);
+
+    static QColor getColor(double value, ScaleColorMode mode);
+    static QColor getColor(double val, ScaleColorMode mode,double gamma,double min,double max);
     static QImage toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode, double gamma);
+    static std::vector<std::pair<Vector3d,QColor>> toCloud(const std::vector<std::vector< std::vector<double> > > & data, ScaleColorMode mode,double gamma,double cut,double scale);
     static void searchMinMax(const std::vector< std::vector<double> > & data,double & min,double & max);
+    static void searchMinMax(const std::vector<std::vector<std::vector<double> >> &data, double &min, double &max);
 
     const SystemData & getSystemData(){return data;}
     const SystemData & getSystemModel(){return model;}
-    VectorXd serialize(std::vector<VectorXd> v);
+    VectorXd serialize(const std::vector<Eigen::VectorXd> &v);
 
     VectorXd p0;
 
@@ -113,7 +133,7 @@ public:
     {
         if(id<p0.rows())
         {
-            id1=id;
+            results.id1=id;
             return true;
         }
         else
@@ -125,7 +145,19 @@ public:
     {
         if(id<p0.rows())
         {
-            id2=id;
+            results.id2=id;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool selectId3(int id)
+    {
+        if(id<p0.rows())
+        {
+            results.id3=id;
             return true;
         }
         else
@@ -149,16 +181,22 @@ private:
     QByteArray getCharName(char var,int var_id);
     double getRMS(int id);
     int nb_p,nb_x,nb_y;
-    std::vector<QByteArray> eq_list;
+
     SystemData data,model;
     VectorXd y_serialized;
 
     //Parser & Helper
     ParamHandler * handler;
-    Parser * ptr_parser;
+    exprtk::parser<double> parser;
+    std::vector<QByteArray> expr_str;
+    std::vector<exprtk::expression<double>> expr;
+    exprtk::symbol_table<double> symbol_table;
 
     int id_active;
-    int id1,id2;
+
+    //Variables
+    double X[9];
+    double P[9];
 };
 
 class SystemFunctor:public LMFunctor<double>
@@ -194,7 +232,7 @@ public:
 
 private:
     System * sys;
-    VectorXd y_serialized;    
+    VectorXd y_serialized;
 };
 
 

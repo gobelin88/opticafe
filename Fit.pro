@@ -11,6 +11,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Fit
 TEMPLATE = app
 CONFIG += c++11
+QT+=opengl
+
+QMAKE_CXXFLAGS += -bigobj
+
+LIBS+= -lGlU32 -lOpenGL32
 
 INCLUDEPATH += .\eigen327
 
@@ -19,26 +24,23 @@ RESOURCES = style.qrc
 SOURCES += main.cpp\
         mainwindow.cpp\
         system.cpp\
-        parser\parser.cpp \
-        parser\error.cpp \
-        parser\functions.cpp \
-        parser\variablelist.cpp \
         qcustomplot.cpp \
-    image_viewer.cpp
+        2d_viewer.cpp \
+        3d_viewer.cpp \
+    1d_viewer.cpp
 
 
 HEADERS  += mainwindow.h \
             system.h\
-            parser\parser.h \
-            parser\constants.h \
-            parser\error.h \
-            parser\functions.h \
-            parser\variablelist.h \
             lmfunctor.h \
             qcustomplot.h \
-    newtonsolver.h \
-    parameters.h \
-    image_viewer.h \
-    box.h
+            exprtk\exprtk.hpp \
+            newtonsolver.h \
+            parameters.h \
+            2d_viewer.h \
+            3d_viewer.h \
+            box.h \
+            DrawableInterface.h \
+    1d_viewer.h
 
 FORMS    += mainwindow.ui

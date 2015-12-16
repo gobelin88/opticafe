@@ -1,6 +1,0 @@
-y0=p0+p1*x0+p2*x0^2+p3*x0^3
-y1=p0+p4*x0+p5*x0^2+p6*x0^3
-y2=0
-y3=0
-p_init=0,0,0,0,0,0,0,0,0
-data=./scripts/01-Sigmoides/Sigmoids_Data.csv

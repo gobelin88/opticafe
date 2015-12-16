@@ -1,0 +1,19 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 14.12.1 ] */
+
+/* [wxMaxima: input   start ] */
+Re(a,b):=realpart( (a+b*%i)^3-1 );
+Im(a,b):=imagpart( (a+b*%i)^3-1 );
+P(a,b):= matrix ( [Re(a,b)],[Im(a,b)] );
+J:matrix ( [ diff(Re(a,b),a),diff(Re(a,b),b) ],[diff(Im(a,b),a),diff(Im(a,b),b)] );
+ratsimp(-invert(J).P(a,b));
+ratsimp(invert(transpose(J).J).transpose(J).P(a,b));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp( realpart( -((a+b*%i)^3-1)/( 3*(a+b*%i)^2 ) ) );
+ratsimp( imagpart( -((a+b*%i)^3-1)/( 3*(a+b*%i)^2 ) ) );
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

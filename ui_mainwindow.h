@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGridLayout>
@@ -56,32 +57,37 @@ public:
     QTextEdit *te_script;
     QWidget *tab_2;
     QVBoxLayout *verticalLayout_3;
-    QTabWidget *tabSetting;
-    QWidget *tab_3;
-    QVBoxLayout *verticalLayout_8;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_4;
     QGridLayout *gridLayout_2;
-    QDoubleSpinBox *sb_p0_max;
-    QSpinBox *sb_Width;
-    QDoubleSpinBox *sb_p0_min;
-    QDoubleSpinBox *sb_p1_min;
+    QSpinBox *sb_p2_res;
     QDoubleSpinBox *sb_p1_max;
-    QSpinBox *sb_Height;
-    QComboBox *cb_param1;
+    QComboBox *cb_param3;
+    QDoubleSpinBox *sb_p0_min;
     QComboBox *cb_param2;
+    QSpinBox *sb_p0_res;
+    QDoubleSpinBox *sb_p0_max;
+    QSpinBox *sb_p1_res;
+    QDoubleSpinBox *sb_p1_min;
+    QDoubleSpinBox *sb_p2_min;
+    QDoubleSpinBox *sb_p2_max;
+    QComboBox *cb_param1;
+    QCheckBox *rb_1D;
+    QCheckBox *rb_2D;
+    QCheckBox *rb_3D;
     QGroupBox *groupBox_2;
     QHBoxLayout *horizontalLayout_4;
     QHBoxLayout *horizontalLayout_3;
     QComboBox *cb__color_mode;
     QComboBox *cb_scale_color_mode;
     QDoubleSpinBox *sb_gamma;
+    QDoubleSpinBox *sb_cut;
     QGroupBox *groupBox_3;
-    QVBoxLayout *verticalLayout_7;
+    QVBoxLayout *verticalLayout_6;
+    QGridLayout *gridLayout;
     QProgressBar *progressBar;
-    QHBoxLayout *horizontalLayout;
     QPushButton *pb_calculate_func;
-    QPushButton *pb_calculate;
+    QPushButton *pb_calculate_conv;
     QGroupBox *groupBox_4;
     QVBoxLayout *verticalLayout_5;
     QHBoxLayout *horizontalLayout_2;
@@ -147,18 +153,7 @@ public:
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        tabSetting = new QTabWidget(tab_2);
-        tabSetting->setObjectName(QStringLiteral("tabSetting"));
-        tabSetting->setMinimumSize(QSize(0, 0));
-        tabSetting->setMaximumSize(QSize(16777215, 16777215));
-        tabSetting->setTabPosition(QTabWidget::West);
-        tab_3 = new QWidget();
-        tab_3->setObjectName(QStringLiteral("tab_3"));
-        verticalLayout_8 = new QVBoxLayout(tab_3);
-        verticalLayout_8->setSpacing(6);
-        verticalLayout_8->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
-        groupBox = new QGroupBox(tab_3);
+        groupBox = new QGroupBox(tab_2);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         verticalLayout_4 = new QVBoxLayout(groupBox);
         verticalLayout_4->setSpacing(6);
@@ -167,39 +162,13 @@ public:
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        sb_p0_max = new QDoubleSpinBox(groupBox);
-        sb_p0_max->setObjectName(QStringLiteral("sb_p0_max"));
-        sb_p0_max->setDecimals(5);
-        sb_p0_max->setMinimum(-10000);
-        sb_p0_max->setMaximum(10000);
-        sb_p0_max->setValue(2);
+        sb_p2_res = new QSpinBox(groupBox);
+        sb_p2_res->setObjectName(QStringLiteral("sb_p2_res"));
+        sb_p2_res->setMaximum(4096);
+        sb_p2_res->setSingleStep(2);
+        sb_p2_res->setValue(256);
 
-        gridLayout_2->addWidget(sb_p0_max, 0, 2, 1, 1);
-
-        sb_Width = new QSpinBox(groupBox);
-        sb_Width->setObjectName(QStringLiteral("sb_Width"));
-        sb_Width->setMaximum(4096);
-        sb_Width->setValue(512);
-
-        gridLayout_2->addWidget(sb_Width, 0, 3, 1, 1);
-
-        sb_p0_min = new QDoubleSpinBox(groupBox);
-        sb_p0_min->setObjectName(QStringLiteral("sb_p0_min"));
-        sb_p0_min->setDecimals(5);
-        sb_p0_min->setMinimum(-10000);
-        sb_p0_min->setMaximum(10000);
-        sb_p0_min->setValue(-2);
-
-        gridLayout_2->addWidget(sb_p0_min, 0, 1, 1, 1);
-
-        sb_p1_min = new QDoubleSpinBox(groupBox);
-        sb_p1_min->setObjectName(QStringLiteral("sb_p1_min"));
-        sb_p1_min->setDecimals(5);
-        sb_p1_min->setMinimum(-10000);
-        sb_p1_min->setMaximum(10000);
-        sb_p1_min->setValue(-2);
-
-        gridLayout_2->addWidget(sb_p1_min, 1, 1, 1, 1);
+        gridLayout_2->addWidget(sb_p2_res, 2, 4, 1, 1);
 
         sb_p1_max = new QDoubleSpinBox(groupBox);
         sb_p1_max->setObjectName(QStringLiteral("sb_p1_max"));
@@ -208,32 +177,113 @@ public:
         sb_p1_max->setMaximum(10000);
         sb_p1_max->setValue(2);
 
-        gridLayout_2->addWidget(sb_p1_max, 1, 2, 1, 1);
+        gridLayout_2->addWidget(sb_p1_max, 1, 3, 1, 1);
 
-        sb_Height = new QSpinBox(groupBox);
-        sb_Height->setObjectName(QStringLiteral("sb_Height"));
-        sb_Height->setMaximum(4096);
-        sb_Height->setValue(512);
+        cb_param3 = new QComboBox(groupBox);
+        cb_param3->setObjectName(QStringLiteral("cb_param3"));
+        cb_param3->setMaximumSize(QSize(50, 16777215));
 
-        gridLayout_2->addWidget(sb_Height, 1, 3, 1, 1);
+        gridLayout_2->addWidget(cb_param3, 2, 1, 1, 1);
 
-        cb_param1 = new QComboBox(groupBox);
-        cb_param1->setObjectName(QStringLiteral("cb_param1"));
+        sb_p0_min = new QDoubleSpinBox(groupBox);
+        sb_p0_min->setObjectName(QStringLiteral("sb_p0_min"));
+        sb_p0_min->setDecimals(5);
+        sb_p0_min->setMinimum(-10000);
+        sb_p0_min->setMaximum(10000);
+        sb_p0_min->setValue(-2);
 
-        gridLayout_2->addWidget(cb_param1, 0, 0, 1, 1);
+        gridLayout_2->addWidget(sb_p0_min, 0, 2, 1, 1);
 
         cb_param2 = new QComboBox(groupBox);
         cb_param2->setObjectName(QStringLiteral("cb_param2"));
+        cb_param2->setMaximumSize(QSize(50, 16777215));
 
-        gridLayout_2->addWidget(cb_param2, 1, 0, 1, 1);
+        gridLayout_2->addWidget(cb_param2, 1, 1, 1, 1);
+
+        sb_p0_res = new QSpinBox(groupBox);
+        sb_p0_res->setObjectName(QStringLiteral("sb_p0_res"));
+        sb_p0_res->setMaximum(4096);
+        sb_p0_res->setSingleStep(2);
+        sb_p0_res->setValue(256);
+
+        gridLayout_2->addWidget(sb_p0_res, 0, 4, 1, 1);
+
+        sb_p0_max = new QDoubleSpinBox(groupBox);
+        sb_p0_max->setObjectName(QStringLiteral("sb_p0_max"));
+        sb_p0_max->setDecimals(5);
+        sb_p0_max->setMinimum(-10000);
+        sb_p0_max->setMaximum(10000);
+        sb_p0_max->setValue(2);
+
+        gridLayout_2->addWidget(sb_p0_max, 0, 3, 1, 1);
+
+        sb_p1_res = new QSpinBox(groupBox);
+        sb_p1_res->setObjectName(QStringLiteral("sb_p1_res"));
+        sb_p1_res->setMaximum(4096);
+        sb_p1_res->setSingleStep(2);
+        sb_p1_res->setValue(256);
+
+        gridLayout_2->addWidget(sb_p1_res, 1, 4, 1, 1);
+
+        sb_p1_min = new QDoubleSpinBox(groupBox);
+        sb_p1_min->setObjectName(QStringLiteral("sb_p1_min"));
+        sb_p1_min->setDecimals(5);
+        sb_p1_min->setMinimum(-10000);
+        sb_p1_min->setMaximum(10000);
+        sb_p1_min->setValue(-2);
+
+        gridLayout_2->addWidget(sb_p1_min, 1, 2, 1, 1);
+
+        sb_p2_min = new QDoubleSpinBox(groupBox);
+        sb_p2_min->setObjectName(QStringLiteral("sb_p2_min"));
+        sb_p2_min->setDecimals(5);
+        sb_p2_min->setMinimum(-10000);
+        sb_p2_min->setMaximum(10000);
+        sb_p2_min->setValue(-2);
+
+        gridLayout_2->addWidget(sb_p2_min, 2, 2, 1, 1);
+
+        sb_p2_max = new QDoubleSpinBox(groupBox);
+        sb_p2_max->setObjectName(QStringLiteral("sb_p2_max"));
+        sb_p2_max->setDecimals(5);
+        sb_p2_max->setMinimum(-10000);
+        sb_p2_max->setMaximum(10000);
+        sb_p2_max->setValue(2);
+
+        gridLayout_2->addWidget(sb_p2_max, 2, 3, 1, 1);
+
+        cb_param1 = new QComboBox(groupBox);
+        cb_param1->setObjectName(QStringLiteral("cb_param1"));
+        cb_param1->setMaximumSize(QSize(50, 16777215));
+
+        gridLayout_2->addWidget(cb_param1, 0, 1, 1, 1);
+
+        rb_1D = new QCheckBox(groupBox);
+        rb_1D->setObjectName(QStringLiteral("rb_1D"));
+        rb_1D->setMaximumSize(QSize(20, 16777215));
+        rb_1D->setChecked(true);
+
+        gridLayout_2->addWidget(rb_1D, 0, 0, 1, 1);
+
+        rb_2D = new QCheckBox(groupBox);
+        rb_2D->setObjectName(QStringLiteral("rb_2D"));
+        rb_2D->setMaximumSize(QSize(20, 16777215));
+
+        gridLayout_2->addWidget(rb_2D, 1, 0, 1, 1);
+
+        rb_3D = new QCheckBox(groupBox);
+        rb_3D->setObjectName(QStringLiteral("rb_3D"));
+        rb_3D->setMaximumSize(QSize(20, 16777215));
+
+        gridLayout_2->addWidget(rb_3D, 2, 0, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_2);
 
 
-        verticalLayout_8->addWidget(groupBox);
+        verticalLayout_3->addWidget(groupBox);
 
-        groupBox_2 = new QGroupBox(tab_3);
+        groupBox_2 = new QGroupBox(tab_2);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         horizontalLayout_4 = new QHBoxLayout(groupBox_2);
         horizontalLayout_4->setSpacing(6);
@@ -260,44 +310,52 @@ public:
 
         horizontalLayout_3->addWidget(sb_gamma);
 
+        sb_cut = new QDoubleSpinBox(groupBox_2);
+        sb_cut->setObjectName(QStringLiteral("sb_cut"));
+        sb_cut->setMaximum(1);
+        sb_cut->setSingleStep(0.01);
+        sb_cut->setValue(1);
+
+        horizontalLayout_3->addWidget(sb_cut);
+
 
         horizontalLayout_4->addLayout(horizontalLayout_3);
 
 
-        verticalLayout_8->addWidget(groupBox_2);
+        verticalLayout_3->addWidget(groupBox_2);
 
-        groupBox_3 = new QGroupBox(tab_3);
+        groupBox_3 = new QGroupBox(tab_2);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        verticalLayout_7 = new QVBoxLayout(groupBox_3);
-        verticalLayout_7->setSpacing(6);
-        verticalLayout_7->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
+        verticalLayout_6 = new QVBoxLayout(groupBox_3);
+        verticalLayout_6->setSpacing(6);
+        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
+        gridLayout = new QGridLayout();
+        gridLayout->setSpacing(6);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
         progressBar = new QProgressBar(groupBox_3);
         progressBar->setObjectName(QStringLiteral("progressBar"));
         progressBar->setValue(0);
 
-        verticalLayout_7->addWidget(progressBar);
+        gridLayout->addWidget(progressBar, 0, 0, 1, 2);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         pb_calculate_func = new QPushButton(groupBox_3);
         pb_calculate_func->setObjectName(QStringLiteral("pb_calculate_func"));
 
-        horizontalLayout->addWidget(pb_calculate_func);
+        gridLayout->addWidget(pb_calculate_func, 1, 0, 1, 1);
 
-        pb_calculate = new QPushButton(groupBox_3);
-        pb_calculate->setObjectName(QStringLiteral("pb_calculate"));
+        pb_calculate_conv = new QPushButton(groupBox_3);
+        pb_calculate_conv->setObjectName(QStringLiteral("pb_calculate_conv"));
 
-        horizontalLayout->addWidget(pb_calculate);
-
-
-        verticalLayout_7->addLayout(horizontalLayout);
+        gridLayout->addWidget(pb_calculate_conv, 1, 1, 1, 1);
 
 
-        verticalLayout_8->addWidget(groupBox_3);
+        verticalLayout_6->addLayout(gridLayout);
 
-        groupBox_4 = new QGroupBox(tab_3);
+
+        verticalLayout_3->addWidget(groupBox_3);
+
+        groupBox_4 = new QGroupBox(tab_2);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
         verticalLayout_5 = new QVBoxLayout(groupBox_4);
         verticalLayout_5->setSpacing(6);
@@ -320,15 +378,11 @@ public:
         verticalLayout_5->addLayout(horizontalLayout_2);
 
 
-        verticalLayout_8->addWidget(groupBox_4);
+        verticalLayout_3->addWidget(groupBox_4);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        verticalLayout_8->addItem(verticalSpacer);
-
-        tabSetting->addTab(tab_3, QString());
-
-        verticalLayout_3->addWidget(tabSetting);
+        verticalLayout_3->addItem(verticalSpacer);
 
         tabSystem->addTab(tab_2, QString());
 
@@ -366,10 +420,10 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabSystem->setCurrentIndex(0);
-        tabSetting->setCurrentIndex(0);
-        cb_param1->setCurrentIndex(0);
+        tabSystem->setCurrentIndex(1);
+        cb_param3->setCurrentIndex(2);
         cb_param2->setCurrentIndex(1);
+        cb_param1->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -396,12 +450,9 @@ public:
         a_tiles->setText(QApplication::translate("MainWindow", "Tiles", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab), QApplication::translate("MainWindow", "System", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "Region and  Resolution", 0));
-        sb_p0_max->setPrefix(QApplication::translate("MainWindow", "p0_max=", 0));
-        sb_p0_min->setPrefix(QApplication::translate("MainWindow", "p0_min=", 0));
-        sb_p1_min->setPrefix(QApplication::translate("MainWindow", "p1_min=", 0));
-        sb_p1_max->setPrefix(QApplication::translate("MainWindow", "p1_max=", 0));
-        cb_param1->clear();
-        cb_param1->insertItems(0, QStringList()
+        sb_p1_max->setPrefix(QApplication::translate("MainWindow", "max=", 0));
+        cb_param3->clear();
+        cb_param3->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "p0", 0)
          << QApplication::translate("MainWindow", "p1", 0)
          << QApplication::translate("MainWindow", "p2", 0)
@@ -413,6 +464,7 @@ public:
          << QApplication::translate("MainWindow", "p8", 0)
          << QApplication::translate("MainWindow", "p9", 0)
         );
+        sb_p0_min->setPrefix(QApplication::translate("MainWindow", "min=", 0));
         cb_param2->clear();
         cb_param2->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "p0", 0)
@@ -426,15 +478,35 @@ public:
          << QApplication::translate("MainWindow", "p8", 0)
          << QApplication::translate("MainWindow", "p9", 0)
         );
+        sb_p0_max->setPrefix(QApplication::translate("MainWindow", "max=", 0));
+        sb_p1_min->setPrefix(QApplication::translate("MainWindow", "min=", 0));
+        sb_p2_min->setPrefix(QApplication::translate("MainWindow", "min=", 0));
+        sb_p2_max->setPrefix(QApplication::translate("MainWindow", "max=", 0));
+        cb_param1->clear();
+        cb_param1->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "p0", 0)
+         << QApplication::translate("MainWindow", "p1", 0)
+         << QApplication::translate("MainWindow", "p2", 0)
+         << QApplication::translate("MainWindow", "p3", 0)
+         << QApplication::translate("MainWindow", "p4", 0)
+         << QApplication::translate("MainWindow", "p5", 0)
+         << QApplication::translate("MainWindow", "p6", 0)
+         << QApplication::translate("MainWindow", "p7", 0)
+         << QApplication::translate("MainWindow", "p8", 0)
+         << QApplication::translate("MainWindow", "p9", 0)
+        );
+        rb_1D->setText(QString());
+        rb_2D->setText(QString());
+        rb_3D->setText(QString());
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Color rules", 0));
         sb_gamma->setPrefix(QApplication::translate("MainWindow", "gamma=", 0));
+        sb_cut->setPrefix(QApplication::translate("MainWindow", "cut=", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Calculate", 0));
         pb_calculate_func->setText(QApplication::translate("MainWindow", "Evaluate", 0));
-        pb_calculate->setText(QApplication::translate("MainWindow", "Analyse Convergence", 0));
+        pb_calculate_conv->setText(QApplication::translate("MainWindow", "Convergence", 0));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Save settings", 0));
         pb_save_conv_setting->setText(QApplication::translate("MainWindow", "Save", 0));
         pb_load_conv_setting->setText(QApplication::translate("MainWindow", "Load", 0));
-        tabSetting->setTabText(tabSetting->indexOf(tab_3), QApplication::translate("MainWindow", "Convergence 2D", 0));
         tabSystem->setTabText(tabSystem->indexOf(tab_2), QApplication::translate("MainWindow", "Analysis", 0));
         menuOpen->setTitle(QApplication::translate("MainWindow", "Menu", 0));
         menuWindows->setTitle(QApplication::translate("MainWindow", "Windows", 0));

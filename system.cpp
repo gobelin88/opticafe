@@ -1,38 +1,24 @@
 ﻿#include "system.h"
 
-void System::init(Parser * parser)
+void System::init()
 {
     id_active=0;
-    id1=0;
-    id2=1;
     handler=new ParamHandler;
 
-    this->ptr_parser=parser;
-    eq_list.clear();
+    expr_str.clear();
     progress_bar=NULL;
     progress_bar=NULL;
     results.reset();
 }
 
-System::System(Parser * parser)
+System::System()
 {
-    init(parser);
+    init();
 }
 
-System::System(Parser * parser,int nb_p,int nb_x,int nb_y)
+System::System(QString script)
 {
-    init(parser);
-
-    this->nb_p=nb_p;
-    this->nb_x=nb_x;
-    this->nb_y=nb_y;
-    eq_list.resize(nb_y);
-    p0.resize(nb_p);
-}
-
-System::System(Parser * parser,QString script)
-{
-    init(parser);
+    init();
     load_system(script);
 }
 
@@ -49,25 +35,33 @@ int System::getNB(char c,QString script)
     return cpt;
 }
 
+bool System::compile()
+{
+    for(int i=0;i<nb_y;i++)
+    {
+        expr[i].register_symbol_table(symbol_table);
+        bool ok=parser.compile(expr_str[i].toStdString(),expr[i]);
+
+        if(!ok)return false;
+    }
+    return true;
+}
+
 bool System::load_system(QString script)
 {
-    eq_list.clear();
+    expr_str.clear();
+    symbol_table.clear();
 
     nb_x=getNB('x',script);
     nb_y=getNB('y',script);
     nb_p=getNB('p',script);
 
-    eq_list.resize(nb_y);
-    p0.resize(nb_p);
-    p0.setZero();
+    expr.resize(nb_y);
+    expr_str.resize(nb_y);
+    p0.resize(nb_p);p0.setZero();
 
-    ptr_parser->getVarList().clear();
-    for(int i=0;i<nb_p;i++){ptr_parser->getVarList().add(getCharName('p',i),0.0);}
-    for(int i=0;i<nb_x;i++){ptr_parser->getVarList().add(getCharName('x',i),0.0);}
-
-//    std::cout<<"nb_x="<<nb_x<<std::endl;
-//    std::cout<<"nb_y="<<nb_y<<std::endl;
-//    std::cout<<"nb_p="<<nb_p<<std::endl;
+    for(int i=0;i<nb_p;i++){symbol_table.add_variable(getCharName('p',i).toStdString(),P[i]);}
+    for(int i=0;i<nb_x;i++){symbol_table.add_variable(getCharName('x',i).toStdString(),X[i]);}
 
     QStringList lines=script.split('\n',QString::SkipEmptyParts);
 
@@ -83,7 +77,7 @@ bool System::load_system(QString script)
             {
                 args[0].remove(0,1);
                 int id=args[0].toInt();
-                eq_list[id]=args[1].toLocal8Bit();
+                expr_str[id]=args[1].toLocal8Bit();
             }
             else if(args[0].contains("data"))
             {
@@ -106,7 +100,7 @@ bool System::load_system(QString script)
         }
     }
 
-    return true;
+    return compile();
 }
 
 bool System::load_p_init(QString script)
@@ -182,10 +176,19 @@ bool System::load_data(QString filename)
     return true;
 }
 
+
+
 void System::set_p_init(double _p0,double _p1)
 {
-    p0[id1]=_p0;
-    p0[id2]=_p1;
+    p0[results.id1]=_p0;
+    p0[results.id2]=_p1;
+}
+
+void System::set_p_init(double _p0,double _p1,double _p2)
+{
+    p0[results.id1]=_p0;
+    p0[results.id2]=_p1;
+    p0[results.id3]=_p2;
 }
 
 void System::set_p_init(VectorXd p_init)
@@ -193,65 +196,142 @@ void System::set_p_init(VectorXd p_init)
     p0=p_init;
 }
 
+double System::getColorModeValue(ColorMode mode)
+{
+    double value=0.0;
+
+    if(MODE_ARG==mode)value=atan2(results.p_hat[0],results.p_hat[1]);
+    else if(MODE_IT==mode)value=(int)results.it_performed;
+    else if(MODE_MODULE==mode)value=results.p_hat.norm();
+    else if(MODE_Y0==mode)value=results.p_hat[0];
+    else if(MODE_Y1==mode)value=results.p_hat[1];
+    else{value=0;}
+
+    return value;
+}
+
+std::vector<double> System::solve_1D_p0(Box box, ColorMode mode)
+{
+    std::vector<double> map1D(box.p0_res,0.0);
+
+    for(int i=0;i<box.p0_res;i++)
+    {
+        p0[results.id1]=box.getP0(i);
+
+        //std::cout<<i<<" "<<j<<" "<<results.id1<<" "<<results.id2<<" "<<p0[results.id1]<<" "<<p0[results.id2]<<std::endl;
+
+        solve();
+        map1D[i]=getColorModeValue(mode);
+
+        emit progress(i);
+    }
+    return map1D;
+}
+
 std::vector< std::vector<double> > System::solve_2D_p0p1(Box box, ColorMode mode)
 {
-    std::cout<<"solve_2D_p0p1"<<std::endl;
-
     std::vector<std::vector<double>> map2D(box.p0_res,std::vector<double>(box.p1_res,0.0));
 
     for(int i=0;i<box.p0_res;i++)
     {
         for(int j=0;j<box.p1_res;j++)
         {
-            p0[id1]=box.getP0(i);
-            p0[id2]=box.getP1(j);
+            p0[results.id1]=box.getP0(i);
+            p0[results.id2]=box.getP1(j);
 
-            solve();       
+            //std::cout<<i<<" "<<j<<" "<<results.id1<<" "<<results.id2<<" "<<p0[results.id1]<<" "<<p0[results.id2]<<std::endl;
 
-            //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
-            if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
-            else if(MODE_IT==mode)map2D[i][j]=(int)results.it_performed;
-            else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
-            else
+            solve();
+            map2D[i][j]=getColorModeValue(mode);
+        }
+        emit progress(i);
+    }
+    return map2D;
+}
+
+std::vector< std::vector< std::vector<double> > > System::solve_3D_p0p1p2(Box box, ColorMode mode)
+{
+    std::vector< std::vector< std::vector<double> > > map3D(box.p0_res,std::vector<std::vector<double>>(box.p1_res,std::vector<double>(box.p2_res,0.0)));
+
+    for(int i=0;i<box.p0_res;i++)
+    {
+        for(int j=0;j<box.p1_res;j++)
+        {
+            for(int k=0;k<box.p2_res;k++)
             {
-                map2D[i][j]=0;
+                p0[results.id1]=box.getP0(i);
+                p0[results.id2]=box.getP1(j);
+                p0[results.id3]=box.getP2(k);
+
+                solve();
+                map3D[i][j][k]=getColorModeValue(mode);
             }
         }
 
         emit progress(i);
     }
 
-    return map2D;
+    return map3D;
+}
+
+std::vector<double> System::eval_1D_p0(Box box, ColorMode mode)
+{
+    std::vector<double> map1D(box.p0_res,0.0);
+
+    for(int i=0;i<box.p0_res;i++)
+    {
+        p0[results.id1]=box.getP0(i);
+
+        results.p_hat=evalErr(p0);
+        map1D[i]=getColorModeValue(mode);
+
+        emit progress(i);
+    }
+    return map1D;
 }
 
 std::vector< std::vector<double> > System::eval_2D_p0p1(Box box, ColorMode mode)
 {
-    std::cout<<"solve_2D_p0p1"<<std::endl;
-
     std::vector<std::vector<double>> map2D(box.p0_res,std::vector<double>(box.p1_res,0.0));
 
     for(int i=0;i<box.p0_res;i++)
     {
         for(int j=0;j<box.p1_res;j++)
         {
-            p0[id1]=box.getP0(i);
-            p0[id2]=box.getP1(j);
+            p0[results.id1]=box.getP0(i);
+            p0[results.id2]=box.getP1(j);
 
             results.p_hat=evalErr(p0);
+            map2D[i][j]=getColorModeValue(mode);
+        }
+        emit progress(i);
+    }
+    return map2D;
+}
 
-            //std::cout<<i<<" "<<j<<" "<<info[5]<<std::endl;
-            if(MODE_ARG==mode)map2D[i][j]=atan2(results.p_hat[0],results.p_hat[1]);
-            else if(MODE_MODULE==mode)map2D[i][j]=results.p_hat.norm();
-            else
+std::vector< std::vector< std::vector<double> > > System::eval_3D_p0p1p2(Box box, ColorMode mode)
+{
+    std::vector< std::vector< std::vector<double> > > map3D(box.p0_res,std::vector<std::vector<double>>(box.p1_res,std::vector<double>(box.p2_res,0.0)));
+
+    for(int i=0;i<box.p0_res;i++)
+    {
+        for(int j=0;j<box.p1_res;j++)
+        {
+            for(int k=0;k<box.p2_res;k++)
             {
-                map2D[i][j]=0;
+                p0[results.id1]=box.getP0(i);
+                p0[results.id2]=box.getP1(j);
+                p0[results.id3]=box.getP2(k);
+
+                results.p_hat=evalErr(p0);
+                map3D[i][j][k]=getColorModeValue(mode);
             }
         }
 
         emit progress(i);
     }
 
-    return map2D;
+    return map3D;
 }
 
 
@@ -345,13 +425,13 @@ VectorXd System::get_y(VectorXd p)
     VectorXd Yij(data.y.size()*nb_y);
     Yij.setZero();
 
+    unsigned int id=0;
     for(unsigned int i=0;i<data.x.size();i++)
     {
         VectorXd yi=eval(data.x[i],p);
-
-        for(unsigned int j=0;j<yi.rows();j++)
+        for(int j=0;j<yi.rows();j++)
         {
-            Yij[i*yi.rows()+j]=yi[j];
+            Yij[id++]=yi[j];
         }
     }
 
@@ -397,24 +477,9 @@ VectorXd System::eval(VectorXd x,VectorXd p)
 
     if(x.rows()==nb_x && p.rows()==nb_p)
     {
-
-        ptr_parser->getVarList().clear();
-        for(int i=0;i<nb_p;i++)
-        {
-            ptr_parser->getVarList().set_value(getCharName('p',i),p[i]);
-            //std::cout<<"p["<<i<<"]="<<p[i]<<" "<<ptr_parser->parse(getCharName('p',i))<<std::endl;
-        }
-        for(int i=0;i<nb_x;i++)
-        {
-            ptr_parser->getVarList().set_value(getCharName('x',i),x[i]);
-            //std::cout<<"x["<<i<<"]="<<x[i]<<" "<<ptr_parser->parse(getCharName('x',i))<<" "<<ptr_parser->parse("x2")<<std::endl;
-        }
-
-        for(int i=0;i<nb_y;i++)
-        {
-            y[i]=ptr_parser->parse(eq_list[i].data());
-            //std::cout<<"y["<<i<<"]="<<y[i]<<" "<<eq_list[i].data()<<std::endl;
-        }
+        for(int i=0;i<nb_p;i++){P[i]=p[i];}
+        for(int i=0;i<nb_x;i++){X[i]=x[i];}
+        for(int i=0;i<nb_y;i++){y[i]=expr[i].value();}
     }
     else
     {
@@ -431,24 +496,9 @@ VectorXd System::eval_atX0(VectorXd p)
 
     if(p.rows()==nb_p)
     {
-
-        ptr_parser->getVarList().clear();
-        for(int i=0;i<nb_p;i++)
-        {
-            ptr_parser->getVarList().set_value(getCharName('p',i),p[i]);
-            //std::cout<<"p["<<i<<"]="<<p[i]<<" "<<ptr_parser->parse(getCharName('p',i))<<std::endl;
-        }
-        for(int i=0;i<nb_x;i++)
-        {
-            ptr_parser->getVarList().set_value(getCharName('x',i),0.0);
-            //std::cout<<"x["<<i<<"]="<<x[i]<<" "<<ptr_parser->parse(getCharName('x',i))<<" "<<ptr_parser->parse("x2")<<std::endl;
-        }
-
-        for(int i=0;i<nb_y;i++)
-        {
-            y[i]=ptr_parser->parse(eq_list[i].data());
-            //std::cout<<"y["<<i<<"]="<<y[i]<<" "<<eq_list[i].data()<<std::endl;
-        }
+        for(int i=0;i<nb_p;i++){P[i]=p[i];}
+        for(int i=0;i<nb_x;i++){X[i]=0.0;}
+        for(int i=0;i<nb_y;i++){y[i]=expr[i].value();}
     }
     else
     {
@@ -469,14 +519,15 @@ VectorXd System::eval_atX0(VectorXd p)
     memcpy(hx,y_vec.data(),y_vec.size()*sizeof(double));
 }*/
 
-VectorXd System::serialize(std::vector<VectorXd> v)
+VectorXd System::serialize(const std::vector<VectorXd> & v)
 {
     VectorXd v_serilized(v[0].rows()*v.size());
+    unsigned int id=0;
     for(unsigned int i=0;i<v.size();i++)
     {
-        for(unsigned int j=0;j<v[0].rows();j++)
+        for(int j=0;j<v[0].rows();j++)
         {
-            v_serilized[i*v[0].rows()+j]=v[i][j];
+            v_serilized[id++]=v[i][j];
         }
     }
     return v_serilized;
@@ -493,7 +544,7 @@ QByteArray System::getCharName(char var,int var_id)
 QVector<double> System::extract(std::vector<VectorXd> v,int id)
 {
     QVector<double> v_out(v.size());
-    for(int i=0;i<v.size();i++)
+    for(unsigned int i=0;i<v.size();i++)
     {
         v_out[i]=v[i][id];
     }
@@ -505,9 +556,9 @@ void System::searchMinMax(const std::vector<std::vector<double> > &data, double 
     min=data[0][0];
     max=data[0][0];
 
-    for(int i=1;i<data.size();i++)
+    for(unsigned int i=1;i<data.size();i++)
     {
-        for(int j=0;j<data[0].size();j++)
+        for(unsigned int j=0;j<data[0].size();j++)
         {
             if(data[i][j]<min)min=data[i][j];
             if(data[i][j]>max)max=data[i][j];
@@ -515,43 +566,109 @@ void System::searchMinMax(const std::vector<std::vector<double> > &data, double 
     }
 }
 
+void System::searchMinMax(const std::vector<std::vector<std::vector<double> >> &data, double &min, double &max)
+{
+    min=data[0][0][0];
+    max=data[0][0][0];
+
+
+    for(unsigned int i=1;i<data.size();i++)
+    {
+        for(unsigned int j=0;j<data[0].size();j++)
+        {
+            for(unsigned int k=0;k<data[0][0].size();k++)
+            {
+                if(data[i][j][k]<min)min=data[i][j][k];
+                if(data[i][j][k]>max)max=data[i][j][k];
+            }
+        }
+    }
+}
+
+QColor System::getColor(double value, ScaleColorMode mode)
+{
+    if(mode==MODE_BLUE_GRADIENT)
+    {
+        return QColor(255.0*value,255.0*std::pow(value,0.9),255.0*std::pow(value,0.2));
+    }
+    else if(mode==MODE_PERIODIC)
+    {
+        double omega=2*M_PI*value;
+        return QColor(127*sin(omega)          +128,
+                      127*sin(omega+2*M_PI/3) +128,
+                      127*sin(omega+4*M_PI/3) +128);
+    }
+    else if(mode==MODE_RAINBOW)
+    {
+        return QColor::fromHsv(std::max<double>(0,std::min<double>(359,359*value)),255,255);
+    }
+
+    return QColor(0,0,0);
+}
+
+QColor System::getColor(double val, ScaleColorMode mode,double gamma,double min,double max)
+{
+    if(max>min)
+    {
+        double value= std::pow((val-min)/(max-min),gamma);
+        return getColor(value, mode);
+    }
+    else
+    {
+        return QColor(0,0,0);
+    }
+}
+
 QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode,double gamma)
 {
+    std::cout<<"toImage"<<std::endl;
+
+    if(data.size()<=0)return QImage();
     QImage image(QSize(data.size(),data[0].size()),QImage::Format_RGB32);
 
     double min,max;
     searchMinMax(data,min,max);
 
-    std::cout<<"min="<<min<<std::endl;
-    std::cout<<"max="<<max<<std::endl;
+    std::cout<<" min="<<min<<" max="<<max<<std::endl;
 
     for(int i=0;i<image.width();i++)
     {
         for(int j=0;j<image.height();j++)
         {
-            if(mode==MODE_BLUE_GRADIENT)
-            {
-                double value= std::pow((data[i][j]-min)/(max-min),gamma);
-                image.setPixel(i,j,qRgb(255.0*value,
-                                        255.0*std::pow(value,0.9),
-                                        255.0*std::pow(value,0.2)));
-            }
-            else if(mode==MODE_PERIODIC)
-            {
-                double value= std::pow((data[i][j]-min)/(max-min),gamma);
-                image.setPixel(i,j,qRgb(127*sin(2*M_PI*value)          +128,
-                                        127*sin(2*M_PI*value+2*M_PI/3) +128,
-                                        127*sin(2*M_PI*value+4*M_PI/3) +128));
-            }
-            else if(mode==MODE_RAINBOW)
-            {
-                double value= std::pow((data[i][j]-min)/(max-min),gamma);
-                image.setPixel(i,j,QColor::fromHsv(std::max<double>(0,std::min<double>(359,359*value)),255,128).rgb());
-            }
+            image.setPixel(i,j,getColor(data[i][j],mode,gamma,min,max).rgb());
         }
     }
 
     return image;
+}
+
+std::vector<std::pair<Vector3d,QColor>> System::toCloud(const std::vector<std::vector< std::vector<double> > > & data, ScaleColorMode mode,double gamma,double cut,double scale)
+{
+    if(data.size()<=0)return std::vector<std::pair<Vector3d,QColor>>();
+    if(data[0].size()<=0)return std::vector<std::pair<Vector3d,QColor>>();
+
+    std::vector<std::pair<Vector3d,QColor>> cloud;
+
+    double min,max;
+    searchMinMax(data,min,max);
+
+    for(unsigned int i=0;i<data.size();i++)
+    {
+        for(unsigned int j=0;j<data[0].size();j++)
+        {
+            for(unsigned int k=0;k<data[0][0].size();k++)
+            {
+                double value= std::pow((data[i][j][k]-min)/(max-min),gamma);
+
+                if(value<cut)
+                {
+                    cloud.push_back(std::pair<Vector3d,QColor>(Vector3d(i,j,k)*scale,getColor(value/cut,mode)));
+                }
+            }
+        }
+    }
+
+    return cloud;
 }
 
 void System::clearPlots()
@@ -670,9 +787,11 @@ void System::plot()
         }
     }
 
-    addTab(new_plot_all,QString("All Fit"));
-    plots.push_back(new_plot_all);
-
+    if(nb_x>0)
+    {
+        addTab(new_plot_all,QString("All Fit"));
+        plots.push_back(new_plot_all);
+    }
 
     this->setCurrentIndex(id_active);
 }
@@ -680,7 +799,7 @@ void System::plot()
 double System::getRMS(int id)
 {
     double sum=0.0,cpt=0;
-    for(int i=0;i<data.x.size();i++)
+    for(unsigned int i=0;i<data.x.size();i++)
     {
         sum+= (data.y[i][id]-model.y[i][id])*(data.y[i][id]-model.y[i][id]);
         cpt++;

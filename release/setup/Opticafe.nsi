@@ -52,6 +52,7 @@ Section "Opticafe (required)"
   File "style.qss"
   File /r "rc"
   File /r "scripts"
+  File /r "platforms"
   
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\NSIS_Opticafe "Install_Dir" "$INSTDIR"

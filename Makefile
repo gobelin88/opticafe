@@ -192,6 +192,7 @@ Makefile: Fit.pro C:\Qt\5.4\msvc2012_opengl\mkspecs\win32-msvc2012\qmake.conf C:
 		C:/Qt/5.4/msvc2012_opengl/lib/qtmain.prl \
 		C:/Qt/5.4/msvc2012_opengl/lib/Qt5Core.prl \
 		C:/Qt/5.4/msvc2012_opengl/lib/Qt5PrintSupport.prl \
+		C:/Qt/5.4/msvc2012_opengl/lib/Qt5OpenGL.prl \
 		C:/Qt/5.4/msvc2012_opengl/lib/Qt5Widgets.prl \
 		C:/Qt/5.4/msvc2012_opengl/lib/Qt5Gui.prl
 	$(QMAKE) -spec win32-msvc2012 -o Makefile Fit.pro
@@ -314,6 +315,7 @@ Fit.pro:
 C:/Qt/5.4/msvc2012_opengl/lib/qtmain.prl:
 C:/Qt/5.4/msvc2012_opengl/lib/Qt5Core.prl:
 C:/Qt/5.4/msvc2012_opengl/lib/Qt5PrintSupport.prl:
+C:/Qt/5.4/msvc2012_opengl/lib/Qt5OpenGL.prl:
 C:/Qt/5.4/msvc2012_opengl/lib/Qt5Widgets.prl:
 C:/Qt/5.4/msvc2012_opengl/lib/Qt5Gui.prl:
 qmake: FORCE

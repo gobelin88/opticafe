@@ -53,19 +53,23 @@ static float color_tab[40][3]={
 };
 
 
-#define NBColorMode 3
+#define NBColorMode 5
 static char * ColorMode_str[NBColorMode]=
 {
-    "Argument - atan2(y0,y1)",
-    "Module - |y0+y1+...+yn|",
+    "Module - |Y| or |P|",
+    "Argument - arg(Y0,Y1) or arg(P0,P1)",
     "Algorithm iterations",
+    "Y0 or P0",
+    "Y1 or P1",
 };
 
 enum ColorMode
 {
-    MODE_ARG,
     MODE_MODULE,
+    MODE_ARG,    
     MODE_IT,
+    MODE_Y0,
+    MODE_Y1,
 };
 
 

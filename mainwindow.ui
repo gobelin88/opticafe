@@ -30,7 +30,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -48,365 +48,526 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QTabWidget" name="tabSetting">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>Region and  Resolution</string>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="tabPosition">
-           <enum>QTabWidget::West</enum>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="tab_3">
-           <attribute name="title">
-            <string>Convergence 2D</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_8">
-            <item>
-             <widget class="QGroupBox" name="groupBox">
-              <property name="title">
-               <string>Region and  Resolution</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="2" column="4">
+              <widget class="QSpinBox" name="sb_p2_res">
+               <property name="maximum">
+                <number>4096</number>
+               </property>
+               <property name="singleStep">
+                <number>2</number>
+               </property>
+               <property name="value">
+                <number>256</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QDoubleSpinBox" name="sb_p1_max">
+               <property name="prefix">
+                <string>max=</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10000.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="cb_param3">
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="currentIndex">
+                <number>2</number>
+               </property>
                <item>
-                <layout class="QGridLayout" name="gridLayout_2">
-                 <item row="0" column="2">
-                  <widget class="QDoubleSpinBox" name="sb_p0_max">
-                   <property name="prefix">
-                    <string>p0_max=</string>
-                   </property>
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-10000.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>10000.000000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>2.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QSpinBox" name="sb_Width">
-                   <property name="maximum">
-                    <number>4096</number>
-                   </property>
-                   <property name="value">
-                    <number>512</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QDoubleSpinBox" name="sb_p0_min">
-                   <property name="prefix">
-                    <string>p0_min=</string>
-                   </property>
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-10000.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>10000.000000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>-2.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QDoubleSpinBox" name="sb_p1_min">
-                   <property name="prefix">
-                    <string>p1_min=</string>
-                   </property>
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-10000.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>10000.000000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>-2.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QDoubleSpinBox" name="sb_p1_max">
-                   <property name="prefix">
-                    <string>p1_max=</string>
-                   </property>
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-10000.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>10000.000000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>2.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QSpinBox" name="sb_Height">
-                   <property name="maximum">
-                    <number>4096</number>
-                   </property>
-                   <property name="value">
-                    <number>512</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QComboBox" name="cb_param1">
-                   <property name="currentIndex">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>p0</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p1</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p2</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p3</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p4</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p5</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p6</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p7</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p8</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p9</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QComboBox" name="cb_param2">
-                   <property name="currentIndex">
-                    <number>1</number>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>p0</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p1</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p2</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p3</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p4</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p5</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p6</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p7</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p8</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>p9</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_2">
-              <property name="title">
-               <string>Color rules</string>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <widget class="QComboBox" name="cb__color_mode"/>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="cb_scale_color_mode"/>
-                 </item>
-                 <item>
-                  <widget class="QDoubleSpinBox" name="sb_gamma">
-                   <property name="prefix">
-                    <string>gamma=</string>
-                   </property>
-                   <property name="maximum">
-                    <double>10.000000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.100000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>1.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_3">
-              <property name="title">
-               <string>Calculate</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_7">
-               <item>
-                <widget class="QProgressBar" name="progressBar">
-                 <property name="value">
-                  <number>0</number>
-                 </property>
-                </widget>
+                <property name="text">
+                 <string>p0</string>
+                </property>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QPushButton" name="pb_calculate_func">
-                   <property name="text">
-                    <string>Evaluate</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pb_calculate">
-                   <property name="text">
-                    <string>Analyse Convergence</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <property name="text">
+                 <string>p1</string>
+                </property>
                </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_4">
-              <property name="title">
-               <string>Save settings</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_5">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <item>
-                  <widget class="QPushButton" name="pb_save_conv_setting">
-                   <property name="text">
-                    <string>Save</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pb_load_conv_setting">
-                   <property name="text">
-                    <string>Load</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <property name="text">
+                 <string>p2</string>
+                </property>
                </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
+               <item>
+                <property name="text">
+                 <string>p3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p4</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p6</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p7</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p9</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QDoubleSpinBox" name="sb_p0_min">
+               <property name="prefix">
+                <string>min=</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10000.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>-2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="cb_param2">
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="currentIndex">
+                <number>1</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>p0</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p1</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p2</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p4</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p6</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p7</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p9</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QSpinBox" name="sb_p0_res">
+               <property name="maximum">
+                <number>4096</number>
+               </property>
+               <property name="singleStep">
+                <number>2</number>
+               </property>
+               <property name="value">
+                <number>256</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QDoubleSpinBox" name="sb_p0_max">
+               <property name="prefix">
+                <string>max=</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10000.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QSpinBox" name="sb_p1_res">
+               <property name="maximum">
+                <number>4096</number>
+               </property>
+               <property name="singleStep">
+                <number>2</number>
+               </property>
+               <property name="value">
+                <number>256</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QDoubleSpinBox" name="sb_p1_min">
+               <property name="prefix">
+                <string>min=</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10000.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>-2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QDoubleSpinBox" name="sb_p2_min">
+               <property name="prefix">
+                <string>min=</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10000.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>-2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QDoubleSpinBox" name="sb_p2_max">
+               <property name="prefix">
+                <string>max=</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-10000.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10000.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="cb_param1">
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>p0</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p1</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p2</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p4</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p6</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p7</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>p9</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="rb_1D">
+               <property name="maximumSize">
+                <size>
+                 <width>20</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="rb_2D">
+               <property name="maximumSize">
+                <size>
+                 <width>20</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="rb_3D">
+               <property name="maximumSize">
+                <size>
+                 <width>20</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Color rules</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QComboBox" name="cb__color_mode"/>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cb_scale_color_mode"/>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="sb_gamma">
+               <property name="prefix">
+                <string>gamma=</string>
+               </property>
+               <property name="maximum">
+                <double>10.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="sb_cut">
+               <property name="prefix">
+                <string>cut=</string>
+               </property>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.010000000000000</double>
+               </property>
+               <property name="value">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>Calculate</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0" colspan="2">
+              <widget class="QProgressBar" name="progressBar">
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="pb_calculate_func">
+               <property name="text">
+                <string>Evaluate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QPushButton" name="pb_calculate_conv">
+               <property name="text">
+                <string>Convergence</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="title">
+           <string>Save settings</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="pb_save_conv_setting">
+               <property name="text">
+                <string>Save</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pb_load_conv_setting">
+               <property name="text">
+                <string>Load</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>

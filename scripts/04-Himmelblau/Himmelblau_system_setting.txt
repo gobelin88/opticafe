@@ -1,10 +1,14 @@
 Param1;0
 Param2;1
+Param3;2
 Param1_min;-5
 Param2_min;-5
+Param3_min;-2
 Param1_max;5
 Param2_max;5
-Param1_res;512
-Param2_res;512
-color_rule;3
+Param3_max;2
+Param1_res;1024
+Param2_res;1024
+Param3_res;256
+color_rule;0
 color_scale;0

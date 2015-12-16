@@ -1,6 +1,6 @@
-#include "image_viewer.h"
+#include "2d_viewer.h"
 
-ImageViewer::ImageViewer()
+Viewer2D::Viewer2D()
 {
     path.clear();
     zoom=1.0;
@@ -9,31 +9,30 @@ ImageViewer::ImageViewer()
     id2=0;
 
     createPopup();
+
+    scale_color_mode=MODE_BLUE_GRADIENT;
+    gamma=1;
 }
 
-ImageViewer::~ImageViewer()
+Viewer2D::~Viewer2D()
 {
 
 }
 
-void ImageViewer::createPopup()
+void Viewer2D::createPopup()
 {
     popup_menu=new QMenu(this);
 
     actSave   = new QAction("Save",  this);
-    actLoad    = new QAction("Load",   this);
 
-    actSave->setShortcut(QKeySequence(tr("Ctrl+S")));
-    actLoad->setShortcut(QKeySequence(tr("Ctrl+L")));
+    actSave->setShortcut(QKeySequence(tr("Ctrl+Alt+S")));
 
     popup_menu->addAction(actSave);
-    popup_menu->addAction(actLoad);
 
     connect(actSave,SIGNAL(triggered()),this,SLOT(slot_save_image()));
-    connect(actLoad,SIGNAL(triggered()),this,SLOT(slot_load_image()));
 }
 
-void ImageViewer::paintEvent(QPaintEvent * event)
+void Viewer2D::paintEvent(QPaintEvent * event)
 {
     QPainter painter(this);
 
@@ -50,7 +49,7 @@ void ImageViewer::paintEvent(QPaintEvent * event)
                          zoom*box.fromP1(path[path.size()-1][id2]),
                          QString("(%1,%2)").arg(path[path.size()-1][id1]).arg(path[path.size()-1][id2]));
 
-        for(int i=1;i<path.size();i++)
+        for(unsigned int i=1;i<path.size();i++)
         {
             if(path[i-1].rows()>=2)
             {
@@ -63,7 +62,7 @@ void ImageViewer::paintEvent(QPaintEvent * event)
     }
 }
 
-void ImageViewer::mousePressEvent(QMouseEvent * event)
+void Viewer2D::mousePressEvent(QMouseEvent * event)
 {
     if(event->button() == Qt::LeftButton)
     {
@@ -79,7 +78,7 @@ void ImageViewer::mousePressEvent(QMouseEvent * event)
     }
 }
 
-void ImageViewer::wheelEvent(QWheelEvent *event)
+void Viewer2D::wheelEvent(QWheelEvent *event)
 {
     if(event->delta()>0)
     {
@@ -93,7 +92,14 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
     update();
 }
 
-void ImageViewer::slot_save_image()
+void Viewer2D::slot_set_data(std::vector<std::vector<double>> data)
+{
+    std::cout<<"set data"<<std::endl;
+    this->data=data;
+    setImage(System::toImage(data,scale_color_mode,gamma));
+}
+
+void Viewer2D::slot_save_image()
 {
     QFileInfo info(current_filename);
     QString where=info.path();
@@ -110,7 +116,7 @@ void ImageViewer::slot_save_image()
     }
 }
 
-void ImageViewer::slot_load_image()
+void Viewer2D::slot_load_image()
 {
     QFileInfo info(current_filename);
     QString where=info.path();
@@ -124,4 +130,16 @@ void ImageViewer::slot_load_image()
             image.load(filename);
         }
     }
+}
+
+void Viewer2D::slot_set_gamma(double value)
+{
+    this->gamma=value;
+    setImage(System::toImage(data,scale_color_mode,gamma));
+}
+
+void Viewer2D::slot_set_color_mode(int mode)
+{
+    this->scale_color_mode=(ScaleColorMode)mode;
+    setImage(System::toImage(data,scale_color_mode,gamma));
 }

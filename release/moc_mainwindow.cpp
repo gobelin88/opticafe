@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_WorkerThread_t {
-    QByteArrayData data[5];
-    char stringdata[40];
+    QByteArrayData data[10];
+    char stringdata[173];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -30,13 +30,23 @@ struct qt_meta_stringdata_WorkerThread_t {
 static const qt_meta_stringdata_WorkerThread_t qt_meta_stringdata_WorkerThread = {
     {
 QT_MOC_LITERAL(0, 0, 12), // "WorkerThread"
-QT_MOC_LITERAL(1, 13, 9), // "sig_image"
-QT_MOC_LITERAL(2, 23, 0), // ""
-QT_MOC_LITERAL(3, 24, 5), // "image"
-QT_MOC_LITERAL(4, 30, 9) // "sig_solve"
+QT_MOC_LITERAL(1, 13, 13), // "sig_output_1d"
+QT_MOC_LITERAL(2, 27, 0), // ""
+QT_MOC_LITERAL(3, 28, 19), // "std::vector<double>"
+QT_MOC_LITERAL(4, 48, 4), // "data"
+QT_MOC_LITERAL(5, 53, 13), // "sig_output_2d"
+QT_MOC_LITERAL(6, 67, 33), // "std::vector<std::vector<doubl..."
+QT_MOC_LITERAL(7, 101, 13), // "sig_output_3d"
+QT_MOC_LITERAL(8, 115, 47), // "std::vector<std::vector<std::..."
+QT_MOC_LITERAL(9, 163, 9) // "sig_solve"
 
     },
-    "WorkerThread\0sig_image\0\0image\0sig_solve"
+    "WorkerThread\0sig_output_1d\0\0"
+    "std::vector<double>\0data\0sig_output_2d\0"
+    "std::vector<std::vector<double> >\0"
+    "sig_output_3d\0"
+    "std::vector<std::vector<std::vector<double> > >\0"
+    "sig_solve"
 };
 #undef QT_MOC_LITERAL
 
@@ -46,19 +56,23 @@ static const uint qt_meta_data_WorkerThread[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   24,    2, 0x06 /* Public */,
-       4,    0,   27,    2, 0x06 /* Public */,
+       1,    1,   34,    2, 0x06 /* Public */,
+       5,    1,   37,    2, 0x06 /* Public */,
+       7,    1,   40,    2, 0x06 /* Public */,
+       9,    0,   43,    2, 0x06 /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QImage,    3,
+    QMetaType::Void, 0x80000000 | 3,    4,
+    QMetaType::Void, 0x80000000 | 6,    4,
+    QMetaType::Void, 0x80000000 | 8,    4,
     QMetaType::Void,
 
        0        // eod
@@ -69,23 +83,37 @@ void WorkerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     if (_c == QMetaObject::InvokeMetaMethod) {
         WorkerThread *_t = static_cast<WorkerThread *>(_o);
         switch (_id) {
-        case 0: _t->sig_image((*reinterpret_cast< QImage(*)>(_a[1]))); break;
-        case 1: _t->sig_solve(); break;
+        case 0: _t->sig_output_1d((*reinterpret_cast< std::vector<double>(*)>(_a[1]))); break;
+        case 1: _t->sig_output_2d((*reinterpret_cast< std::vector<std::vector<double> >(*)>(_a[1]))); break;
+        case 2: _t->sig_output_3d((*reinterpret_cast< std::vector<std::vector<std::vector<double> > >(*)>(_a[1]))); break;
+        case 3: _t->sig_solve(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (WorkerThread::*_t)(QImage );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_image)) {
+            typedef void (WorkerThread::*_t)(std::vector<double> );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_output_1d)) {
                 *result = 0;
+            }
+        }
+        {
+            typedef void (WorkerThread::*_t)(std::vector<std::vector<double> > );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_output_2d)) {
+                *result = 1;
+            }
+        }
+        {
+            typedef void (WorkerThread::*_t)(std::vector<std::vector<std::vector<double> > > );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_output_3d)) {
+                *result = 2;
             }
         }
         {
             typedef void (WorkerThread::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_solve)) {
-                *result = 1;
+                *result = 3;
             }
         }
     }
@@ -116,32 +144,46 @@ int WorkerThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 4)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 2;
+        _id -= 4;
     }
     return _id;
 }
 
 // SIGNAL 0
-void WorkerThread::sig_image(QImage _t1)
+void WorkerThread::sig_output_1d(std::vector<double> _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
+void WorkerThread::sig_output_2d(std::vector<std::vector<double> > _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void WorkerThread::sig_output_3d(std::vector<std::vector<std::vector<double> > > _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
 void WorkerThread::sig_solve()
 {
-    QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 3, Q_NULLPTR);
 }
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[16];
-    char stringdata[211];
+    QByteArrayData data[29];
+    char stringdata[392];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -160,20 +202,38 @@ QT_MOC_LITERAL(6, 86, 17), // "slot_text_changed"
 QT_MOC_LITERAL(7, 104, 4), // "pick"
 QT_MOC_LITERAL(8, 109, 2), // "p0"
 QT_MOC_LITERAL(9, 112, 2), // "p1"
-QT_MOC_LITERAL(10, 115, 9), // "slot_2D_f"
-QT_MOC_LITERAL(11, 125, 14), // "slot_2D_f_func"
-QT_MOC_LITERAL(12, 140, 22), // "slot_load_conv_setting"
-QT_MOC_LITERAL(13, 163, 8), // "filename"
-QT_MOC_LITERAL(14, 172, 22), // "slot_save_conv_setting"
-QT_MOC_LITERAL(15, 195, 15) // "slot_solve_over"
+QT_MOC_LITERAL(10, 115, 9), // "slot_conv"
+QT_MOC_LITERAL(11, 125, 9), // "slot_func"
+QT_MOC_LITERAL(12, 135, 12), // "slot_conv_1d"
+QT_MOC_LITERAL(13, 148, 12), // "slot_func_1d"
+QT_MOC_LITERAL(14, 161, 12), // "slot_conv_2d"
+QT_MOC_LITERAL(15, 174, 12), // "slot_func_2d"
+QT_MOC_LITERAL(16, 187, 12), // "slot_conv_3d"
+QT_MOC_LITERAL(17, 200, 12), // "slot_func_3d"
+QT_MOC_LITERAL(18, 213, 22), // "slot_load_conv_setting"
+QT_MOC_LITERAL(19, 236, 8), // "filename"
+QT_MOC_LITERAL(20, 245, 22), // "slot_save_conv_setting"
+QT_MOC_LITERAL(21, 268, 15), // "slot_solve_over"
+QT_MOC_LITERAL(22, 284, 11), // "id1_changed"
+QT_MOC_LITERAL(23, 296, 2), // "id"
+QT_MOC_LITERAL(24, 299, 11), // "id2_changed"
+QT_MOC_LITERAL(25, 311, 11), // "id3_changed"
+QT_MOC_LITERAL(26, 323, 22), // "update_button_names_1d"
+QT_MOC_LITERAL(27, 346, 22), // "update_button_names_2d"
+QT_MOC_LITERAL(28, 369, 22) // "update_button_names_3d"
 
     },
     "MainWindow\0slot_run_script\0\0"
     "slot_load_script\0slot_save_script\0"
     "slot_direct_save_script\0slot_text_changed\0"
-    "pick\0p0\0p1\0slot_2D_f\0slot_2D_f_func\0"
+    "pick\0p0\0p1\0slot_conv\0slot_func\0"
+    "slot_conv_1d\0slot_func_1d\0slot_conv_2d\0"
+    "slot_func_2d\0slot_conv_3d\0slot_func_3d\0"
     "slot_load_conv_setting\0filename\0"
-    "slot_save_conv_setting\0slot_solve_over"
+    "slot_save_conv_setting\0slot_solve_over\0"
+    "id1_changed\0id\0id2_changed\0id3_changed\0"
+    "update_button_names_1d\0update_button_names_2d\0"
+    "update_button_names_3d"
 };
 #undef QT_MOC_LITERAL
 
@@ -183,7 +243,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      24,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -191,18 +251,30 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   74,    2, 0x0a /* Public */,
-       3,    0,   75,    2, 0x0a /* Public */,
-       4,    0,   76,    2, 0x0a /* Public */,
-       5,    0,   77,    2, 0x0a /* Public */,
-       6,    0,   78,    2, 0x0a /* Public */,
-       7,    2,   79,    2, 0x0a /* Public */,
-      10,    0,   84,    2, 0x0a /* Public */,
-      11,    0,   85,    2, 0x0a /* Public */,
-      12,    1,   86,    2, 0x0a /* Public */,
-      12,    0,   89,    2, 0x0a /* Public */,
-      14,    0,   90,    2, 0x0a /* Public */,
-      15,    0,   91,    2, 0x0a /* Public */,
+       1,    0,  134,    2, 0x0a /* Public */,
+       3,    0,  135,    2, 0x0a /* Public */,
+       4,    0,  136,    2, 0x0a /* Public */,
+       5,    0,  137,    2, 0x0a /* Public */,
+       6,    0,  138,    2, 0x0a /* Public */,
+       7,    2,  139,    2, 0x0a /* Public */,
+      10,    0,  144,    2, 0x0a /* Public */,
+      11,    0,  145,    2, 0x0a /* Public */,
+      12,    0,  146,    2, 0x0a /* Public */,
+      13,    0,  147,    2, 0x0a /* Public */,
+      14,    0,  148,    2, 0x0a /* Public */,
+      15,    0,  149,    2, 0x0a /* Public */,
+      16,    0,  150,    2, 0x0a /* Public */,
+      17,    0,  151,    2, 0x0a /* Public */,
+      18,    1,  152,    2, 0x0a /* Public */,
+      18,    0,  155,    2, 0x0a /* Public */,
+      20,    0,  156,    2, 0x0a /* Public */,
+      21,    0,  157,    2, 0x0a /* Public */,
+      22,    1,  158,    2, 0x0a /* Public */,
+      24,    1,  161,    2, 0x0a /* Public */,
+      25,    1,  164,    2, 0x0a /* Public */,
+      26,    0,  167,    2, 0x0a /* Public */,
+      27,    0,  168,    2, 0x0a /* Public */,
+      28,    0,  169,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -213,7 +285,19 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Double, QMetaType::Double,    8,    9,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   13,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   19,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   23,
+    QMetaType::Void, QMetaType::Int,   23,
+    QMetaType::Void, QMetaType::Int,   23,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -232,12 +316,24 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->slot_direct_save_script(); break;
         case 4: _t->slot_text_changed(); break;
         case 5: _t->pick((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
-        case 6: _t->slot_2D_f(); break;
-        case 7: _t->slot_2D_f_func(); break;
-        case 8: _t->slot_load_conv_setting((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 9: _t->slot_load_conv_setting(); break;
-        case 10: _t->slot_save_conv_setting(); break;
-        case 11: _t->slot_solve_over(); break;
+        case 6: _t->slot_conv(); break;
+        case 7: _t->slot_func(); break;
+        case 8: _t->slot_conv_1d(); break;
+        case 9: _t->slot_func_1d(); break;
+        case 10: _t->slot_conv_2d(); break;
+        case 11: _t->slot_func_2d(); break;
+        case 12: _t->slot_conv_3d(); break;
+        case 13: _t->slot_func_3d(); break;
+        case 14: _t->slot_load_conv_setting((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 15: _t->slot_load_conv_setting(); break;
+        case 16: _t->slot_save_conv_setting(); break;
+        case 17: _t->slot_solve_over(); break;
+        case 18: _t->id1_changed((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 19: _t->id2_changed((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 20: _t->id3_changed((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: _t->update_button_names_1d(); break;
+        case 22: _t->update_button_names_2d(); break;
+        case 23: _t->update_button_names_3d(); break;
         default: ;
         }
     }
@@ -268,13 +364,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 24;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 24)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 12;
+        _id -= 24;
     }
     return _id;
 }
