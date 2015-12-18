@@ -456,39 +456,7 @@
               <widget class="QComboBox" name="cb__color_mode"/>
              </item>
              <item>
-              <widget class="QComboBox" name="cb_scale_color_mode"/>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="sb_gamma">
-               <property name="prefix">
-                <string>gamma=</string>
-               </property>
-               <property name="maximum">
-                <double>10.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="sb_cut">
-               <property name="prefix">
-                <string>cut=</string>
-               </property>
-               <property name="maximum">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.010000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
+              <widget class="QComboBox" name="cb_gradient_preset"/>
              </item>
             </layout>
            </item>

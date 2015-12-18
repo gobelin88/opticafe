@@ -16,11 +16,16 @@ struct Box
         this->p2_min=0;
         this->p2_max=0;
         this->p2_res=0;
+
+        this->id1=0;
+        this->id2=1;
+        this->id3=2;
     }
 
     Box(double p0_min,double p0_max,double p0_res,
         double p1_min,double p1_max,double p1_res,
-        double p2_min,double p2_max,double p2_res)
+        double p2_min,double p2_max,double p2_res,
+        int id1,int id2,int id3)
     {
         this->p0_min=p0_min;
         this->p0_max=p0_max;
@@ -33,6 +38,10 @@ struct Box
         this->p2_min=p2_min;
         this->p2_max=p2_max;
         this->p2_res=p2_res;
+
+        this->id1=id1;
+        this->id2=id2;
+        this->id3=id3;
     }
 
     double getP0(int i){return (i*(p0_max-p0_min))/p0_res+p0_min;}
@@ -55,6 +64,8 @@ struct Box
     double p2_max;
     int p2_res;
 
+    int id1,id2,id3;
+
     void Box::operator=(const Box& copy)
     {
         this->p0_min=copy.p0_min;
@@ -68,7 +79,13 @@ struct Box
         this->p2_min=copy.p2_min;
         this->p2_max=copy.p2_max;
         this->p2_res=copy.p2_res;
+
+        this->id1=copy.id1;
+        this->id2=copy.id2;
+        this->id3=copy.id3;
     }
+
+
 };
 
 #endif // BOX

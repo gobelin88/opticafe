@@ -1,0 +1,6 @@
+y0=p0
+y1=p1
+y2=p2
+y3=0
+p_init=1,1,1
+data=./scripts/06-PlanFit/Plateau3x.csv

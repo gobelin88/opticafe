@@ -1,1 +1,2 @@
-y0=rand()*p0
+y0=p0*x0+p1*x1+p2*x2+p3
+data=./06-PlanFit/Plateau1.csv

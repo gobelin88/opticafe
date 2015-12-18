@@ -4,21 +4,34 @@ Viewer3D::Viewer3D()
 {
     popup_menu=new QMenu(this);
 
-    display_grid=true;
+    display_axis=true;
     slot_init();
     createPopup();
 
-    scale_color_mode=(ScaleColorMode)0;
-    gamma=1.0;
     cut=1.0;
 
     mode=0;
 
     cloud.clear();
-    data.clear();
+    data_clamped.clear();
+    cloud_colors.clear();
 
     mutex=NULL;
+
+    gradient.loadPreset(QCPColorGradient::gpGrayscale);
+
+    box.p0_min=-1;
+    box.p0_max=1;
+    box.p0_res=100;
+    box.p1_min=-1;
+    box.p1_max=1;
+    box.p1_res=100;
+    box.p2_min=-1;
+    box.p2_max=1;
+    box.p2_res=100;
 }
+
+
 
 Viewer3D::~Viewer3D()
 {
@@ -75,10 +88,25 @@ void Viewer3D::createPopup()
     connect(actBottom,SIGNAL(triggered()),this,SLOT(slot_bottom()));
 }
 
+QVector<double> Viewer3D::extract(std::vector<VectorXd> v,int id)
+{
+    QVector<double> v_out(v.size());
+    for(unsigned int i=0;i<v.size();i++)
+    {
+        v_out[i]=v[i][id];
+    }
+    return v_out;
+}
+
+void Viewer3D::setPath(std::vector<VectorXd> path)
+{
+
+}
+
 void Viewer3D::slot_init()
 {
     a=M_PI/4.0;  b=-M_PI/4.0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -87,7 +115,7 @@ void Viewer3D::slot_init()
 void Viewer3D::slot_front()
 {
     a=M_PI/2.0;  b=0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -96,7 +124,7 @@ void Viewer3D::slot_front()
 void Viewer3D::slot_back()
 {
     a=-M_PI/2.0;  b=0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -105,7 +133,7 @@ void Viewer3D::slot_back()
 void Viewer3D::slot_left()
 {
     a=0.0;  b=0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -114,7 +142,7 @@ void Viewer3D::slot_left()
 void Viewer3D::slot_right()
 {
     a=M_PI;  b=0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -123,7 +151,7 @@ void Viewer3D::slot_right()
 void Viewer3D::slot_top()
 {
     a=0.0;  b=M_PI/2.0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -132,7 +160,7 @@ void Viewer3D::slot_top()
 void Viewer3D::slot_bottom()
 {
     a=0.0;  b=-M_PI/2.0;
-    r=0.5;
+    r=1;
     xo=0.0;yo=0.0;zo=0.0;
     updateCamera();
     update();
@@ -152,7 +180,6 @@ void Viewer3D::resizeGL(int w, int h)
 
 void Viewer3D::paintGL()
 {
-
     if( !mutex || (mutex && mutex->tryLock()) )
     {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -161,43 +188,54 @@ void Viewer3D::paintGL()
         gluLookAt(vcam[0],vcam[1],vcam[2],
                 xo,yo,zo,0,1,0);
 
-        glBegin(GL_POINTS);
-        for(unsigned int i=0;i<cloud.size();i++)
+        glColor3f(0,0,0);
+        if(cloud.size()>0)
         {
-            qglColor(cloud[i].second);
-            glVertex3dv(&cloud[i].first[0]);
-        }
-        glEnd();
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(3, GL_DOUBLE, 0, data_positions_clamped.data());
 
-        glPushMatrix();
-        glScaled(-1.0,1.0,1.0);
+            glEnableClientState(GL_COLOR_ARRAY);
+            glColorPointer (3, GL_UNSIGNED_BYTE,0, cloud_colors.data());
+
+            glDrawArrays(GL_POINTS, 0, data_positions_clamped.size());
+
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_COLOR_ARRAY);
+        }
+
+
         //GLdouble light_position[] = { -1.0, -1.0, -1.0, 0.0 };
         //glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-        if(display_grid)
+        if(display_axis)
         {
             glEnable (GL_LINE_SMOOTH);
             glEnable (GL_BLEND);
             glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 
-            double step=0.01;
-            double s=0.5;
 
-            int i=0;
-            for(double x=-s;x<s+step;x+=step)
-            {
-                if((i++)%5==0) {glColor3f(0,0,0);glLineWidth(1.5);}
-                else {glColor3f(0.5,0.5,0.5);glLineWidth(1);}
+            double margeX=0.2*(box.p0_max-box.p0_min);
+            double margeY=0.2*(box.p1_max-box.p1_min);
+            double margeZ=0.2*(box.p2_max-box.p2_min);
 
-                glBegin(GL_LINES);
-                glVertex3d(x,0,-s);
-                glVertex3d(x,0,s);
+            glColor3f(0,0,0);
+            glBegin(GL_LINES);
 
-                glVertex3d(-s,0,x);
-                glVertex3d(s,0,x);
-                glEnd();
-            }
+                glVertex3d(box.p0_min,box.p1_min,box.p2_min);
+                glVertex3d(box.p0_max+margeX,box.p1_min,box.p2_min);
+
+                glVertex3d(box.p0_min,box.p1_min,box.p2_min);
+                glVertex3d(box.p0_min,box.p1_max+margeY,box.p2_min);
+
+                glVertex3d(box.p0_min,box.p1_min,box.p2_min);
+                glVertex3d(box.p0_min,box.p1_min,box.p2_max+margeZ);
+
+            glEnd();
+
+            renderText(box.p0_max+margeX,box.p1_min,box.p2_min,QString("p%1").arg(box.id1));
+            renderText(box.p0_min,box.p1_max+margeY,box.p2_min,QString("p%1").arg(box.id2));
+            renderText(box.p0_min,box.p1_min,box.p2_max+margeZ,QString("p%1").arg(box.id3));
 
             glDisable (GL_BLEND);
             glDisable (GL_LINE_SMOOTH);
@@ -224,8 +262,6 @@ void Viewer3D::paintGL()
 
         if(mutex)mutex->unlock();
     }
-
-    glPopMatrix();
 
 }
 
@@ -300,7 +336,7 @@ void Viewer3D::mouseMoveEvent(QMouseEvent * e)
 
 void Viewer3D::wheelEvent( QWheelEvent * event )
 {
-    r+=( event->delta() )/10000.0;
+    r*=1+( event->delta() )/1000.0;
     if(r<0)r=0;
     updateCamera();
     update();
@@ -318,7 +354,7 @@ void Viewer3D::mouseDoubleClickEvent(QMouseEvent * event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        display_grid=!display_grid;
+        display_axis=!display_axis;
     }
     else if(event->button() == Qt::MiddleButton)
     {
@@ -344,30 +380,78 @@ void Viewer3D::add(DrawableInterface * drawable_object)
     }
 }
 
-void Viewer3D::slot_set_gamma(double value)
+void Viewer3D::searchMinMax(const std::vector<std::vector<std::vector<double> >> &data, double &min, double &max)
 {
-    this->gamma=value;
-    cloud=System::toCloud(data,scale_color_mode,gamma,cut,0.001);
+    min=data[0][0][0];
+    max=data[0][0][0];
+
+
+    for(unsigned int i=1;i<data.size();i++)
+    {
+        for(unsigned int j=0;j<data[0].size();j++)
+        {
+            for(unsigned int k=0;k<data[0][0].size();k++)
+            {
+                if(data[i][j][k]<min)min=data[i][j][k];
+                if(data[i][j][k]>max)max=data[i][j][k];
+            }
+        }
+    }
+}
+
+void Viewer3D::calcDataClamped(const std::vector<std::vector<std::vector<double>>> & data)
+{
+    unsigned int nb=data.size()*data[0].size()*data[0][0].size();
+    data_clamped.resize (nb,0.0);
+    data_positions_clamped.resize (nb,Vector3d(0,0,0));
+
+    double min,max;
+    searchMinMax(data,min,max);
+
+    unsigned int index=0;
+    for(unsigned int i=0;i<data.size();i++)
+    {
+        for(unsigned int j=0;j<data[0].size();j++)
+        {
+            for(unsigned int k=0;k<data[0][0].size();k++)
+            {
+                data_clamped[index]= (data[i][j][k]-min)/(max-min);
+                data_positions_clamped[index]=Vector3d(box.getP0(i),
+                                                       box.getP0(j),
+                                                       box.getP0(k));
+                index++;
+            }
+        }
+    }
+}
+
+void Viewer3D::setGradient(int preset)
+{
+    gradient.loadPreset((QCPColorGradient::GradientPreset)preset);
+    calcCloud();
     update();
 }
 
-void Viewer3D::slot_set_color_mode(int color_mode)
+void Viewer3D::slot_set_data(std::vector<std::vector<std::vector<double>>> data,Box box)
 {
-    this->scale_color_mode=(ScaleColorMode)color_mode;
-    cloud=System::toCloud(data,scale_color_mode,gamma,cut,0.001);
+    this->box=box;
+    calcDataClamped(data);
+    calcCloud();
     update();
 }
 
-void Viewer3D::slot_set_data(std::vector<std::vector<std::vector<double>>> data)
+void Viewer3D::calcCloud()
 {
-    this->data=data;
-    cloud=System::toCloud(data,scale_color_mode,gamma,cut,0.001);
-    update();
-}
+    QCPRange range(0,1);
+    cloud.resize(data_clamped.size(),QRgb(0));
+    cloud_colors.resize(data_clamped.size(),Vector3b(0,0,0));
 
-void Viewer3D::slot_set_cut(double value)
-{
-    this->cut=value;
-    cloud=System::toCloud(data,scale_color_mode,gamma,cut,0.001);
-    update();
+    gradient.colorize(data_clamped.data(),range,cloud.data(),data_clamped.size());
+
+    for(int i=0;i<data_clamped.size();i++)
+    {
+        cloud_colors[i]=Vector3b(qRed(cloud[i]),
+                                 qGreen(cloud[i]),
+                                 qBlue(cloud[i]));
+    }
 }

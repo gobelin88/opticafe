@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_WorkerThread_t {
-    QByteArrayData data[10];
-    char stringdata[173];
+    QByteArrayData data[12];
+    char stringdata[181];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,16 +34,18 @@ QT_MOC_LITERAL(1, 13, 13), // "sig_output_1d"
 QT_MOC_LITERAL(2, 27, 0), // ""
 QT_MOC_LITERAL(3, 28, 19), // "std::vector<double>"
 QT_MOC_LITERAL(4, 48, 4), // "data"
-QT_MOC_LITERAL(5, 53, 13), // "sig_output_2d"
-QT_MOC_LITERAL(6, 67, 33), // "std::vector<std::vector<doubl..."
-QT_MOC_LITERAL(7, 101, 13), // "sig_output_3d"
-QT_MOC_LITERAL(8, 115, 47), // "std::vector<std::vector<std::..."
-QT_MOC_LITERAL(9, 163, 9) // "sig_solve"
+QT_MOC_LITERAL(5, 53, 3), // "Box"
+QT_MOC_LITERAL(6, 57, 3), // "box"
+QT_MOC_LITERAL(7, 61, 13), // "sig_output_2d"
+QT_MOC_LITERAL(8, 75, 33), // "std::vector<std::vector<doubl..."
+QT_MOC_LITERAL(9, 109, 13), // "sig_output_3d"
+QT_MOC_LITERAL(10, 123, 47), // "std::vector<std::vector<std::..."
+QT_MOC_LITERAL(11, 171, 9) // "sig_solve"
 
     },
     "WorkerThread\0sig_output_1d\0\0"
-    "std::vector<double>\0data\0sig_output_2d\0"
-    "std::vector<std::vector<double> >\0"
+    "std::vector<double>\0data\0Box\0box\0"
+    "sig_output_2d\0std::vector<std::vector<double> >\0"
     "sig_output_3d\0"
     "std::vector<std::vector<std::vector<double> > >\0"
     "sig_solve"
@@ -64,15 +66,15 @@ static const uint qt_meta_data_WorkerThread[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   34,    2, 0x06 /* Public */,
-       5,    1,   37,    2, 0x06 /* Public */,
-       7,    1,   40,    2, 0x06 /* Public */,
-       9,    0,   43,    2, 0x06 /* Public */,
+       1,    2,   34,    2, 0x06 /* Public */,
+       7,    2,   39,    2, 0x06 /* Public */,
+       9,    2,   44,    2, 0x06 /* Public */,
+      11,    0,   49,    2, 0x06 /* Public */,
 
  // signals: parameters
-    QMetaType::Void, 0x80000000 | 3,    4,
-    QMetaType::Void, 0x80000000 | 6,    4,
-    QMetaType::Void, 0x80000000 | 8,    4,
+    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 5,    4,    6,
+    QMetaType::Void, 0x80000000 | 8, 0x80000000 | 5,    4,    6,
+    QMetaType::Void, 0x80000000 | 10, 0x80000000 | 5,    4,    6,
     QMetaType::Void,
 
        0        // eod
@@ -83,9 +85,9 @@ void WorkerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     if (_c == QMetaObject::InvokeMetaMethod) {
         WorkerThread *_t = static_cast<WorkerThread *>(_o);
         switch (_id) {
-        case 0: _t->sig_output_1d((*reinterpret_cast< std::vector<double>(*)>(_a[1]))); break;
-        case 1: _t->sig_output_2d((*reinterpret_cast< std::vector<std::vector<double> >(*)>(_a[1]))); break;
-        case 2: _t->sig_output_3d((*reinterpret_cast< std::vector<std::vector<std::vector<double> > >(*)>(_a[1]))); break;
+        case 0: _t->sig_output_1d((*reinterpret_cast< std::vector<double>(*)>(_a[1])),(*reinterpret_cast< Box(*)>(_a[2]))); break;
+        case 1: _t->sig_output_2d((*reinterpret_cast< std::vector<std::vector<double> >(*)>(_a[1])),(*reinterpret_cast< Box(*)>(_a[2]))); break;
+        case 2: _t->sig_output_3d((*reinterpret_cast< std::vector<std::vector<std::vector<double> > >(*)>(_a[1])),(*reinterpret_cast< Box(*)>(_a[2]))); break;
         case 3: _t->sig_solve(); break;
         default: ;
         }
@@ -93,19 +95,19 @@ void WorkerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (WorkerThread::*_t)(std::vector<double> );
+            typedef void (WorkerThread::*_t)(std::vector<double> , Box );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_output_1d)) {
                 *result = 0;
             }
         }
         {
-            typedef void (WorkerThread::*_t)(std::vector<std::vector<double> > );
+            typedef void (WorkerThread::*_t)(std::vector<std::vector<double> > , Box );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_output_2d)) {
                 *result = 1;
             }
         }
         {
-            typedef void (WorkerThread::*_t)(std::vector<std::vector<std::vector<double> > > );
+            typedef void (WorkerThread::*_t)(std::vector<std::vector<std::vector<double> > > , Box );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&WorkerThread::sig_output_3d)) {
                 *result = 2;
             }
@@ -156,23 +158,23 @@ int WorkerThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void WorkerThread::sig_output_1d(std::vector<double> _t1)
+void WorkerThread::sig_output_1d(std::vector<double> _t1, Box _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void WorkerThread::sig_output_2d(std::vector<std::vector<double> > _t1)
+void WorkerThread::sig_output_2d(std::vector<std::vector<double> > _t1, Box _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
-void WorkerThread::sig_output_3d(std::vector<std::vector<std::vector<double> > > _t1)
+void WorkerThread::sig_output_3d(std::vector<std::vector<std::vector<double> > > _t1, Box _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 

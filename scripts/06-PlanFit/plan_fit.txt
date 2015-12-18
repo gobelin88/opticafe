@@ -1,0 +1,3 @@
+y0=(cos(p0/180*pi)*sin(p1/180*pi)*x0+cos(p1/180*pi)*x1+sin(p0/180*pi)*sin(p1/180*pi)*x2+p2)
+p_init=1,1,1
+data=./scripts/06-PlanFit/Plateau1z.csv

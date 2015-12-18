@@ -108,13 +108,6 @@ public:
     std::vector< std::vector<double> > eval_2D_p0p1(Box box, ColorMode mode);
     std::vector< std::vector< std::vector<double> > > eval_3D_p0p1p2(Box box, ColorMode mode);
 
-    static QColor getColor(double value, ScaleColorMode mode);
-    static QColor getColor(double val, ScaleColorMode mode,double gamma,double min,double max);
-    static QImage toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode, double gamma);
-    static std::vector<std::pair<Vector3d,QColor>> toCloud(const std::vector<std::vector< std::vector<double> > > & data, ScaleColorMode mode,double gamma,double cut,double scale);
-    static void searchMinMax(const std::vector< std::vector<double> > & data,double & min,double & max);
-    static void searchMinMax(const std::vector<std::vector<std::vector<double> >> &data, double &min, double &max);
-
     const SystemData & getSystemData(){return data;}
     const SystemData & getSystemModel(){return model;}
     VectorXd serialize(const std::vector<Eigen::VectorXd> &v);

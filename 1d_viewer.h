@@ -15,11 +15,10 @@ public:
     Viewer1D();
     ~Viewer1D();
 
-    void setBox(Box box){this->box=box;}
-    void setPath(std::vector<VectorXd> path,int id1);
+    void setPath(std::vector<VectorXd> path);
 
 public slots:
-    void slot_set_data(std::vector<double> data);
+    void slot_set_data(std::vector<double> data,Box box);
 
 signals:
     void pick(double p0);
@@ -28,10 +27,9 @@ private:
     std::vector<double> data;
     std::vector<VectorXd> path;
     Box box;
-    int id1;
 
 protected:
-    void mouseMoveEvent(QMouseEvent * event);
+    //void mouseMoveEvent(QMouseEvent * event);
 
     QVector<double> extract(std::vector<VectorXd> v,int id);
     QVector<double> buildXQVector(unsigned int sz);

@@ -9,6 +9,10 @@ void System::init()
     progress_bar=NULL;
     progress_bar=NULL;
     results.reset();
+
+
+    memset(P,0,sizeof(double)*9);
+    memset(X,0,sizeof(double)*9);
 }
 
 System::System()
@@ -51,6 +55,7 @@ bool System::load_system(QString script)
 {
     expr_str.clear();
     symbol_table.clear();
+    symbol_table.add_constants();
 
     nb_x=getNB('x',script);
     nb_y=getNB('y',script);
@@ -549,126 +554,6 @@ QVector<double> System::extract(std::vector<VectorXd> v,int id)
         v_out[i]=v[i][id];
     }
     return v_out;
-}
-
-void System::searchMinMax(const std::vector<std::vector<double> > &data, double &min, double &max)
-{
-    min=data[0][0];
-    max=data[0][0];
-
-    for(unsigned int i=1;i<data.size();i++)
-    {
-        for(unsigned int j=0;j<data[0].size();j++)
-        {
-            if(data[i][j]<min)min=data[i][j];
-            if(data[i][j]>max)max=data[i][j];
-        }
-    }
-}
-
-void System::searchMinMax(const std::vector<std::vector<std::vector<double> >> &data, double &min, double &max)
-{
-    min=data[0][0][0];
-    max=data[0][0][0];
-
-
-    for(unsigned int i=1;i<data.size();i++)
-    {
-        for(unsigned int j=0;j<data[0].size();j++)
-        {
-            for(unsigned int k=0;k<data[0][0].size();k++)
-            {
-                if(data[i][j][k]<min)min=data[i][j][k];
-                if(data[i][j][k]>max)max=data[i][j][k];
-            }
-        }
-    }
-}
-
-QColor System::getColor(double value, ScaleColorMode mode)
-{
-    if(mode==MODE_BLUE_GRADIENT)
-    {
-        return QColor(255.0*value,255.0*std::pow(value,0.9),255.0*std::pow(value,0.2));
-    }
-    else if(mode==MODE_PERIODIC)
-    {
-        double omega=2*M_PI*value;
-        return QColor(127*sin(omega)          +128,
-                      127*sin(omega+2*M_PI/3) +128,
-                      127*sin(omega+4*M_PI/3) +128);
-    }
-    else if(mode==MODE_RAINBOW)
-    {
-        return QColor::fromHsv(std::max<double>(0,std::min<double>(359,359*value)),255,255);
-    }
-
-    return QColor(0,0,0);
-}
-
-QColor System::getColor(double val, ScaleColorMode mode,double gamma,double min,double max)
-{
-    if(max>min)
-    {
-        double value= std::pow((val-min)/(max-min),gamma);
-        return getColor(value, mode);
-    }
-    else
-    {
-        return QColor(0,0,0);
-    }
-}
-
-QImage System::toImage(const std::vector< std::vector<double> > & data, ScaleColorMode mode,double gamma)
-{
-    std::cout<<"toImage"<<std::endl;
-
-    if(data.size()<=0)return QImage();
-    QImage image(QSize(data.size(),data[0].size()),QImage::Format_RGB32);
-
-    double min,max;
-    searchMinMax(data,min,max);
-
-    std::cout<<" min="<<min<<" max="<<max<<std::endl;
-
-    for(int i=0;i<image.width();i++)
-    {
-        for(int j=0;j<image.height();j++)
-        {
-            image.setPixel(i,j,getColor(data[i][j],mode,gamma,min,max).rgb());
-        }
-    }
-
-    return image;
-}
-
-std::vector<std::pair<Vector3d,QColor>> System::toCloud(const std::vector<std::vector< std::vector<double> > > & data, ScaleColorMode mode,double gamma,double cut,double scale)
-{
-    if(data.size()<=0)return std::vector<std::pair<Vector3d,QColor>>();
-    if(data[0].size()<=0)return std::vector<std::pair<Vector3d,QColor>>();
-
-    std::vector<std::pair<Vector3d,QColor>> cloud;
-
-    double min,max;
-    searchMinMax(data,min,max);
-
-    for(unsigned int i=0;i<data.size();i++)
-    {
-        for(unsigned int j=0;j<data[0].size();j++)
-        {
-            for(unsigned int k=0;k<data[0][0].size();k++)
-            {
-                double value= std::pow((data[i][j][k]-min)/(max-min),gamma);
-
-                if(value<cut)
-                {
-                    cloud.push_back(std::pair<Vector3d,QColor>(Vector3d(i,j,k)*scale,getColor(value/cut,mode)));
-                }
-            }
-        }
-    }
-
-    return cloud;
 }
 
 void System::clearPlots()

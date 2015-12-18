@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Viewer1D_t {
-    QByteArrayData data[7];
-    char stringdata[57];
+    QByteArrayData data[9];
+    char stringdata[65];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,11 +35,13 @@ QT_MOC_LITERAL(2, 14, 0), // ""
 QT_MOC_LITERAL(3, 15, 2), // "p0"
 QT_MOC_LITERAL(4, 18, 13), // "slot_set_data"
 QT_MOC_LITERAL(5, 32, 19), // "std::vector<double>"
-QT_MOC_LITERAL(6, 52, 4) // "data"
+QT_MOC_LITERAL(6, 52, 4), // "data"
+QT_MOC_LITERAL(7, 57, 3), // "Box"
+QT_MOC_LITERAL(8, 61, 3) // "box"
 
     },
     "Viewer1D\0pick\0\0p0\0slot_set_data\0"
-    "std::vector<double>\0data"
+    "std::vector<double>\0data\0Box\0box"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,13 +62,13 @@ static const uint qt_meta_data_Viewer1D[] = {
        1,    1,   24,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    1,   27,    2, 0x0a /* Public */,
+       4,    2,   27,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Double,    3,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 5,    6,
+    QMetaType::Void, 0x80000000 | 5, 0x80000000 | 7,    6,    8,
 
        0        // eod
 };
@@ -77,7 +79,7 @@ void Viewer1D::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         Viewer1D *_t = static_cast<Viewer1D *>(_o);
         switch (_id) {
         case 0: _t->pick((*reinterpret_cast< double(*)>(_a[1]))); break;
-        case 1: _t->slot_set_data((*reinterpret_cast< std::vector<double>(*)>(_a[1]))); break;
+        case 1: _t->slot_set_data((*reinterpret_cast< std::vector<double>(*)>(_a[1])),(*reinterpret_cast< Box(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {

@@ -9,6 +9,7 @@
 //Std
 
 //Autre
+#include "qcustomplot.h"
 #include "DrawableInterface.h"
 #include "system.h"
 
@@ -16,6 +17,8 @@
 #include <Eigen/Dense>
 using Eigen::Vector3d;
 using Eigen::VectorXd;
+
+typedef Eigen::Matrix<unsigned char,3,1> Vector3b;
 
 #ifndef Viewer3D_H
 #define Viewer3D_H
@@ -40,9 +43,13 @@ public:
         hide();
     }
 
+
+
+    void setPath(std::vector<VectorXd> path);
+
     void add(DrawableInterface * drawable_object);
 
-    inline void enableGrid(bool value){display_grid=value;}
+    inline void enableGrid(bool value){display_axis=value;}
     inline void setZoom(double r){this->r=r;}
     inline void setA(double a){this->a=a;}
     inline void setB(double b){this->b=b;}
@@ -56,8 +63,6 @@ public:
 
     inline void clear(){drawable_objects.clear();}
 
-    void setBox(Box box){this->box=box;}
-
 public slots:
     void slot_front();
     void slot_back();
@@ -66,10 +71,8 @@ public slots:
     void slot_top();
     void slot_bottom();
     void slot_init();
-    void slot_set_gamma(double value);
-    void slot_set_cut(double value);
-    void slot_set_color_mode(int color_mode);
-    void slot_set_data( std::vector<std::vector<std::vector<double>>> data);
+    void slot_set_data( std::vector<std::vector<std::vector<double>>> data,Box box);
+    void setGradient(int preset);
 
 protected:
     void resizeGL(int w, int h);
@@ -83,6 +86,8 @@ protected:
 
 private:
     void createPopup();
+
+    QVector<double> Viewer3D::extract(std::vector<VectorXd> v,int id);
 
     //Vue
     double a,b,r;
@@ -101,7 +106,7 @@ private:
     std::vector<DrawableInterface *> drawable_objects;
 
     QMutex * mutex;
-    bool display_grid;
+    bool display_axis;
     int mode;
 
     QAction* actFront;
@@ -112,10 +117,17 @@ private:
     QAction* actBottom;
     QAction* actInit;
 
-    std::vector<std::vector<std::vector<double>>> data;
-    std::vector<std::pair<Vector3d,QColor>> cloud;
-    ScaleColorMode scale_color_mode;
-    double gamma,cut;
+
+    QCPColorGradient gradient;
+    void searchMinMax(const std::vector<std::vector<std::vector<double> >> &data, double &min, double &max);
+    void calcDataClamped(const std::vector<std::vector<std::vector<double>>> & data);
+    void calcCloud();
+
+    std::vector<Vector3d> data_positions_clamped;
+    std::vector<double> data_clamped;
+    std::vector<QRgb> cloud;
+    std::vector<Vector3b> cloud_colors;
+    double cut;
 
     Box box;
 };

@@ -79,9 +79,7 @@ public:
     QHBoxLayout *horizontalLayout_4;
     QHBoxLayout *horizontalLayout_3;
     QComboBox *cb__color_mode;
-    QComboBox *cb_scale_color_mode;
-    QDoubleSpinBox *sb_gamma;
-    QDoubleSpinBox *sb_cut;
+    QComboBox *cb_gradient_preset;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_6;
     QGridLayout *gridLayout;
@@ -297,26 +295,10 @@ public:
 
         horizontalLayout_3->addWidget(cb__color_mode);
 
-        cb_scale_color_mode = new QComboBox(groupBox_2);
-        cb_scale_color_mode->setObjectName(QStringLiteral("cb_scale_color_mode"));
+        cb_gradient_preset = new QComboBox(groupBox_2);
+        cb_gradient_preset->setObjectName(QStringLiteral("cb_gradient_preset"));
 
-        horizontalLayout_3->addWidget(cb_scale_color_mode);
-
-        sb_gamma = new QDoubleSpinBox(groupBox_2);
-        sb_gamma->setObjectName(QStringLiteral("sb_gamma"));
-        sb_gamma->setMaximum(10);
-        sb_gamma->setSingleStep(0.1);
-        sb_gamma->setValue(1);
-
-        horizontalLayout_3->addWidget(sb_gamma);
-
-        sb_cut = new QDoubleSpinBox(groupBox_2);
-        sb_cut->setObjectName(QStringLiteral("sb_cut"));
-        sb_cut->setMaximum(1);
-        sb_cut->setSingleStep(0.01);
-        sb_cut->setValue(1);
-
-        horizontalLayout_3->addWidget(sb_cut);
+        horizontalLayout_3->addWidget(cb_gradient_preset);
 
 
         horizontalLayout_4->addLayout(horizontalLayout_3);
@@ -499,8 +481,6 @@ public:
         rb_2D->setText(QString());
         rb_3D->setText(QString());
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Color rules", 0));
-        sb_gamma->setPrefix(QApplication::translate("MainWindow", "gamma=", 0));
-        sb_cut->setPrefix(QApplication::translate("MainWindow", "cut=", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Calculate", 0));
         pb_calculate_func->setText(QApplication::translate("MainWindow", "Evaluate", 0));
         pb_calculate_conv->setText(QApplication::translate("MainWindow", "Convergence", 0));

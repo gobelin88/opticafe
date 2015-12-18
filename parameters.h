@@ -52,6 +52,22 @@ static float color_tab[40][3]={
     {1,1,1}//39
 };
 
+#define NB_Gradients 12
+static char * ColorGradients_str[NB_Gradients]=
+{
+    "gpGrayscale",
+    "gpHot",
+    "gpCold",
+    "gpNight",
+    "gpCandy",
+    "gpGeography",
+    "gpIon",
+    "gpThermal",
+    "gpPolar",
+    "gpSpectrum",
+    "gpJet",
+    "gpHues"
+};
 
 #define NBColorMode 5
 static char * ColorMode_str[NBColorMode]=
@@ -70,21 +86,6 @@ enum ColorMode
     MODE_IT,
     MODE_Y0,
     MODE_Y1,
-};
-
-
-#define NBScaleColorMode 3
-static char * ScaleColorMode_str[NBScaleColorMode]={
-    "Blue Gradient",
-    "Periodic",
-    "Rainbow"
-};
-
-enum ScaleColorMode
-{
-    MODE_BLUE_GRADIENT,
-    MODE_PERIODIC,
-    MODE_RAINBOW
 };
 
 #define NBSolveMode 3

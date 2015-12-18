@@ -42,13 +42,11 @@ public:
         system_use.store(0);
     }
 
-    void calc(System * sys,Box box,ColorMode color_mode,ScaleColorMode scale_color_mode,double gamma,WhatToDo what_to_do)
+    void calc(System * sys,Box box,ColorMode color_mode,WhatToDo what_to_do)
     {
         this->sys=sys;
         this->box=box;
         this->color_mode=color_mode;
-        this->scale_color_mode=scale_color_mode;
-        this->gamma=gamma;
 
         what=what_to_do;
         start();
@@ -69,32 +67,32 @@ public:
         if(what==IMAGE_1D_CONV)
         {
             std::cout<<"IMAGE_1D_CONV"<<std::endl;
-            emit sig_output_1d(sys->solve_1D_p0(box,color_mode));
+            emit sig_output_1d(sys->solve_1D_p0(box,color_mode),box);
         }
         else if(what==IMAGE_1D_FUNC)
         {
             std::cout<<"IMAGE_1D_FUNC"<<std::endl;
-            emit sig_output_1d(sys->eval_1D_p0(box,color_mode));
+            emit sig_output_1d(sys->eval_1D_p0(box,color_mode),box);
         }
         else if(what==IMAGE_2D_CONV)
         {
             std::cout<<"IMAGE_2D_CONV"<<std::endl;
-            emit sig_output_2d(sys->solve_2D_p0p1(box,color_mode));
+            emit sig_output_2d(sys->solve_2D_p0p1(box,color_mode),box);
         }
         else if(what==IMAGE_3D_CONV)
         {
             std::cout<<"IMAGE_3D_CONV"<<std::endl;
-            emit sig_output_3d(sys->solve_3D_p0p1p2(box,color_mode));
+            emit sig_output_3d(sys->solve_3D_p0p1p2(box,color_mode),box);
         }
         else if(what==IMAGE_2D_FUNC)
         {
             std::cout<<"IMAGE_2D_FUNC"<<std::endl;
-            emit sig_output_2d(sys->eval_2D_p0p1(box,color_mode));
+            emit sig_output_2d(sys->eval_2D_p0p1(box,color_mode),box);
         }
         else if(what==IMAGE_3D_FUNC)
         {
             std::cout<<"IMAGE_3D_FUNC"<<std::endl;
-            emit sig_output_3d(sys->eval_3D_p0p1p2(box,color_mode));
+            emit sig_output_3d(sys->eval_3D_p0p1p2(box,color_mode),box);
         }
 
         else if (what==SOLVE)
@@ -108,18 +106,16 @@ public:
     QAtomicInt system_use;
 
 signals:
-    void sig_output_1d(std::vector<double> data);
-    void sig_output_2d(std::vector< std::vector<double> > data);
-    void sig_output_3d(std::vector< std::vector< std::vector<double> > > data);
+    void sig_output_1d(std::vector<double> data,Box box);
+    void sig_output_2d(std::vector< std::vector<double> > data,Box box);
+    void sig_output_3d(std::vector< std::vector< std::vector<double> > > data,Box box);
     void sig_solve();
 
 private:
     System * sys;
     Box box;
     ColorMode color_mode;
-    ScaleColorMode scale_color_mode;
     WhatToDo what;
-    double gamma;
 };
 
 

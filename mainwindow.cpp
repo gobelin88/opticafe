@@ -8,13 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
     textChanged=false;
     current_filename="./scripts/default.txt";
 
-
     ui->setupUi(this);
 
-
-
     for(int i=0;i<NBColorMode;i++){ui->cb__color_mode->addItem(ColorMode_str[i]);}
-    for(int i=0;i<NBScaleColorMode;i++){ui->cb_scale_color_mode->addItem(ScaleColorMode_str[i]);}
+    for(int i=0;i<NB_Gradients;i++){ui->cb_gradient_preset->addItem(ColorGradients_str[i]);}
 
     //Menu
     algo_group=new QActionGroup(NULL);
@@ -47,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sys=new System();
     ui->tabSystem->addTab(sys->getParamHandler(),QString("Parameters"));
 
+    qRegisterMetaType< Box >("Box");
     qRegisterMetaType< std::vector<double> >("std::vector<double>");
     qRegisterMetaType< std::vector<std::vector<double>> >("std::vector<std::vector<double>>");
     qRegisterMetaType< std::vector<std::vector<std::vector<double>>> >("std::vector<std::vector<std::vector<double>>");
@@ -61,11 +59,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pb_calculate_func,SIGNAL(clicked()),this,SLOT(slot_func()));
     connect(ui->pb_save_conv_setting,SIGNAL(clicked()),this,SLOT(slot_save_conv_setting()));
     connect(ui->pb_load_conv_setting,SIGNAL(clicked()),this,SLOT(slot_load_conv_setting()));
-    connect(ui->sb_gamma,SIGNAL(valueChanged(double)),output_2d,SLOT(slot_set_gamma(double)));
-    connect(ui->cb_scale_color_mode,SIGNAL(currentIndexChanged(int)),output_2d,SLOT(slot_set_color_mode(int)));
-    connect(ui->sb_gamma,SIGNAL(valueChanged(double)),output_3d,SLOT(slot_set_gamma(double)));
-    connect(ui->cb_scale_color_mode,SIGNAL(currentIndexChanged(int)),output_3d,SLOT(slot_set_color_mode(int)));
-    connect(ui->sb_cut,SIGNAL(valueChanged(double)),output_3d,SLOT(slot_set_cut(double)));
 
     connect(ui->rb_1D,SIGNAL(clicked()),this,SLOT(update_button_names_1d()));
     connect(ui->rb_2D,SIGNAL(clicked()),this,SLOT(update_button_names_2d()));
@@ -77,11 +70,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->cb_param1,SIGNAL(currentIndexChanged(int)),this,SLOT(id1_changed(int)));
     connect(ui->cb_param2,SIGNAL(currentIndexChanged(int)),this,SLOT(id2_changed(int)));
     connect(ui->cb_param3,SIGNAL(currentIndexChanged(int)),this,SLOT(id3_changed(int)));
+
+    connect(ui->cb_gradient_preset,SIGNAL(currentIndexChanged(int)),output_3d,SLOT(setGradient(int)));
+    connect(ui->cb_gradient_preset,SIGNAL(currentIndexChanged(int)),output_2d,SLOT(setGradient(int)));
+
     connect(&worker,SIGNAL(sig_solve()),this,SLOT(slot_solve_over()));
 
-    connect(&worker,SIGNAL(sig_output_1d(std::vector<double>)),output_1d,SLOT(slot_set_data(std::vector<double>)));
-    connect(&worker,SIGNAL(sig_output_2d(std::vector<std::vector<double>>)),output_2d,SLOT(slot_set_data(std::vector<std::vector<double>>)));
-    connect(&worker,SIGNAL(sig_output_3d(std::vector<std::vector<std::vector<double>>>)),output_3d,SLOT(slot_set_data(std::vector<std::vector<std::vector<double>>>)));
+    connect(&worker,SIGNAL(sig_output_1d(std::vector<double>,Box)),output_1d,SLOT(slot_set_data(std::vector<double>,Box)));
+    connect(&worker,SIGNAL(sig_output_2d(std::vector<std::vector<double>>,Box)),output_2d,SLOT(slot_set_data(std::vector<std::vector<double>>,Box)));
+    connect(&worker,SIGNAL(sig_output_3d(std::vector<std::vector<std::vector<double>>>,Box)),output_3d,SLOT(slot_set_data(std::vector<std::vector<std::vector<double>>>,Box)));
 
     setStyle(this,"./style.qss");
     setStyle(sys,"./style.qss");
@@ -242,17 +239,16 @@ void MainWindow::slot_conv_1d()
                 ui->sb_p1_res->value(),
                 ui->sb_p2_min->value(),
                 ui->sb_p2_max->value(),
-                ui->sb_p2_res->value());
-
-        output_1d->setBox(box);
+                ui->sb_p2_res->value(),
+                ui->cb_param1->currentIndex(),
+                ui->cb_param2->currentIndex(),
+                ui->cb_param3->currentIndex());
 
         //        QImage img=System::toImage(sys->solve_2D_p0p1(box,
         //                                   (ColorMode)ui->cb__color_mode->currentIndex()),
         //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                    (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
-                    ui->sb_gamma->value(),WorkerThread::IMAGE_1D_CONV);
+        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),WorkerThread::IMAGE_1D_CONV);
 
     }
 }
@@ -284,17 +280,16 @@ void MainWindow::slot_func_1d()
                 ui->sb_p1_res->value(),
                 ui->sb_p2_min->value(),
                 ui->sb_p2_max->value(),
-                ui->sb_p2_res->value());
-
-        output_1d->setBox(box);
+                ui->sb_p2_res->value(),
+                ui->cb_param1->currentIndex(),
+                ui->cb_param2->currentIndex(),
+                ui->cb_param3->currentIndex());
 
         //        QImage img=System::toImage(sys->solve_2D_p0p1(box,
         //                                   (ColorMode)ui->cb__color_mode->currentIndex()),
         //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                    (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
-                    ui->sb_gamma->value(),WorkerThread::IMAGE_1D_FUNC);
+        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),WorkerThread::IMAGE_1D_FUNC);
 
     }
 }
@@ -331,17 +326,16 @@ void MainWindow::slot_conv_2d()
                 ui->sb_p1_res->value(),
                 ui->sb_p2_min->value(),
                 ui->sb_p2_max->value(),
-                ui->sb_p2_res->value());
-
-        output_2d->setBox(box);
+                ui->sb_p2_res->value(),
+                ui->cb_param1->currentIndex(),
+                ui->cb_param2->currentIndex(),
+                ui->cb_param3->currentIndex());
 
         //        QImage img=System::toImage(sys->solve_2D_p0p1(box,
         //                                   (ColorMode)ui->cb__color_mode->currentIndex()),
         //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                    (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
-                    ui->sb_gamma->value(),WorkerThread::IMAGE_2D_CONV);
+        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),WorkerThread::IMAGE_2D_CONV);
 
     }
 }
@@ -383,17 +377,16 @@ void MainWindow::slot_conv_3d()
                 ui->sb_p1_res->value(),
                 ui->sb_p2_min->value(),
                 ui->sb_p2_max->value(),
-                ui->sb_p2_res->value());
-
-        output_2d->setBox(box);
+                ui->sb_p2_res->value(),
+                ui->cb_param1->currentIndex(),
+                ui->cb_param2->currentIndex(),
+                ui->cb_param3->currentIndex());
 
         //        QImage img=System::toImage(sys->solve_2D_p0p1(box,
         //                                   (ColorMode)ui->cb__color_mode->currentIndex()),
         //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                    (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
-                    ui->sb_gamma->value(),WorkerThread::IMAGE_3D_CONV);
+        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),WorkerThread::IMAGE_3D_CONV);
 
     }
 }
@@ -441,17 +434,16 @@ void MainWindow::slot_func_2d()
                 ui->sb_p1_res->value(),
                 ui->sb_p2_min->value(),
                 ui->sb_p2_max->value(),
-                ui->sb_p2_res->value());
-
-        output_3d->setBox(box);
+                ui->sb_p2_res->value(),
+                ui->cb_param1->currentIndex(),
+                ui->cb_param2->currentIndex(),
+                ui->cb_param3->currentIndex());
 
         //        QImage img=System::toImage(sys->solve_2D_p0p1(box,
         //                                   (ColorMode)ui->cb__color_mode->currentIndex()),
         //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                    (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
-                    ui->sb_gamma->value(),WorkerThread::IMAGE_2D_FUNC);
+        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),WorkerThread::IMAGE_2D_FUNC);
 
     }
 }
@@ -505,17 +497,16 @@ void MainWindow::slot_func_3d()
                 ui->sb_p1_res->value(),
                 ui->sb_p2_min->value(),
                 ui->sb_p2_max->value(),
-                ui->sb_p2_res->value());
-
-        output_3d->setBox(box);
+                ui->sb_p2_res->value(),
+                ui->cb_param1->currentIndex(),
+                ui->cb_param2->currentIndex(),
+                ui->cb_param3->currentIndex());
 
         //        QImage img=System::toImage(sys->solve_2D_p0p1(box,
         //                                   (ColorMode)ui->cb__color_mode->currentIndex()),
         //                                   (ScaleColorMode)ui->cb_scale_color_mode->currentIndex());
 
-        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),
-                    (ScaleColorMode)ui->cb_scale_color_mode->currentIndex(),
-                    ui->sb_gamma->value(),WorkerThread::IMAGE_3D_FUNC);
+        worker.calc(sys,box,(ColorMode)ui->cb__color_mode->currentIndex(),WorkerThread::IMAGE_3D_FUNC);
 
     }
 }
@@ -556,7 +547,6 @@ void MainWindow::slot_save_conv_setting()
             ts<<"Param3_res;"<<ui->sb_p2_res->value()<<"\n";
 
             ts<<"color_rule;"<<ui->cb__color_mode->currentIndex()<<"\n";
-            ts<<"color_scale;"<<ui->cb_scale_color_mode->currentIndex()<<"\n";
 
             file.close();
         }
@@ -603,7 +593,6 @@ void MainWindow::slot_load_conv_setting(QString filename)
             ignore(ts,';');ts>>tmp;ui->sb_p2_res->setValue(tmp);
 
             ignore(ts,';');ts>>tmp;ui->cb__color_mode->setCurrentIndex(tmp);
-            ignore(ts,';');ts>>tmp;ui->cb_scale_color_mode->setCurrentIndex(tmp);
 
             file.close();
         }
@@ -635,10 +624,10 @@ void MainWindow::slot_solve_over()
     sys->plot();
 
     //Path Image
-    output_2d->setPath(sys->results.p_list,ui->cb_param1->currentIndex(),ui->cb_param2->currentIndex());
+    output_2d->setPath(sys->results.p_list);
     output_2d->update();
 
-    output_1d->setPath(sys->results.p_list,ui->cb_param1->currentIndex());
+    output_1d->setPath(sys->results.p_list);
     output_1d->update();
 }
 
